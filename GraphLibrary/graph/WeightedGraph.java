@@ -1,6 +1,6 @@
 package graph;
 
-public class WeightedGraph extends BaseGraph<WeightedEdge> implements IWeightedGraph {
+public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>> implements IWeightedGraph {
 
     public WeightedGraph() {
         super();

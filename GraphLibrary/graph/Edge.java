@@ -1,29 +1,31 @@
 package graph;
 
-public class Edge {
+import java.util.Objects;
 
-    protected int outVertex;
+public class Edge<V> {
 
-    protected int inVertex;
+    protected V outVertex;
 
-    public Edge(int outVertex, int inVertex) {
+    protected V inVertex;
+
+    public Edge(V outVertex, V inVertex) {
         this.outVertex = outVertex;
         this.inVertex = inVertex;
     }
 
-    public int getOutVertex() {
+    public V getOutVertex() {
         return outVertex;
     }
 
-    public void setOutVertex(int outVertex) {
+    public void setOutVertex(V outVertex) {
         this.outVertex = outVertex;
     }
 
-    public int getInVertex() {
+    public V getInVertex() {
         return inVertex;
     }
 
-    public void setInVertex(int inVertex) {
+    public void setInVertex(V inVertex) {
         this.inVertex = inVertex;
     }
 
@@ -31,18 +33,14 @@ public class Edge {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Edge edge = (Edge) o;
-
-        if (outVertex != edge.outVertex) return false;
-        return inVertex == edge.inVertex;
+        Edge<?> edge = (Edge<?>) o;
+        return Objects.equals(outVertex, edge.outVertex) &&
+                Objects.equals(inVertex, edge.inVertex);
     }
 
     @Override
     public int hashCode() {
-        int result = outVertex;
-        result = 31 * result + inVertex;
-        return result;
+        return Objects.hash(outVertex, inVertex);
     }
 
 }

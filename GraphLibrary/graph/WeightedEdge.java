@@ -1,10 +1,10 @@
 package graph;
 
-public class WeightedEdge extends Edge {
+public class WeightedEdge<V> extends Edge<V> {
 
     private float weight;
 
-    public WeightedEdge(int outVertex, int inVertex, int weight) {
+    public WeightedEdge(V outVertex, V inVertex, float weight) {
         super(outVertex, inVertex);
         this.weight = weight;
     }

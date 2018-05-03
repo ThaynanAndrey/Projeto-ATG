@@ -1,17 +1,18 @@
 package graph;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-public abstract class BaseGraph<T extends Edge> implements IGraph {
+public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph {
 
-    protected Set<T> edges;
+    protected Set<E> edges;
 
-    protected int vertexesNumber;
+    protected Set<V> vertexes;
 
     public BaseGraph() {
         edges = new HashSet<>();
-        vertexesNumber = 0;
+        vertexes = new HashSet<>();
     }
 
     @Override
@@ -21,7 +22,7 @@ public abstract class BaseGraph<T extends Edge> implements IGraph {
 
     @Override
     public int getVertexesNumber() {
-        return vertexesNumber;
+        return vertexes.size();
     }
 
     @Override
@@ -38,18 +39,14 @@ public abstract class BaseGraph<T extends Edge> implements IGraph {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        BaseGraph<?> baseGraph = (BaseGraph<?>) o;
-
-        if (vertexesNumber != baseGraph.vertexesNumber) return false;
-        return edges != null ? edges.equals(baseGraph.edges) : baseGraph.edges == null;
+        BaseGraph<?, ?> baseGraph = (BaseGraph<?, ?>) o;
+        return Objects.equals(edges, baseGraph.edges) &&
+                Objects.equals(vertexes, baseGraph.vertexes);
     }
 
     @Override
     public int hashCode() {
-        int result = edges != null ? edges.hashCode() : 0;
-        result = 31 * result + vertexesNumber;
-        return result;
-    }
 
+        return Objects.hash(edges, vertexes);
+    }
 }
