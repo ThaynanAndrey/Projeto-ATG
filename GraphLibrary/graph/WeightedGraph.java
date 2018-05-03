@@ -7,6 +7,11 @@ public class WeightedGraph extends BaseGraph<WeightedEdge> implements IWeightedG
     }
 
     @Override
+    public WeightedEdge addEdge(int v1, int v2) {
+        return null;
+    }
+
+    @Override
     public String graphRepresentation(RepresentationType representationType) {
         return null;
     }

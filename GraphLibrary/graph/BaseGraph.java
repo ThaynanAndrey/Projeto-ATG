@@ -15,6 +15,11 @@ public abstract class BaseGraph<T extends Edge> implements IGraph {
     }
 
     @Override
+    public Edge addEdge(int v1, int v2) {
+        return null;
+    }
+
+    @Override
     public int getVertexesNumber() {
         return vertexesNumber;
     }
