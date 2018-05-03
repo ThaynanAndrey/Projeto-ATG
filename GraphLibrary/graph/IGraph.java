@@ -1,8 +1,10 @@
 package graph;
 
-public interface IGraph {
+public interface IGraph<V> {
 
-    Edge addEdge(int v1, int v2);
+    void addVertex(V v);
+
+    Edge addEdge(V v1, V v2);
 
     int getVertexesNumber();
 

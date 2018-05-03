@@ -1,13 +1,13 @@
 package graph;
 
-public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>> implements IWeightedGraph {
+public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>> implements IWeightedGraph<V> {
 
     public WeightedGraph() {
         super();
     }
 
     @Override
-    public WeightedEdge addEdge(int v1, int v2) {
+    public WeightedEdge addEdge(V v1, V v2) {
         return null;
     }
 

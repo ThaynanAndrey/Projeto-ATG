@@ -1,6 +1,6 @@
 package graph;
 
-public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph {
+public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V> {
 
     public Graph() {
         super();

@@ -1,7 +1,8 @@
 package graph;
 
-public interface IWeightedGraph extends IGraph {
+public interface IWeightedGraph<V> extends IGraph<V> {
 
     @Override
-    WeightedEdge addEdge(int v1, int v2);
+    WeightedEdge addEdge(V v1, V v2);
+
 }

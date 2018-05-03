@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph {
+public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph<V> {
 
     protected Set<E> edges;
 
@@ -16,7 +16,12 @@ public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph {
     }
 
     @Override
-    public Edge addEdge(int v1, int v2) {
+    public void addVertex(V v) {
+
+    }
+
+    @Override
+    public Edge addEdge(V v1, V v2) {
         return null;
     }
 
@@ -46,7 +51,7 @@ public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(edges, vertexes);
     }
+
 }
