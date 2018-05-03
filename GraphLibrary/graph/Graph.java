@@ -12,12 +12,12 @@ public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V> {
     }
 
     @Override
-    public String BFS() {
+    public String BFS(V v) {
         return null;
     }
 
     @Override
-    public String DFS() {
+    public String DFS(V v) {
         return null;
     }
 
@@ -27,7 +27,7 @@ public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V> {
     }
 
     @Override
-    public String shortestPath(int v1, int v2) {
+    public String shortestPath(V v1, V v2) {
         return null;
     }
 

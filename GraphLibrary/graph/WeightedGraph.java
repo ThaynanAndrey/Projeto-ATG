@@ -17,12 +17,12 @@ public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>> implements I
     }
 
     @Override
-    public String BFS() {
+    public String BFS(V v) {
         return null;
     }
 
     @Override
-    public String DFS() {
+    public String DFS(V v) {
         return null;
     }
 
@@ -32,7 +32,7 @@ public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>> implements I
     }
 
     @Override
-    public String shortestPath(int v1, int v2) {
+    public String shortestPath(V v1, V v2) {
         return null;
     }
 
