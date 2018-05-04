@@ -4,12 +4,24 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Represents a skeletal implementation of a graph, based on the interface
+ * defined by {@link IGraph}.
+ *
+ * @param <V> Type of the vertex.
+ * @param <E> Type of the edge.
+ *
+ * @author Vélmer Oliveira
+ */
 public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph<V> {
 
     protected Set<E> edges;
 
     protected Set<V> vertexes;
 
+    /**
+     * Constructs a {@link BaseGraph}.
+     */
     public BaseGraph() {
         edges = new HashSet<>();
         vertexes = new HashSet<>();
@@ -38,6 +50,26 @@ public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph<V> {
     @Override
     public float getMeanEdge() {
         return getVertexesNumber() > 0 ? ((2*getEdgesNumber()) / getVertexesNumber()) : 0;
+    }
+
+    @Override
+    public String BFS(V v) {
+        return null;
+    }
+
+    @Override
+    public String DFS(V v) {
+        return null;
+    }
+
+    @Override
+    public String SCC() {
+        return null;
+    }
+
+    @Override
+    public String MST() {
+        return null;
     }
 
     @Override

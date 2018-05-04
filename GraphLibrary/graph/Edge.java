@@ -2,31 +2,44 @@ package graph;
 
 import java.util.Objects;
 
+/**
+ * Represents a implementation of a edge.
+ *
+ * @param <V> Type of the origin and target vertexes.
+ *
+ * @author Vélmer Oliveira
+ */
 public class Edge<V> {
 
-    protected V outVertex;
+    protected V originVertex;
 
-    protected V inVertex;
+    protected V targetVertex;
 
-    public Edge(V outVertex, V inVertex) {
-        this.outVertex = outVertex;
-        this.inVertex = inVertex;
+    /**
+     * Constructs a {@link Edge}.
+     *
+     * @param originVertex The origin vertex of the edge.
+     * @param targetVertex The target vertex of the edge.
+     */
+    public Edge(V originVertex, V targetVertex) {
+        this.originVertex = originVertex;
+        this.targetVertex = targetVertex;
     }
 
-    public V getOutVertex() {
-        return outVertex;
+    public V getOriginVertex() {
+        return originVertex;
     }
 
-    public void setOutVertex(V outVertex) {
-        this.outVertex = outVertex;
+    public void setOriginVertex(V originVertex) {
+        this.originVertex = originVertex;
     }
 
-    public V getInVertex() {
-        return inVertex;
+    public V getTargetVertex() {
+        return targetVertex;
     }
 
-    public void setInVertex(V inVertex) {
-        this.inVertex = inVertex;
+    public void setTargetVertex(V targetVertex) {
+        this.targetVertex = targetVertex;
     }
 
     @Override
@@ -34,13 +47,13 @@ public class Edge<V> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Edge<?> edge = (Edge<?>) o;
-        return Objects.equals(outVertex, edge.outVertex) &&
-                Objects.equals(inVertex, edge.inVertex);
+        return Objects.equals(originVertex, edge.originVertex) &&
+                Objects.equals(targetVertex, edge.targetVertex);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(outVertex, inVertex);
+        return Objects.hash(originVertex, targetVertex);
     }
 
 }

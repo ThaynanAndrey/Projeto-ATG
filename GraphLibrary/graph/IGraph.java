@@ -3,7 +3,7 @@ package graph;
 /**
  * Defines the interface of a undirected and unweighted graph.
  *
- * @param <V> Type of the Vertex.
+ * @param <V> Type of the vertex.
  *
  * @author Vélmer Oliveira
  */

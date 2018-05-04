@@ -1,7 +1,18 @@
 package graph;
 
+/**
+ * Represents a implementation of a undirected and unweighted graph, based on
+ * the interface defined by {@link IGraph}.
+ *
+ * @param <V> Type of the vertex.
+ *
+ * @author Vélmer Oliveira
+ */
 public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V> {
 
+    /**
+     * Constructs a {@link Graph}.
+     */
     public Graph() {
         super();
     }
@@ -12,27 +23,7 @@ public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V> {
     }
 
     @Override
-    public String BFS(V v) {
-        return null;
-    }
-
-    @Override
-    public String DFS(V v) {
-        return null;
-    }
-
-    @Override
-    public String SCC() {
-        return null;
-    }
-
-    @Override
     public String shortestPath(V v1, V v2) {
-        return null;
-    }
-
-    @Override
-    public String MST() {
         return null;
     }
 

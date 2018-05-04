@@ -1,11 +1,25 @@
 package graph;
 
+/**
+ * Represents a implementation of a weighted edge.
+ *
+ * @param <V> Type of the origin and target vertexes.
+ *
+ * @author Vélmer Oliveira
+ */
 public class WeightedEdge<V> extends Edge<V> {
 
     private float weight;
 
-    public WeightedEdge(V outVertex, V inVertex, float weight) {
-        super(outVertex, inVertex);
+    /**
+     * Constructs a {@link WeightedEdge}.
+     *
+     * @param originVertex The origin vertex of the edge.
+     * @param targetVertex The target vertex of the edge.
+     * @param weight The weight of the edge.
+     */
+    public WeightedEdge(V originVertex, V targetVertex, float weight) {
+        super(originVertex, targetVertex);
         this.weight = weight;
     }
 
