@@ -1,4 +1,4 @@
-package graph;
+package com.ufcg.atg.graph;
 
 /**
  * Represents a implementation of a weighted edge.

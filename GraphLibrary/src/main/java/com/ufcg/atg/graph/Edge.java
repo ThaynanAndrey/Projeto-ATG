@@ -1,4 +1,4 @@
-package graph;
+package com.ufcg.atg.graph;
 
 import java.util.Objects;
 
