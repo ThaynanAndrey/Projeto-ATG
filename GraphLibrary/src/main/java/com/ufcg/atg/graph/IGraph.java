@@ -54,6 +54,11 @@ public interface IGraph<V, E extends Edge<V>> {
      * specified.
      *
      * @param representationType Type of the representation to be returned.
+     * @throws RuntimeException If the representation type isn't supported.
+     * @throws RuntimeException If the representation type is
+     * {@code ADJACENCY_MATRIX} and {@link V} doesn't have a {@code int}
+     * representation.
+     *
      * @return The graph representation.
      */
     String graphRepresentation(RepresentationType representationType);

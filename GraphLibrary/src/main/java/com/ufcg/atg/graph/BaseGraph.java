@@ -1,8 +1,6 @@
 package com.ufcg.atg.graph;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents a skeletal implementation of a graph, based on the interface
@@ -51,6 +49,67 @@ public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph<V, E> {
     public float getMeanEdge() {
         return getVertexesNumber() > 0 ? ((2*getEdgesNumber()) / getVertexesNumber()) : 0;
     }
+
+    @Override
+    public String graphRepresentation(RepresentationType representationType) {
+        if (representationType == RepresentationType.ADJACENCY_MATRIX) {
+            return adjacencyMatrixRepresentation();
+        } else if (representationType == RepresentationType.ADJACENCY_LIST) {
+            return adjacencyListRepresentation();
+        } else {
+            throw new RuntimeException("Tipo de representação não suportado.");
+        }
+    }
+
+    private String adjacencyMatrixRepresentation() {
+        float adjacencyMatrix[][] = getAdjacencyMatriz();
+
+        return null;
+    }
+
+    private String adjacencyListRepresentation() {
+        float adjacencyMatrix[][] = getAdjacencyMatriz();
+
+        return null;
+    }
+
+    private float[][] getAdjacencyMatriz() {
+        int vertexesNumber = getVertexesNumber();
+        float adjacencyMatrix[][] = new float[vertexesNumber+1][vertexesNumber+1];
+        Iterator<V> it = vertexes.iterator();
+        Map<V, ArrayList<E>> vertexToConnectedEdges = getVertexToConnectedEdgesMap();
+
+        while (it.hasNext()) {
+            V currentVertex = it.next();
+            ArrayList<E> connectedEdges = vertexToConnectedEdges.get(currentVertex);
+
+            for (E e: connectedEdges) {
+                int currentVertexIntRepr = (Integer) currentVertex,
+                        neighborIntRepr = (Integer) e.getTargetVertex();
+                adjacencyMatrix[currentVertexIntRepr][neighborIntRepr] = getEdgeWeight(e);
+            }
+        }
+
+        return adjacencyMatrix;
+    }
+
+    private Map<V, ArrayList<E>> getVertexToConnectedEdgesMap() {
+        Map<V, ArrayList<E>> vertexToConnectedEdges = new HashMap<>();
+
+        for (E e: edges) {
+            V originVertex = e.getOriginVertex();
+            ArrayList<E> connectedEdges = vertexToConnectedEdges.get(originVertex);
+            if (connectedEdges == null) {
+                connectedEdges = new ArrayList<>();
+            }
+            connectedEdges.add(e);
+            vertexToConnectedEdges.put(originVertex, connectedEdges);
+        }
+
+        return vertexToConnectedEdges;
+    }
+
+    protected abstract float getEdgeWeight(E e);
 
     @Override
     public String BFS(V v) {

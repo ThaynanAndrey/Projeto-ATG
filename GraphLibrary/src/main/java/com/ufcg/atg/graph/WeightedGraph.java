@@ -29,8 +29,8 @@ public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>>
     }
 
     @Override
-    public String graphRepresentation(RepresentationType representationType) {
-        return null;
+    protected float getEdgeWeight(WeightedEdge<V> e) {
+        return e.getWeight();
     }
 
     @Override
