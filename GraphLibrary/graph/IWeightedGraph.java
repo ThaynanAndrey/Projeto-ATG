@@ -5,10 +5,11 @@ package graph;
  * common methods from {@link IGraph}.
  *
  * @param <V> Type of the vertex.
+ * @param <E> Type of the edge.
  *
  * @author Vélmer Oliveira
  */
-public interface IWeightedGraph<V> extends IGraph<V> {
+public interface IWeightedGraph<V, E extends WeightedEdge<V>> extends IGraph<V, E> {
 
     /**
      * Adds a weighted edge to the graph. {@code v1} is going to be the edge
@@ -20,7 +21,7 @@ public interface IWeightedGraph<V> extends IGraph<V> {
      * @return The added weighted edge.
      */
     @Override
-    WeightedEdge addEdge(V v1, V v2);
+    E addEdge(V v1, V v2);
 
     /**
      * Adds a weighted edge to the graph. {@code v1} is going to be the edge
@@ -31,6 +32,6 @@ public interface IWeightedGraph<V> extends IGraph<V> {
      * @param weight The weight of the edge.
      * @return The added weighted edge.
      */
-    WeightedEdge addEdge(V v1, V v2, float weight);
+    E addEdge(V v1, V v2, float weight);
 
 }

@@ -8,7 +8,7 @@ package graph;
  *
  * @author Vélmer Oliveira
  */
-public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V> {
+public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V, Edge<V>> {
 
     /**
      * Constructs a {@link Graph}.

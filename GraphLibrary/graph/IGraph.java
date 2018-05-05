@@ -4,10 +4,11 @@ package graph;
  * Defines the interface of a undirected and unweighted graph.
  *
  * @param <V> Type of the vertex.
+ * @param <E> Type of the edge.
  *
  * @author Vélmer Oliveira
  */
-public interface IGraph<V> {
+public interface IGraph<V, E extends Edge<V>> {
 
     /**
      * Adds a vertex to the graph.
@@ -25,7 +26,7 @@ public interface IGraph<V> {
      * @param v2 Vertex to be the edge target.
      * @return The added edge.
      */
-    Edge addEdge(V v1, V v2);
+    E addEdge(V v1, V v2);
 
     /**
      * Returns the number of vertexes of the graph.

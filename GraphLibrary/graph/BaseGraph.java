@@ -13,7 +13,7 @@ import java.util.Set;
  *
  * @author Vélmer Oliveira
  */
-public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph<V> {
+public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph<V, E> {
 
     protected Set<E> edges;
 
@@ -33,7 +33,7 @@ public abstract class BaseGraph<V, E extends Edge<V>> implements IGraph<V> {
     }
 
     @Override
-    public Edge addEdge(V v1, V v2) {
+    public E addEdge(V v1, V v2) {
         return null;
     }
 

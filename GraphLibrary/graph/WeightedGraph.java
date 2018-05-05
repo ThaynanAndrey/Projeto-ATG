@@ -8,7 +8,8 @@ package graph;
  *
  * @author Vélmer Oliveira
  */
-public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>> implements IWeightedGraph<V> {
+public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>>
+        implements IWeightedGraph<V, WeightedEdge<V>> {
 
     /**
      * Constructs a {@link WeightedGraph}.
@@ -18,12 +19,12 @@ public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>> implements I
     }
 
     @Override
-    public WeightedEdge addEdge(V v1, V v2) {
+    public WeightedEdge<V> addEdge(V v1, V v2) {
         return null;
     }
 
     @Override
-    public WeightedEdge addEdge(V v1, V v2, float weight) {
+    public WeightedEdge<V> addEdge(V v1, V v2, float weight) {
         return null;
     }
 
