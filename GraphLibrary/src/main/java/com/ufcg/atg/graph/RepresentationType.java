@@ -6,5 +6,5 @@ package com.ufcg.atg.graph;
  * @author Vélmer Oliveira
  */
 public enum RepresentationType {
-    ADJACENCY_MATRIZ, ADJACENCY_LIST;
+    ADJACENCY_MATRIX, ADJACENCY_LIST;
 }

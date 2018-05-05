@@ -8,7 +8,7 @@ package com.ufcg.atg.graph;
  *
  * @author Vélmer Oliveira
  */
-public interface IGraph<V, E extends Edge<V>> {
+public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
 
     /**
      * Adds a vertex to the graph.

@@ -9,7 +9,7 @@ package com.ufcg.atg.graph;
  *
  * @author Vélmer Oliveira
  */
-public interface IWeightedGraph<V, E extends WeightedEdge<V>> extends IGraph<V, E> {
+public interface IWeightedGraph<V extends Comparable<V>, E extends WeightedEdge<V>> extends IGraph<V, E> {
 
     /**
      * Adds a weighted edge to the graph. {@code v1} is going to be the edge

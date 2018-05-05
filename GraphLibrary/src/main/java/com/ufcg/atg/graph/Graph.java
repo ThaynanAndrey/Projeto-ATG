@@ -8,7 +8,7 @@ package com.ufcg.atg.graph;
  *
  * @author Vélmer Oliveira
  */
-public class Graph<V> extends BaseGraph<V, Edge<V>> implements IGraph<V, Edge<V>> {
+public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implements IGraph<V, Edge<V>> {
 
     /**
      * Constructs a {@link Graph}.
