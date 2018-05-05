@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Represents a skeletal implementation of a src.main.java.com.ufcg.atg.graph, based on the interface
+ * Represents a skeletal implementation of a graph, based on the interface
  * defined by {@link IGraph}.
  *
  * @param <V> Type of the vertex.

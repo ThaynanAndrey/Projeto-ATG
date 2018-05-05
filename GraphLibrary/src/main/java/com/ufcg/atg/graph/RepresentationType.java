@@ -1,7 +1,7 @@
 package com.ufcg.atg.graph;
 
 /**
- * Represents all types of possible src.main.java.com.ufcg.atg.graph representation types.
+ * Represents all types of possible representation types.
  *
  * @author Vélmer Oliveira
  */

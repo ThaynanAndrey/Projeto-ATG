@@ -1,7 +1,7 @@
 package com.ufcg.atg.graph;
 
 /**
- * Represents a implementation of a undirected and weighted src.main.java.com.ufcg.atg.graph, based on
+ * Represents a implementation of a undirected and weighted graph, based on
  * the interface defined by {@link IGraph}.
  *
  * @param <V> Type of the vertex.
