@@ -8,7 +8,7 @@ package com.ufcg.atg.graph;
  *
  * @author Vélmer Oliveira
  */
-public class WeightedGraph<V> extends BaseGraph<V, WeightedEdge<V>>
+public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, WeightedEdge<V>>
         implements IWeightedGraph<V, WeightedEdge<V>> {
 
     /**
