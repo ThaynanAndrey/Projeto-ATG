@@ -62,35 +62,47 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     private String adjacencyMatrixRepresentation() {
-        float adjacencyMatrix[][] = getAdjacencyMatriz();
+        ArrayList<V> orderedVertexes = getOrderedVertexesList();
+        float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
 
         return null;
     }
 
     private String adjacencyListRepresentation() {
-        float adjacencyMatrix[][] = getAdjacencyMatriz();
+        ArrayList<V> orderedVertexes = getOrderedVertexesList();
+        float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
 
         return null;
     }
 
-    private float[][] getAdjacencyMatriz() {
+    private float[][] getAdjacencyMatrix(ArrayList<V> orderedVertexes) {
         int vertexesNumber = getVertexesNumber();
         float adjacencyMatrix[][] = new float[vertexesNumber+1][vertexesNumber+1];
-        Iterator<V> it = vertexes.iterator();
         Map<V, ArrayList<E>> vertexToConnectedEdges = getVertexToConnectedEdgesMap();
 
-        while (it.hasNext()) {
-            V currentVertex = it.next();
+        for(int i = 1; i < vertexesNumber; i++) {
+            V currentVertex = orderedVertexes.get(i);
             ArrayList<E> connectedEdges = vertexToConnectedEdges.get(currentVertex);
-
-            for (E e: connectedEdges) {
-                int currentVertexIntRepr = (Integer) currentVertex,
-                        neighborIntRepr = (Integer) e.getTargetVertex();
-                adjacencyMatrix[currentVertexIntRepr][neighborIntRepr] = getEdgeWeight(e);
+            for(int j = 1; j < connectedEdges.size(); j++) {
+                E edge = connectedEdges.get(j);
+                V targetVertex = edge.getTargetVertex();
+                adjacencyMatrix[i][orderedVertexes.indexOf(targetVertex)] = getEdgeWeight(edge);
             }
         }
 
         return adjacencyMatrix;
+    }
+
+    private ArrayList<V> getOrderedVertexesList() {
+        ArrayList<V> orderedVertexes = getVertexesList();
+        Collections.sort(orderedVertexes);
+        return orderedVertexes;
+    }
+
+    private ArrayList<V> getVertexesList() {
+        ArrayList<V> vertexes = new ArrayList<>();
+        vertexes.addAll(this.vertexes);
+        return vertexes;
     }
 
     private Map<V, ArrayList<E>> getVertexToConnectedEdgesMap() {
