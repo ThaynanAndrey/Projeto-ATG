@@ -7,7 +7,7 @@ package com.ufcg.atg.graph;
  *
  * @author Vélmer Oliveira
  */
-public class WeightedEdge<V> extends Edge<V> {
+public class WeightedEdge<V extends Comparable<V>> extends Edge<V> {
 
     private float weight;
 
@@ -49,4 +49,10 @@ public class WeightedEdge<V> extends Edge<V> {
         return result;
     }
 
+    @Override
+    public int compareTo(Edge<V> o) {
+        WeightedEdge<V> that = (WeightedEdge<V>) o;
+        int weightComparison = Float.compare(weight, that.weight);
+        return weightComparison == 0 ? super.compareTo(o) : weightComparison;
+    }
 }

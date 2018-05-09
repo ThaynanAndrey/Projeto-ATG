@@ -9,7 +9,7 @@ import java.util.Objects;
  *
  * @author Vélmer Oliveira
  */
-public class Edge<V> {
+public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
 
     protected V originVertex;
 
@@ -54,6 +54,13 @@ public class Edge<V> {
     @Override
     public int hashCode() {
         return Objects.hash(originVertex, targetVertex);
+    }
+
+    @Override
+    public int compareTo(Edge<V> o) {
+        int originVertexComparison = originVertex.compareTo(o.originVertex);
+        return originVertexComparison == 0 ?
+                targetVertex.compareTo(o.targetVertex) : originVertexComparison;
     }
 
 }
