@@ -3,12 +3,7 @@ package com.ufcg.atg.graph;
 import com.ufcg.atg.util.Utils;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
@@ -102,18 +97,16 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     private String adjacencyMatrixRepresentation() {
         ArrayList<V> orderedVertexes = getOrderedVertexesList();
         float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
-        String matrizString = setUpAdjacencyMatrizString(orderedVertexes, adjacencyMatrix);
-        return matrizString;
+        return setUpAdjacencyMatrizString(orderedVertexes, adjacencyMatrix);
     }
 
     private float[][] getAdjacencyMatrix(ArrayList<V> orderedVertexes) {
         int vertexesNumber = getVertexesNumber();
         float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
-        Map<V, ArrayList<E>> vertexToConnectedEdges = getVertexToConnectedEdgesMap();
 
         for(int i = 0; i < vertexesNumber; i++) {
             V currentVertex = orderedVertexes.get(i);
-            ArrayList<E> connectedEdges = vertexToConnectedEdges.get(currentVertex);
+            Set<E> connectedEdges = vertexes.get(currentVertex);
             for (E edge : connectedEdges) {
                 V targetVertex = edge.getTargetVertex();
                 adjacencyMatrix[i][orderedVertexes.indexOf(targetVertex)] = getEdgeWeight(edge);
@@ -148,36 +141,23 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     private String adjacencyListRepresentation() {
         ArrayList<V> orderedVertexes = getOrderedVertexesList();
-        Map<V, ArrayList<E>> vertexToConnectedEdges = getVertexToConnectedEdgesMap();
+        StringBuilder list = new StringBuilder();
+        for (V v: orderedVertexes) {
+            StringBuilder line = new StringBuilder(v + " - ");
+            String neighbors = vertexes.get(v).stream()
+                    .map(Edge::getTargetVertex)
+                    .sorted()
+                    .map(V::toString)
+                    .reduce((s, s2) -> s + " " + s2).get();
+        }
+
         return null;
     }
 
     private ArrayList<V> getOrderedVertexesList() {
-        ArrayList<V> orderedVertexes = getVertexesList();
+        ArrayList<V> orderedVertexes = new ArrayList<>(getAllVertexes());
         Collections.sort(orderedVertexes);
         return orderedVertexes;
-    }
-
-    private ArrayList<V> getVertexesList() {
-        ArrayList<V> vertexes = new ArrayList<>();
-        vertexes.addAll(this.vertexes);
-        return vertexes;
-    }
-
-    private Map<V, ArrayList<E>> getVertexToConnectedEdgesMap() {
-        Map<V, ArrayList<E>> vertexToConnectedEdges = new HashMap<>();
-
-        for (E e: edges) {
-            V originVertex = e.getOriginVertex();
-            ArrayList<E> connectedEdges = vertexToConnectedEdges.get(originVertex);
-            if (connectedEdges == null) {
-                connectedEdges = new ArrayList<>();
-            }
-            connectedEdges.add(e);
-            vertexToConnectedEdges.put(originVertex, connectedEdges);
-        }
-
-        return vertexToConnectedEdges;
     }
 
     protected abstract float getEdgeWeight(E e);
