@@ -1,6 +1,10 @@
 package com.ufcg.atg.graph;
 
+import com.ufcg.atg.util.Utils;
+
 import java.util.*;
+
+import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
 
 /**
  * Represents a skeletal implementation of a graph, based on the interface
@@ -64,33 +68,54 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     private String adjacencyMatrixRepresentation() {
         ArrayList<V> orderedVertexes = getOrderedVertexesList();
         float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
-
-        return null;
-    }
-
-    private String adjacencyListRepresentation() {
-        ArrayList<V> orderedVertexes = getOrderedVertexesList();
-        float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
-
-        return null;
+        String matrizString = setUpAdjacencyMatrizString(orderedVertexes, adjacencyMatrix);
+        return matrizString;
     }
 
     private float[][] getAdjacencyMatrix(ArrayList<V> orderedVertexes) {
         int vertexesNumber = getVertexesNumber();
-        float adjacencyMatrix[][] = new float[vertexesNumber+1][vertexesNumber+1];
+        float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
         Map<V, ArrayList<E>> vertexToConnectedEdges = getVertexToConnectedEdgesMap();
 
-        for(int i = 1; i < vertexesNumber; i++) {
+        for(int i = 0; i < vertexesNumber; i++) {
             V currentVertex = orderedVertexes.get(i);
             ArrayList<E> connectedEdges = vertexToConnectedEdges.get(currentVertex);
-            for(int j = 1; j < connectedEdges.size(); j++) {
-                E edge = connectedEdges.get(j);
+            for (E edge : connectedEdges) {
                 V targetVertex = edge.getTargetVertex();
                 adjacencyMatrix[i][orderedVertexes.indexOf(targetVertex)] = getEdgeWeight(edge);
             }
         }
 
         return adjacencyMatrix;
+    }
+
+    private String setUpAdjacencyMatrizString(ArrayList<V> orderedVertexes, float adjacencyMatrix[][]) {
+        int vertexesNumber = getVertexesNumber();
+        StringBuilder matrixSB = new StringBuilder("  ");
+
+        for (int i = 0; i < vertexesNumber; i++) {
+            matrixSB.append(orderedVertexes.get(i));
+            boolean shouldAddSpace = vertexesNumber - i > 1;
+            if (shouldAddSpace) matrixSB.append(" ");
+        }
+        matrixSB.append(LINE_SEPARATOR);
+        for(int i = 0; i < vertexesNumber; i++) {
+            StringBuilder line = new StringBuilder(orderedVertexes.get(i) + " ");
+            for(int j = 0; j < vertexesNumber; j++) {
+                line.append(Utils.floatToString(adjacencyMatrix[i][j]));
+                boolean shouldAddSpace = vertexesNumber - j > 1;
+                if (shouldAddSpace) line.append(" ");
+            }
+            matrixSB.append(line).append(LINE_SEPARATOR);
+        }
+
+        return matrixSB.toString();
+    }
+
+    private String adjacencyListRepresentation() {
+        ArrayList<V> orderedVertexes = getOrderedVertexesList();
+        Map<V, ArrayList<E>> vertexToConnectedEdges = getVertexToConnectedEdgesMap();
+        return null;
     }
 
     private ArrayList<V> getOrderedVertexesList() {

@@ -20,6 +20,21 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
     }
 
     @Override
+    public Edge<V> addEdge(V v1, V v2) {
+        if (!vertexes.contains(v1)) {
+            addVertex(v1);
+        }
+        if (!vertexes.contains(v2)) {
+            addVertex(v2);
+        }
+        Edge<V> edgeToReturn = new Edge<>(v1, v2),
+                otherEdge    = new Edge<>(v2, v1);
+        edges.add(edgeToReturn);
+        edges.add(otherEdge);
+        return edgeToReturn;
+    }
+
+    @Override
     protected float getEdgeWeight(Edge<V> e) {
         return EDGE_WEIGHT;
     }
