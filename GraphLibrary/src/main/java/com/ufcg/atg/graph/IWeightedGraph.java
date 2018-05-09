@@ -18,6 +18,8 @@ public interface IWeightedGraph<V extends Comparable<V>, E extends WeightedEdge<
      *
      * @param v1 Vertex to be the edge origin.
      * @param v2 Vertex to be the edge target.
+     * @throws RuntimeException If already there is a edge connecting {@code v1}
+     * and {@code v2}.
      * @return The added weighted edge.
      */
     @Override
@@ -30,6 +32,8 @@ public interface IWeightedGraph<V extends Comparable<V>, E extends WeightedEdge<
      * @param v1 Vertex to be the edge origin.
      * @param v2 Vertex to be the edge target.
      * @param weight The weight of the edge.
+     * @throws RuntimeException If already there is a edge connecting {@code v1}
+     * and {@code v2}.
      * @return The added weighted edge.
      */
     E addEdge(V v1, V v2, float weight);

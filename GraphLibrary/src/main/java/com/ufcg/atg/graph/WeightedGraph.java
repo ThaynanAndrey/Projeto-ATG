@@ -31,7 +31,10 @@ public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, Weighte
         addIfAbsent(v2);
         WeightedEdge<V> edgeToReturn = new WeightedEdge<>(v1, v2, weight),
                 reverseEdge = new WeightedEdge<>(v2, v1, weight);
-        vertexes.get(v1).add(edgeToReturn);
+        boolean added = vertexes.get(v1).add(edgeToReturn);
+        if (!added) {
+            throw new RuntimeException();
+        }
         vertexes.get(v2).add(reverseEdge);
         return edgeToReturn;
     }

@@ -23,7 +23,10 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
         addIfAbsent(v2);
         Edge<V> edgeToReturn = new Edge<>(v1, v2),
                 reverseEdge = new Edge<>(v2, v1);
-        vertexes.get(v1).add(edgeToReturn);
+        boolean added = vertexes.get(v1).add(edgeToReturn);
+        if (!added) {
+            throw new RuntimeException();
+        }
         vertexes.get(v2).add(reverseEdge);
         return edgeToReturn;
     }

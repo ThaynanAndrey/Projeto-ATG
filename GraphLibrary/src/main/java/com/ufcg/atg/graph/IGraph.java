@@ -27,6 +27,8 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      *
      * @param v1 Vertex to be the edge origin.
      * @param v2 Vertex to be the edge target.
+     * @throws RuntimeException If already there is a edge connecting {@code v1}
+     * and {@code v2}.
      * @return The added edge.
      */
     E addEdge(V v1, V v2);
