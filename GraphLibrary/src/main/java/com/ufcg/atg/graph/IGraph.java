@@ -1,5 +1,7 @@
 package com.ufcg.atg.graph;
 
+import java.util.Set;
+
 /**
  * Defines the interface of a undirected and unweighted graph.
  *
@@ -14,6 +16,7 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * Adds a vertex to the graph.
      *
      * @param v Vertex to be added.
+     * @throws IllegalArgumentException If the vertex is {@code null}.
      * @throws RuntimeException If the vertex is already on graph.
      */
     void addVertex(V v);
@@ -27,6 +30,28 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * @return The added edge.
      */
     E addEdge(V v1, V v2);
+
+    /**
+     * Returns all vertexes of the graph.
+     *
+     * @return All vertexes of the graph.
+     */
+    Set<V> getAllVertexes();
+
+    /**
+     * Returns all edges of the graph.
+     *
+     * @return All edges of the graph.
+     */
+    Set<E> getAllEdges();
+
+    /**
+     * Returns all edges of the specified vertex.
+     *
+     * @param v Vertex to have all its edges returned.
+     * @return Specified vertex's edges.
+     */
+    Set<E> getVertexsEdges(V v);
 
     /**
      * Returns the number of vertexes of the graph.

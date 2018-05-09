@@ -18,6 +18,17 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
     }
 
     @Override
+    public Edge<V> addEdge(V v1, V v2) {
+        addIfAbsent(v1);
+        addIfAbsent(v2);
+        Edge<V> edgeToReturn = new Edge<>(v1, v2),
+                reverseEdge = new Edge<>(v2, v1);
+        vertexes.get(v1).add(edgeToReturn);
+        vertexes.get(v2).add(reverseEdge);
+        return edgeToReturn;
+    }
+
+    @Override
     public String graphRepresentation(RepresentationType representationType) {
         return null;
     }

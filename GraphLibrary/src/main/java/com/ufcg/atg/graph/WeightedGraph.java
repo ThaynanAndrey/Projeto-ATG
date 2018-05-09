@@ -11,6 +11,8 @@ package com.ufcg.atg.graph;
 public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, WeightedEdge<V>>
         implements IWeightedGraph<V, WeightedEdge<V>> {
 
+    private static final float EDGE_DEFAULT_WEIGHT = 1f;
+
     /**
      * Constructs a {@link WeightedGraph}.
      */
@@ -20,12 +22,18 @@ public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, Weighte
 
     @Override
     public WeightedEdge<V> addEdge(V v1, V v2) {
-        return null;
+        return addEdge(v1, v2, EDGE_DEFAULT_WEIGHT);
     }
 
     @Override
     public WeightedEdge<V> addEdge(V v1, V v2, float weight) {
-        return null;
+        addIfAbsent(v1);
+        addIfAbsent(v2);
+        WeightedEdge<V> edgeToReturn = new WeightedEdge<>(v1, v2, weight),
+                reverseEdge = new WeightedEdge<>(v2, v1, weight);
+        vertexes.get(v1).add(edgeToReturn);
+        vertexes.get(v2).add(reverseEdge);
+        return edgeToReturn;
     }
 
     @Override
