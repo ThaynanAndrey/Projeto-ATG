@@ -36,9 +36,7 @@ public class WeightedEdge<V extends Comparable<V>> extends Edge<V> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         WeightedEdge that = (WeightedEdge) o;
-
         return Float.compare(that.weight, weight) == 0;
     }
 

@@ -1,66 +1,100 @@
 package com.ufcg.atg.graph;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Random;
 
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
 
 public class GraphTest {
 
+    private IGraph<Integer, Edge<Integer>> integerGraph;
+    private IGraph<String, Edge<String>> stringGraph;
+
+    @Before
+    public void setUp() throws Exception {
+        setUpIntegerGraph();
+        setUpStringGraph();
+    }
+
+    private void setUpIntegerGraph() {
+        Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5;
+        integerGraph = new Graph<>();
+        integerGraph.addEdge(i1, i2);
+        integerGraph.addEdge(i2, i5);
+        integerGraph.addEdge(i5, i3);
+        integerGraph.addEdge(i4, i5);
+        integerGraph.addEdge(i1, i5);
+    }
+
+    private void setUpStringGraph() {
+        String s1 = "A", s2 = "B", s3 = "C", s4 = "D", s5 = "E";
+        stringGraph = new Graph<>();
+        stringGraph.addEdge(s1, s2);
+        stringGraph.addEdge(s2, s5);
+        stringGraph.addEdge(s5, s3);
+        stringGraph.addEdge(s4, s5);
+        stringGraph.addEdge(s1, s5);
+    }
+
     @Test
     public void graphOfIntegerVertexesMatrizRepresentationTest() throws Exception {
-        BaseGraph<Integer, Edge<Integer>> graph = new Graph<>();
-        Integer i1 = 1,
-                i2 = 2,
-                i3 = 3,
-                i4 = 4,
-                i5 = 5;
-        graph.addEdge(i1, i2);
-        graph.addEdge(i2, i5);
-        graph.addEdge(i5, i3);
-        graph.addEdge(i3, i4);
-        graph.addEdge(i4, i5);
-        graph.addEdge(i1, i5);
-
         String expectedMatrix = new StringBuilder()
                 .append("  1 2 3 4 5").append(LINE_SEPARATOR)
                 .append("1 0 1 0 0 1").append(LINE_SEPARATOR)
                 .append("2 1 0 0 0 1").append(LINE_SEPARATOR)
-                .append("3 0 0 0 1 1").append(LINE_SEPARATOR)
-                .append("4 0 0 1 0 1").append(LINE_SEPARATOR)
+                .append("3 0 0 0 0 1").append(LINE_SEPARATOR)
+                .append("4 0 0 0 0 1").append(LINE_SEPARATOR)
                 .append("5 1 1 1 1 0").append(LINE_SEPARATOR)
                 .toString();
 
-        String matrix = graph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
+        String matrix = integerGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
         Assert.assertEquals(matrix, expectedMatrix);
     }
 
     @Test
     public void graphOfStringVertexesMatrizRepresentationTest() throws Exception {
-        BaseGraph<String, Edge<String>> graph = new Graph<>();
-        String s1 = "A",
-                s2 = "B",
-                s3 = "C",
-                s4 = "D",
-                s5 = "E";
-        graph.addEdge(s1, s2);
-        graph.addEdge(s2, s5);
-        graph.addEdge(s5, s3);
-        graph.addEdge(s3, s4);
-        graph.addEdge(s4, s5);
-        graph.addEdge(s1, s5);
-
         String expectedMatrix = new StringBuilder()
                 .append("  A B C D E").append(LINE_SEPARATOR)
                 .append("A 0 1 0 0 1").append(LINE_SEPARATOR)
                 .append("B 1 0 0 0 1").append(LINE_SEPARATOR)
-                .append("C 0 0 0 1 1").append(LINE_SEPARATOR)
-                .append("D 0 0 1 0 1").append(LINE_SEPARATOR)
+                .append("C 0 0 0 0 1").append(LINE_SEPARATOR)
+                .append("D 0 0 0 0 1").append(LINE_SEPARATOR)
                 .append("E 1 1 1 1 0").append(LINE_SEPARATOR)
                 .toString();
 
-        String matrix = graph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
+        String matrix = stringGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
         Assert.assertEquals(matrix, expectedMatrix);
+    }
+
+    @Test
+    public void graphOfIntegerVertexesListRepresentationTest() throws Exception {
+        String expectedList = new StringBuilder()
+                .append("1 - 2 5").append(LINE_SEPARATOR)
+                .append("2 - 1 5").append(LINE_SEPARATOR)
+                .append("3 - 5").append(LINE_SEPARATOR)
+                .append("4 - 5").append(LINE_SEPARATOR)
+                .append("5 - 1 2 3 4").append(LINE_SEPARATOR)
+                .toString();
+
+        String list = integerGraph.graphRepresentation(RepresentationType.ADJACENCY_LIST);
+        Assert.assertEquals(list, expectedList);
+    }
+
+    @Test
+    public void graphOfStringVertexesListRepresentationTest() throws Exception {
+        String expectedList = new StringBuilder()
+                .append("A - B E").append(LINE_SEPARATOR)
+                .append("B - A E").append(LINE_SEPARATOR)
+                .append("C - E").append(LINE_SEPARATOR)
+                .append("D - E").append(LINE_SEPARATOR)
+                .append("E - A B C D").append(LINE_SEPARATOR)
+                .toString();
+
+        String list = stringGraph.graphRepresentation(RepresentationType.ADJACENCY_LIST);
+        Assert.assertEquals(list, expectedList);
     }
 
 }

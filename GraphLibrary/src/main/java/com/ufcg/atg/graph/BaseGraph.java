@@ -2,11 +2,11 @@ package com.ufcg.atg.graph;
 
 import com.ufcg.atg.util.Utils;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
+import static com.ufcg.atg.util.Utils.STRING_EMPTY;
 
 
 /**
@@ -94,6 +94,10 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         }
     }
 
+    /**
+     * TODO Adicionar javadoc
+     * @return
+     */
     private String adjacencyMatrixRepresentation() {
         ArrayList<V> orderedVertexes = getOrderedVertexesList();
         float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
@@ -103,7 +107,6 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     private float[][] getAdjacencyMatrix(ArrayList<V> orderedVertexes) {
         int vertexesNumber = getVertexesNumber();
         float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
-
         for(int i = 0; i < vertexesNumber; i++) {
             V currentVertex = orderedVertexes.get(i);
             Set<E> connectedEdges = vertexes.get(currentVertex);
@@ -112,7 +115,6 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
                 adjacencyMatrix[i][orderedVertexes.indexOf(targetVertex)] = getEdgeWeight(edge);
             }
         }
-
         return adjacencyMatrix;
     }
 
@@ -135,23 +137,22 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
             }
             matrixSB.append(line).append(LINE_SEPARATOR);
         }
-
         return matrixSB.toString();
     }
 
     private String adjacencyListRepresentation() {
         ArrayList<V> orderedVertexes = getOrderedVertexesList();
         StringBuilder list = new StringBuilder();
+
         for (V v: orderedVertexes) {
-            StringBuilder line = new StringBuilder(v + " - ");
             String neighbors = vertexes.get(v).stream()
-                    .map(Edge::getTargetVertex)
+                    .map(E::getTargetVertex)
                     .sorted()
                     .map(V::toString)
-                    .reduce((s, s2) -> s + " " + s2).get();
+                    .reduce((s, s2) -> s + " " + s2).orElse(STRING_EMPTY);
+            list.append(v).append(" - ").append(neighbors).append(LINE_SEPARATOR);
         }
-
-        return null;
+        return list.toString();
     }
 
     private ArrayList<V> getOrderedVertexesList() {

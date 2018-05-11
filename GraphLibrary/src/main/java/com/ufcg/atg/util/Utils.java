@@ -1,7 +1,5 @@
 package com.ufcg.atg.util;
 
-import java.util.List;
-
 /**
  * Contains static methods and constants of general utility.
  *
@@ -10,6 +8,8 @@ import java.util.List;
 public final class Utils {
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    public static final String STRING_EMPTY = "";
 
     /**
      * Private constructor to prevent instantiation.
@@ -34,6 +34,14 @@ public final class Utils {
         return floatToString;
     }
 
+    /**
+     * TODO adicionar javadoc
+     *
+     * @param delimiter
+     * @param iterable
+     * @param <T>
+     * @return
+     */
     public static <T> String join(String delimiter, Iterable<T> iterable) {
         StringBuilder joinedIterableSB = new StringBuilder();
         iterable.forEach(e -> joinedIterableSB.append(e.toString()).append(delimiter));
