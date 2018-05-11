@@ -95,16 +95,15 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     /**
-     * TODO Adicionar javadoc
-     * @return
+     * Returns the adjacency matrix representation.
      */
     private String adjacencyMatrixRepresentation() {
-        ArrayList<V> orderedVertexes = getOrderedVertexesList();
+        List<V> orderedVertexes = getOrderedVertexesList();
         float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
-        return setUpAdjacencyMatrizString(orderedVertexes, adjacencyMatrix);
+        return setUpAdjacencyMatrixString(orderedVertexes, adjacencyMatrix);
     }
 
-    private float[][] getAdjacencyMatrix(ArrayList<V> orderedVertexes) {
+    private float[][] getAdjacencyMatrix(List<V> orderedVertexes) {
         int vertexesNumber = getVertexesNumber();
         float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
         for(int i = 0; i < vertexesNumber; i++) {
@@ -118,7 +117,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return adjacencyMatrix;
     }
 
-    private String setUpAdjacencyMatrizString(ArrayList<V> orderedVertexes, float adjacencyMatrix[][]) {
+    private String setUpAdjacencyMatrixString(List<V> orderedVertexes, float adjacencyMatrix[][]) {
         int vertexesNumber = getVertexesNumber();
         StringBuilder matrixSB = new StringBuilder("  ");
 
@@ -140,8 +139,11 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return matrixSB.toString();
     }
 
+    /**
+     * Returns the adjacency list representation.
+     */
     private String adjacencyListRepresentation() {
-        ArrayList<V> orderedVertexes = getOrderedVertexesList();
+        List<V> orderedVertexes = getOrderedVertexesList();
         StringBuilder list = new StringBuilder();
 
         for (V v: orderedVertexes) {
@@ -155,8 +157,11 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return list.toString();
     }
 
-    private ArrayList<V> getOrderedVertexesList() {
-        ArrayList<V> orderedVertexes = new ArrayList<>(getAllVertexes());
+    /**
+     * Returns a ordered list with all vertexes.
+     */
+    private List<V> getOrderedVertexesList() {
+        List<V> orderedVertexes = new ArrayList<>(getAllVertexes());
         Collections.sort(orderedVertexes);
         return orderedVertexes;
     }
