@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Random;
-
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
 
 public class GraphTest {

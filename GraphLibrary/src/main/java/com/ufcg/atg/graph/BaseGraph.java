@@ -99,11 +99,18 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      */
     private String adjacencyMatrixRepresentation() {
         List<V> orderedVertexes = getOrderedVertexesList();
-        float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
-        return setUpAdjacencyMatrixString(orderedVertexes, adjacencyMatrix);
+        float adjacencyMatrix[][] = setUpAdjacencyMatrix(orderedVertexes);
+        return getAdjacencyMatrixString(orderedVertexes, adjacencyMatrix);
     }
 
-    private float[][] getAdjacencyMatrix(List<V> orderedVertexes) {
+    /**
+     * Sets up a adjacency matrix based on the specified ordered vertexes.
+     *
+     * @param orderedVertexes Ordered vertexes that will have its connections
+     *                        represented in the matrix.
+     * @return Adjacency matrix with all connections between specified vertexes.
+     */
+    private float[][] setUpAdjacencyMatrix(List<V> orderedVertexes) {
         int vertexesNumber = getVertexesNumber();
         float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
         for(int i = 0; i < vertexesNumber; i++) {
@@ -117,7 +124,15 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return adjacencyMatrix;
     }
 
-    private String setUpAdjacencyMatrixString(List<V> orderedVertexes, float adjacencyMatrix[][]) {
+    /**
+     * Returns the string representation of specified adjacency matrix.
+     *
+     * @param orderedVertexes Ordered vertexes that are in the matrix.
+     * @param adjacencyMatrix Adjacency matrix to have its string representation
+     *                        returned.
+     * @return The string representation of specified adjacency matrix.
+     */
+    private String getAdjacencyMatrixString(List<V> orderedVertexes, float adjacencyMatrix[][]) {
         int vertexesNumber = getVertexesNumber();
         StringBuilder matrixSB = new StringBuilder("  ");
 
@@ -166,6 +181,13 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return orderedVertexes;
     }
 
+    /**
+     * Returns the weight of the specified edge based on the subtype of
+     * {@link BaseGraph}.
+     *
+     * @param e Edge to have its weight returned.
+     * @return Weight of the specified edge.
+     */
     protected abstract float getEdgeWeight(E e);
 
     @Override
