@@ -64,7 +64,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     @Override
-    public Set<E> getVertexsEdges(V v) {
+    public Set<E> getEdgesOfVertex(V v) {
         return vertexes.get(v);
     }
 

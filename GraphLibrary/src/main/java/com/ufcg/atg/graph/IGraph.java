@@ -53,7 +53,7 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * @param v Vertex to have all its edges returned.
      * @return Specified vertex's edges.
      */
-    Set<E> getVertexsEdges(V v);
+    Set<E> getEdgesOfVertex(V v);
 
     /**
      * Returns the number of vertexes of the graph.

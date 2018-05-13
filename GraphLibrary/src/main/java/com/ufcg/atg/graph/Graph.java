@@ -53,7 +53,7 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
         while (!priorityQueue.isEmpty()) {
             V current = priorityQueue.poll();
             if (current.equals(v2)) break;
-            for (Edge<V> e: getVertexsEdges(current)) {
+            for (Edge<V> e: getEdgesOfVertex(current)) {
                 V adjacent = e.getTargetVertex();
                 relax(current, adjacent, e, distances, predecessors);
             }
