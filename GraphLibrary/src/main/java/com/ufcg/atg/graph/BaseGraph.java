@@ -205,6 +205,27 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return null;
     }
 
+    /**
+     * Sets up the configuration to run the shortest path algorithm.
+     *
+     * Actions:
+     * - Sets distances to the path start of all vertexes as +Infinity;
+     * - Sets predecessors of all vertexes to {@code null};
+     * - Sets the distance of the path start to 0 (zero).
+     *
+     * @param pathStart Vertex that starts the path.
+     * @param distances {@link Map} that links a vertex to its distance to origin
+     *                             of the shortest path.
+     * @param predecessors {@link Map} that links a vertex to its predecessors.
+     */
+    protected void setUpShortestPath(V pathStart, Map<V, Float> distances, Map<V, V> predecessors) {
+        for (V v: getAllVertexes()) {
+            distances.put(v, Float.POSITIVE_INFINITY);
+            predecessors.put(v, null);
+        }
+        distances.replace(pathStart, 0f);
+    }
+
     @Override
     public String MST() {
         return null;

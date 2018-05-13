@@ -95,4 +95,39 @@ public class GraphTest {
         Assert.assertEquals(list, expectedList);
     }
 
+    @Test
+    public void graphOfIntegersShortestPathTest() throws Exception {
+        String expectedPathBetween1And3 = "1 5 3";
+        String expectedPathBetween1And4 = "1 5 4";
+        String expectedPathBetween3And2 = "3 5 2";
+        String expectedPathBetween5And2 = "5 2";
+        String expectedPathBetween5And5 = "5";
+
+        Assert.assertEquals(expectedPathBetween1And3, integerGraph.shortestPath(1, 3));
+        Assert.assertEquals(expectedPathBetween1And4, integerGraph.shortestPath(1, 4));
+        Assert.assertEquals(expectedPathBetween3And2, integerGraph.shortestPath(3, 2));
+        Assert.assertEquals(expectedPathBetween5And2, integerGraph.shortestPath(5, 2));
+        Assert.assertEquals(expectedPathBetween5And5, integerGraph.shortestPath(5, 5));
+    }
+
+    @Test
+    public void disconnectedGraphShortestPathTest() throws Exception {
+        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        disconnectedGraph.addVertex(i1);
+        disconnectedGraph.addEdge(i2, i3);
+        String expectedPathBetween2And3 = "2 3";
+        Assert.assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
+
+        try {
+            disconnectedGraph.shortestPath(i1, i2);
+            Assert.fail("Should have thrown exception when trying to find the" +
+                    " shortest path between disconnected vertexes.");
+        } catch (Exception e) {
+            Assert.assertEquals("A mensagem de erro está errada.",
+                    "There isn't a path between 1 and 2",
+                    e.getMessage());
+        }
+    }
+
 }

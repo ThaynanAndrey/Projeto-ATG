@@ -34,4 +34,14 @@ public final class Utils {
         return floatToString;
     }
 
+    /**
+     * Reverses the specified string.
+     *
+     * @param s String to be reversed.
+     * @return Reverses the specified string.
+     */
+    public static String reverseString(String s) {
+        return new StringBuilder(s).reverse().toString();
+    }
+
 }
