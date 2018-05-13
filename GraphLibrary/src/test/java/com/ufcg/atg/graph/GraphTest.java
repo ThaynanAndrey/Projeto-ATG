@@ -1,17 +1,18 @@
 package com.ufcg.atg.graph;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class GraphTest {
 
     private IGraph<Integer, Edge<Integer>> integerGraph;
     private IGraph<String, Edge<String>> stringGraph;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         setUpIntegerGraph();
         setUpStringGraph();
@@ -49,7 +50,7 @@ public class GraphTest {
                 .toString();
 
         String matrix = integerGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
-        Assert.assertEquals(matrix, expectedMatrix);
+        assertEquals(matrix, expectedMatrix);
     }
 
     @Test
@@ -64,7 +65,7 @@ public class GraphTest {
                 .toString();
 
         String matrix = stringGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
-        Assert.assertEquals(matrix, expectedMatrix);
+        assertEquals(matrix, expectedMatrix);
     }
 
     @Test
@@ -78,7 +79,7 @@ public class GraphTest {
                 .toString();
 
         String list = integerGraph.graphRepresentation(RepresentationType.ADJACENCY_LIST);
-        Assert.assertEquals(list, expectedList);
+        assertEquals(list, expectedList);
     }
 
     @Test
@@ -92,7 +93,7 @@ public class GraphTest {
                 .toString();
 
         String list = stringGraph.graphRepresentation(RepresentationType.ADJACENCY_LIST);
-        Assert.assertEquals(list, expectedList);
+        assertEquals(list, expectedList);
     }
 
     @Test
@@ -103,11 +104,11 @@ public class GraphTest {
         String expectedPathBetween5And2 = "5 2";
         String expectedPathBetween5And5 = "5";
 
-        Assert.assertEquals(expectedPathBetween1And3, integerGraph.shortestPath(1, 3));
-        Assert.assertEquals(expectedPathBetween1And4, integerGraph.shortestPath(1, 4));
-        Assert.assertEquals(expectedPathBetween3And2, integerGraph.shortestPath(3, 2));
-        Assert.assertEquals(expectedPathBetween5And2, integerGraph.shortestPath(5, 2));
-        Assert.assertEquals(expectedPathBetween5And5, integerGraph.shortestPath(5, 5));
+        assertEquals(expectedPathBetween1And3, integerGraph.shortestPath(1, 3));
+        assertEquals(expectedPathBetween1And4, integerGraph.shortestPath(1, 4));
+        assertEquals(expectedPathBetween3And2, integerGraph.shortestPath(3, 2));
+        assertEquals(expectedPathBetween5And2, integerGraph.shortestPath(5, 2));
+        assertEquals(expectedPathBetween5And5, integerGraph.shortestPath(5, 5));
     }
 
     @Test
@@ -117,16 +118,15 @@ public class GraphTest {
         disconnectedGraph.addVertex(i1);
         disconnectedGraph.addEdge(i2, i3);
         String expectedPathBetween2And3 = "2 3";
-        Assert.assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
+        assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
 
         try {
             disconnectedGraph.shortestPath(i1, i2);
-            Assert.fail("Should have thrown exception when trying to find the" +
+            fail("Should have thrown exception when trying to find the" +
                     " shortest path between disconnected vertexes.");
         } catch (Exception e) {
-            Assert.assertEquals("A mensagem de erro está errada.",
-                    "There isn't a path between 1 and 2",
-                    e.getMessage());
+            assertEquals("There isn't a path between 1 and 2",
+                    e.getMessage(), "A mensagem de erro está errada.");
         }
     }
 
