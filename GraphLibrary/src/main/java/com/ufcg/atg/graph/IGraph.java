@@ -54,6 +54,14 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * @return Specified vertex's edges.
      */
     Set<E> getVertexsEdges(V v);
+    
+    /**
+     * Returns all adjcents of the specified vertex.
+     *
+     * @param v Vertex to have all its adjcents returned.
+     * @return Specified vertex's adjcents.
+     */
+    Set<E> getAdjacents(V v);
 
     /**
      * Returns the number of vertexes of the graph.
