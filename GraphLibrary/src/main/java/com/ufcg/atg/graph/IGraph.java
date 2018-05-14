@@ -3,7 +3,7 @@ package com.ufcg.atg.graph;
 import java.util.Set;
 
 /**
- * Defines the interface of a undirected and unweighted graph.
+ * Defines the interface of an undirected and unweighted graph.
  *
  * @param <V> Type of the vertex.
  * @param <E> Type of the edge.
@@ -22,14 +22,16 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
     void addVertex(V v);
 
     /**
-     * Adds a edge to the graph. {@code v1} is going to be the edge origin
-     * and {@code v2} the edge target.
+     * Adds a edge to the graph. {@code v1} is going to be the edge origin and
+     * {@code v2} the edge target. As this is an undirected graph, each added
+     * edge, internally, will be represented by two edges, one from {@code v1}
+     * to {@code v2} and another from {@code v2} to {@code v1}.
      *
      * @param v1 Vertex to be the edge origin.
      * @param v2 Vertex to be the edge target.
      * @throws RuntimeException If already there is a edge connecting {@code v1}
      * and {@code v2}.
-     * @return The added edge.
+     * @return The added edge between {@code v1} and {@code v2}.
      */
     E addEdge(V v1, V v2);
 

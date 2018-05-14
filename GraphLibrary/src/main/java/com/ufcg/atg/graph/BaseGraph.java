@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
 import static com.ufcg.atg.util.Utils.STRING_EMPTY;
 
-
 /**
  * Represents a skeletal implementation of a graph, based on the interface
  * defined by {@link IGraph}.
@@ -82,12 +81,12 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public int getEdgesNumber() {
-        return getAllEdges().size() / 2;
+        return getAllEdges().size();
     }
 
     @Override
     public float getMeanEdge() {
-        return getVertexesNumber() > 0 ? ((2*getEdgesNumber()) / getVertexesNumber()) : 0;
+        return getVertexesNumber() > 0 ? ((getEdgesNumber()) / getVertexesNumber()) : 0;
     }
 
     @Override
