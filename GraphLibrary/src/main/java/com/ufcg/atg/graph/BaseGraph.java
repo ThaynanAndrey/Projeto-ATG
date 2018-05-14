@@ -67,6 +67,13 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     @Override
+    public Set<V> getAdjacentVertexes(V v) {
+        return vertexes.get(v).stream()
+                .map(E::getTargetVertex)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
     public int getVertexesNumber() {
         return vertexes.size();
     }
