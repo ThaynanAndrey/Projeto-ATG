@@ -62,10 +62,10 @@ public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, Weighte
         Map<V, V> predecessors = new HashMap<>();
         setUpShortestPath(v1, distances, predecessors);
         Set<V> allVertexes = getAllVertexes();
-        allVertexes.remove(v1);
         Set<WeightedEdge<V>> allEdges = getAllEdges();
 
         for (V v: allVertexes) {
+            if (v.equals(v1)) continue;
             for (WeightedEdge<V> e: allEdges) {
                 relax(e.getOriginVertex(), e.getTargetVertex(), e,
                         distances, predecessors);
