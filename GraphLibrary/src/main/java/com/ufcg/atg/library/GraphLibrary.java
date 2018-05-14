@@ -1,8 +1,11 @@
 package com.ufcg.atg.library;
 
-import com.ufcg.atg.graph.BaseGraph;
+import com.ufcg.atg.graph.Edge;
 import com.ufcg.atg.graph.Graph;
+import com.ufcg.atg.graph.IGraph;
+import com.ufcg.atg.graph.IWeightedGraph;
 import com.ufcg.atg.graph.RepresentationType;
+import com.ufcg.atg.graph.WeightedEdge;
 import com.ufcg.atg.graph.WeightedGraph;
 import java.io.FileReader;
 import java.io.BufferedReader;
@@ -13,7 +16,7 @@ import java.io.IOException;
  *
  * @author Thaynan Nunes.
  */
-public class GraphLibrary {
+public class GraphLibrary<V extends Comparable<V>> {
 
     private static final String EMPTY_SPACE_STRING_EDGE = " ";
     private static final int INDEX_FIRST_VERTEX_ON_FILE = 0;
@@ -21,12 +24,67 @@ public class GraphLibrary {
     private static final int INDEXES_WEIGHT_ON_FILE = 2;
 
     /**
+     * Reads a graph from file and returns it.
+     *
+     * @param path File path.
+     * @return Read graph.
+     */
+    public IGraph<Integer, Edge<Integer>> readGraph(String path) {
+        IGraph<Integer, Edge<Integer>> graph = new Graph<>();
+        readFile(graph, path);
+        return graph;
+    }
+
+    /**
+     * Reads a weighted graph from file and returns it.
+     *
+     * @param path File path.
+     * @return Read graph.
+     */
+    public IWeightedGraph<Integer, WeightedEdge<Integer>> readWeightedGraph(String path) {
+        IWeightedGraph<Integer, WeightedEdge<Integer>> graph = new WeightedGraph<>();
+        readFile(graph, path);
+        return graph;
+    }
+
+    /**
+     * Reads the path file and places the edges found in the graph.
+     * Analyse, if the graph is weighted, so places the weighted edges
+     * on {@link WeightedGraph}, else places the edges on {@link Graph}.
+     *
+     * @param graph Graph to be placed on the edges.
+     * @param path Path from where the edges will be obtained.
+     */
+    private void readFile(IGraph<Integer, ? extends Edge<Integer>> graph, String path) {
+        boolean isWeightedGraph = graph instanceof IWeightedGraph;
+        try {
+            FileReader file = new FileReader(path);
+            BufferedReader bfFile = new BufferedReader(file);
+
+            String currentLine = bfFile.readLine();
+            Integer edgesAmount = Integer.parseInt(currentLine);
+            for (int i=0; i < edgesAmount; i++) {
+                String edge = bfFile.readLine();
+                if(isWeightedGraph) {
+                    addEdgeWeightedGraph((IWeightedGraph<Integer, WeightedEdge<Integer>>) graph, edge);
+                } else {
+                    addEdgeGraph((IGraph<Integer, Edge<Integer>>) graph, edge);
+                }
+            }
+            file.close();
+        } catch (IOException e) {
+            System.err.println("There was an error opening the file: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Add edge in {@link Graph}.
      *
      * @param graph Graph to be placed on the edge.
      * @param edge Edge to be inserted.
      */
-    private void addEdgeGraph(BaseGraph graph, String edge) {
+    private void addEdgeGraph(IGraph<Integer, Edge<Integer>> graph, String edge) {
         String[] vertexes = edge.split(EMPTY_SPACE_STRING_EDGE);
         Integer v1 = Integer.parseInt(vertexes[INDEX_FIRST_VERTEX_ON_FILE]);
         Integer v2 = Integer.parseInt(vertexes[INDEX_SECOND_VERTEX_ON_FILE]);
@@ -39,7 +97,7 @@ public class GraphLibrary {
      * @param graph Graph to be placed on the edge.
      * @param edge Edge to be inserted.
      */
-    private void addEdgeWeightedGraph(WeightedGraph graph, String edge) {
+    private void addEdgeWeightedGraph(IWeightedGraph<Integer, WeightedEdge<Integer>> graph, String edge) {
         String[] vertexes = edge.split(EMPTY_SPACE_STRING_EDGE);
         Integer v1 = Integer.parseInt(vertexes[INDEX_FIRST_VERTEX_ON_FILE]);
         Integer v2 = Integer.parseInt(vertexes[INDEX_SECOND_VERTEX_ON_FILE]);
@@ -48,67 +106,12 @@ public class GraphLibrary {
     }
 
     /**
-     * Reads the path file and places the edges found in the graph.
-     * Analyse, if the graph is weighted, so places the weighted edges
-     * on {@link WeightedGraph}, else places the edges on {@link Graph}.
-     *
-     * @param graph Graph to be placed on the edges.
-     * @param path Path from where the edges will be obtained.
-     */
-    private void readFile(BaseGraph graph, String path) {
-        boolean isWeightedGraph = graph instanceof WeightedGraph;
-        try {
-            FileReader file = new FileReader(path);
-            BufferedReader bfFile = new BufferedReader(file);
-
-            String currentLine = bfFile.readLine();
-            Integer edgesAmount = Integer.parseInt(currentLine);
-            for (int i=0; i < edgesAmount; i++) {
-                String edge = bfFile.readLine();
-                if(isWeightedGraph) {
-                    addEdgeWeightedGraph((WeightedGraph) graph, edge);
-                } else {
-                    addEdgeGraph(graph, edge);
-                }
-            }
-            file.close();
-        } catch (IOException e) {
-            System.err.println("There was an error opening the file: " + e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Reads a graph from file and returns it.
-     *
-     * @param path File path.
-     * @return Read graph.
-     */
-    public BaseGraph readGraph(String path) {
-        Graph<Integer> graph = new Graph<>();
-        readFile(graph, path);
-        return graph;
-    }
-
-    /**
-     * Reads a weighted graph from file and returns it.
-     *
-     * @param path File path.
-     * @return Read graph.
-     */
-    public BaseGraph readWeightedGraph(String path) {
-        WeightedGraph<Integer> graph = new WeightedGraph<>();
-        readFile(graph, path);
-        return graph;
-    }
-
-    /**
      * Returns the number of vertexes of the graph.
      *
      * @param graph Graph to be obtained vertexes' number.
      * @return Number of vertexes of the graph.
      */
-    public int getVertexNumber(BaseGraph graph) {
+    public int getVertexNumber(IGraph<V, ? extends Edge<V>> graph) {
         return  graph.getVertexesNumber();
     }
 
@@ -118,7 +121,7 @@ public class GraphLibrary {
      * @param graph Graph to be obtained edges' number.
      * @return Number of edges of the graph.
      */
-    public int getEdgeNumber(BaseGraph graph) {
+    public int getEdgeNumber(IGraph<V, ? extends Edge<V>> graph) {
         return graph.getEdgesNumber();
     }
 
@@ -128,7 +131,7 @@ public class GraphLibrary {
      * @param graph Graph to be obtained mean edge.
      * @return Mean edge of the graph.
      */
-    public float getMeanEdge(BaseGraph graph) {
+    public float getMeanEdge(IGraph<V, ? extends Edge<V>> graph) {
         return graph.getMeanEdge();
     }
 
@@ -140,7 +143,7 @@ public class GraphLibrary {
      * @throws RuntimeException If the representation type isn't supported.
      * @return The graph representation.
      */
-    public String graphRepresentation(BaseGraph graph, RepresentationType type) {
+    public String graphRepresentation(IGraph<V, ? extends Edge<V>> graph, RepresentationType type) {
         return graph.graphRepresentation(type);
     }
 
@@ -153,7 +156,7 @@ public class GraphLibrary {
      * @throws RuntimeException If the vertex specified isn't in the graph.
      * @return BFS of the graph.
      */
-    public String BFS(BaseGraph graph, Integer v) {
+    public String BFS(IGraph<V, ? extends Edge<V>> graph, V v) {
         return graph.BFS(v);
     }
 
@@ -167,7 +170,7 @@ public class GraphLibrary {
      * the graph.
      * @return DFS of the graph.
      */
-    public String DFS(BaseGraph graph, Integer v) {
+    public String DFS(IGraph<V, ? extends Edge<V>> graph, V v) {
         return graph.DFS(v);
     }
 
@@ -178,7 +181,7 @@ public class GraphLibrary {
      * @param graph Graph to be obtained SCC.
      * @return All SCCs of the graph.
      */
-    public String SCC(BaseGraph graph) {
+    public String SCC(IGraph<V, ? extends Edge<V>> graph) {
         return graph.SCC();
     }
 
@@ -193,7 +196,7 @@ public class GraphLibrary {
      * to the graph.
      * @return Shortest path between {@code v1} e {@code v2}.
      */
-    public String shortestPath(BaseGraph graph, Integer v1, Integer v2) {
+    public String shortestPath(IGraph<V, ? extends Edge<V>> graph, V v1, V v2) {
         return graph.shortestPath(v1, v2);
     }
 
@@ -204,7 +207,7 @@ public class GraphLibrary {
      * @param graph Graph to be obtained MST.
      * @return MST of the graph.
      */
-    String MST(BaseGraph graph) {
+    String MST(IGraph<V, ? extends Edge<V>> graph) {
         return graph.MST();
     }
 }

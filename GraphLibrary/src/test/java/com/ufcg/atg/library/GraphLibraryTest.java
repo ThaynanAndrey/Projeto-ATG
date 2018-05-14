@@ -2,6 +2,8 @@ package com.ufcg.atg.library;
 
 import com.ufcg.atg.graph.BaseGraph;
 import com.ufcg.atg.graph.Edge;
+import com.ufcg.atg.graph.IGraph;
+import com.ufcg.atg.graph.IWeightedGraph;
 import com.ufcg.atg.graph.WeightedEdge;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,14 +26,14 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 class GraphLibraryTest {
 
-    GraphLibrary graphLibrary;
+    GraphLibrary<Integer> graphLibrary;
 
     /**
      * Tests Set up.
      */
     @BeforeEach
     public void setUp() {
-        graphLibrary = new GraphLibrary();
+        graphLibrary = new GraphLibrary<>();
     }
 
     /**
@@ -81,29 +84,32 @@ class GraphLibraryTest {
         String fileContent = "6, 1 2, 1 3, 2 3, 5 6, 6 3, 6 1";
         insertFile(path, fileContent);
 
-        BaseGraph baseGraph = graphLibrary.readGraph(path);
+        IGraph<Integer, Edge<Integer>> graph = graphLibrary.readGraph(path);
         int vertexAmount = 5;
         int edgeAmount = 6;
-        Edge<Integer> e1 = new Edge<>(1, 2);
-        Edge<Integer> e2 = new Edge<>(1, 3);
-        Edge<Integer> e3 = new Edge<>(2, 3);
-        Edge<Integer> e4 = new Edge<>(5, 6);
-        Edge<Integer> e5 = new Edge<>(6, 3);
-        Edge<Integer> e6 = new Edge<>(6, 1);
+        Edge<Integer> e1 = new Edge<>(1, 2),
+                      e2 = new Edge<>(1, 3),
+                      e3 = new Edge<>(2, 3),
+                      e4 = new Edge<>(5, 6),
+                      e5 = new Edge<>(6, 3),
+                      e6 = new Edge<>(6, 1);
+        Set<Integer> allVertexes = graph.getAllVertexes();
+        Set<Edge<Integer>> allEdges = graph.getAllEdges();
 
-        assertEquals(baseGraph.getVertexesNumber(), vertexAmount);
-        assertEquals(baseGraph.getEdgesNumber(), edgeAmount);
-        assertTrue(baseGraph.getAllVertexes().contains(1));
-        assertTrue(baseGraph.getAllVertexes().contains(2));
-        assertTrue(baseGraph.getAllVertexes().contains(3));
-        assertTrue(baseGraph.getAllVertexes().contains(5));
-        assertTrue(baseGraph.getAllVertexes().contains(6));
-        assertTrue(baseGraph.getAllEdges().contains(e1));
-        assertTrue(baseGraph.getAllEdges().contains(e2));
-        assertTrue(baseGraph.getAllEdges().contains(e3));
-        assertTrue(baseGraph.getAllEdges().contains(e4));
-        assertTrue(baseGraph.getAllEdges().contains(e5));
-        assertTrue(baseGraph.getAllEdges().contains(e6));
+
+        assertEquals(graph.getVertexesNumber(), vertexAmount);
+        assertEquals(graph.getEdgesNumber(), edgeAmount);
+        assertTrue(allVertexes.contains(1));
+        assertTrue(allVertexes.contains(2));
+        assertTrue(allVertexes.contains(3));
+        assertTrue(allVertexes.contains(5));
+        assertTrue(allVertexes.contains(6));
+        assertTrue(allEdges.contains(e1));
+        assertTrue(allEdges.contains(e2));
+        assertTrue(allEdges.contains(e3));
+        assertTrue(allEdges.contains(e4));
+        assertTrue(allEdges.contains(e5));
+        assertTrue(allEdges.contains(e6));
     }
 
     /**
@@ -116,28 +122,31 @@ class GraphLibraryTest {
         String fileContent = "6, 1 2 1.2, 1 3 0.5, 2 3 0.7, 5 6 1.3, 6 3 2.1, 6 1 5.2";
         insertFile(path, fileContent);
 
-        BaseGraph weightedGraph = graphLibrary.readWeightedGraph(path);
+        IWeightedGraph<Integer, WeightedEdge<Integer>> weightedGraph = graphLibrary.readWeightedGraph(path);
         int vertexAmount = 5;
         int edgeAmount = 6;
-        WeightedEdge<Integer> e1 = new WeightedEdge<>(1, 2, 1.2f);
-        WeightedEdge<Integer> e2 = new WeightedEdge<>(1, 3, 0.5f);
-        WeightedEdge<Integer> e3 = new WeightedEdge<>(2, 3, 0.7f);
-        WeightedEdge<Integer> e4 = new WeightedEdge<>(5, 6, 1.3f);
-        WeightedEdge<Integer> e5 = new WeightedEdge<>(6, 3, 2.1f);
-        WeightedEdge<Integer> e6 = new WeightedEdge<>(6, 1, 5.2f);
+        WeightedEdge<Integer> e1 = new WeightedEdge<>(1, 2, 1.2f),
+                              e2 = new WeightedEdge<>(1, 3, 0.5f),
+                              e3 = new WeightedEdge<>(2, 3, 0.7f),
+                              e4 = new WeightedEdge<>(5, 6, 1.3f),
+                              e5 = new WeightedEdge<>(6, 3, 2.1f),
+                              e6 = new WeightedEdge<>(6, 1, 5.2f);
+        Set<Integer> allVertexes = weightedGraph.getAllVertexes();
+        Set<WeightedEdge<Integer>> allEdges = weightedGraph.getAllEdges();
+
 
         assertEquals(weightedGraph.getVertexesNumber(), vertexAmount);
         assertEquals(weightedGraph.getEdgesNumber(), edgeAmount);
-        assertTrue(weightedGraph.getAllVertexes().contains(1));
-        assertTrue(weightedGraph.getAllVertexes().contains(2));
-        assertTrue(weightedGraph.getAllVertexes().contains(3));
-        assertTrue(weightedGraph.getAllVertexes().contains(5));
-        assertTrue(weightedGraph.getAllVertexes().contains(6));
-        assertTrue(weightedGraph.getAllEdges().contains(e1));
-        assertTrue(weightedGraph.getAllEdges().contains(e2));
-        assertTrue(weightedGraph.getAllEdges().contains(e3));
-        assertTrue(weightedGraph.getAllEdges().contains(e4));
-        assertTrue(weightedGraph.getAllEdges().contains(e5));
-        assertTrue(weightedGraph.getAllEdges().contains(e6));
+        assertTrue(allVertexes.contains(1));
+        assertTrue(allVertexes.contains(2));
+        assertTrue(allVertexes.contains(3));
+        assertTrue(allVertexes.contains(5));
+        assertTrue(allVertexes.contains(6));
+        assertTrue(allEdges.contains(e1));
+        assertTrue(allEdges.contains(e2));
+        assertTrue(allEdges.contains(e3));
+        assertTrue(allEdges.contains(e4));
+        assertTrue(allEdges.contains(e5));
+        assertTrue(allEdges.contains(e6));
     }
 }
