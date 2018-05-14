@@ -2,10 +2,6 @@ package com.ufcg.atg.graph;
 
 import com.ufcg.atg.util.Utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Represents a implementation of a undirected and weighted graph, based on
  * the interface defined by {@link IGraph}.
@@ -56,30 +52,9 @@ public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, Weighte
     }
 
     @Override
-    public String shortestPath(V v1, V v2) {
-        if (v1.equals(v2)) return v1.toString();
-        Map<V, Float> distances = new HashMap<>();
-        Map<V, V> predecessors = new HashMap<>();
-        setUpShortestPath(v1, distances, predecessors);
-        Set<V> allVertexes = getAllVertexes();
-        Set<WeightedEdge<V>> allEdges = getAllEdges();
-
-        for (V v: allVertexes) {
-            if (v.equals(v1)) continue;
-            for (WeightedEdge<V> e: allEdges) {
-                relax(e.getOriginVertex(), e.getTargetVertex(), e,
-                        distances, predecessors);
-            }
-        }
-        for (WeightedEdge<V> e: allEdges) {
-            if (distances.get(e.getTargetVertex()) > (distances.get(e.getOriginVertex())
-                    + getEdgeWeight(e))) {
-                throw new RuntimeException("It's not possible to find the shortest" +
-                        " path in a graph with negative cicle.");
-            }
-        }
-
-        return setUpShortestPathString(v1, v2, predecessors);
+    protected boolean containsNegativeWeightedEdge() {
+        return getAllEdges().stream()
+                .filter(e -> e.getWeight() < 0).count() > 0;
     }
 
 }

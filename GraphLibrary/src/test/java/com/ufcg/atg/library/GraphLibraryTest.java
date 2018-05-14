@@ -1,6 +1,5 @@
 package com.ufcg.atg.library;
 
-import com.ufcg.atg.graph.BaseGraph;
 import com.ufcg.atg.graph.Edge;
 import com.ufcg.atg.graph.IGraph;
 import com.ufcg.atg.graph.IWeightedGraph;
@@ -15,9 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the class {@link GraphLibrary}.
@@ -25,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @author Thaynan Nunes.
  */
 class GraphLibraryTest {
+
+    private static final int UNDIRECTED_GRAPH_FACTOR = 2;
 
     GraphLibrary<Integer> graphLibrary;
 
@@ -86,7 +85,7 @@ class GraphLibraryTest {
 
         IGraph<Integer, Edge<Integer>> graph = graphLibrary.readGraph(path);
         int vertexAmount = 5;
-        int edgeAmount = 6;
+        int edgeAmount = 6 * UNDIRECTED_GRAPH_FACTOR;
         Edge<Integer> e1 = new Edge<>(1, 2),
                       e2 = new Edge<>(1, 3),
                       e3 = new Edge<>(2, 3),
@@ -95,7 +94,6 @@ class GraphLibraryTest {
                       e6 = new Edge<>(6, 1);
         Set<Integer> allVertexes = graph.getAllVertexes();
         Set<Edge<Integer>> allEdges = graph.getAllEdges();
-
 
         assertEquals(graph.getVertexesNumber(), vertexAmount);
         assertEquals(graph.getEdgesNumber(), edgeAmount);
@@ -124,7 +122,7 @@ class GraphLibraryTest {
 
         IWeightedGraph<Integer, WeightedEdge<Integer>> weightedGraph = graphLibrary.readWeightedGraph(path);
         int vertexAmount = 5;
-        int edgeAmount = 6;
+        int edgeAmount = 6 * UNDIRECTED_GRAPH_FACTOR;
         WeightedEdge<Integer> e1 = new WeightedEdge<>(1, 2, 1.2f),
                               e2 = new WeightedEdge<>(1, 3, 0.5f),
                               e3 = new WeightedEdge<>(2, 3, 0.7f),

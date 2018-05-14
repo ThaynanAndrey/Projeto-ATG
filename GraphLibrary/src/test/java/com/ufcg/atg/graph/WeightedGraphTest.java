@@ -1,7 +1,6 @@
 package com.ufcg.atg.graph;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
@@ -99,12 +98,18 @@ public class WeightedGraphTest {
         assertEquals(list, expectedList);
     }
 
-    @Disabled // TODO: Remover quando for resolvido o problema da especificação
-              // sobre ciclos negativos.
     @Test
-    public void graphOfIntegersShortestPathTest() {
-        String expectedPathBetween1And3 = "1 5 3";
-        String expectedPathBetween1And4 = "1 5 4";
+    void graphOfIntegersShortestPathTest() {
+        IWeightedGraph<Integer, WeightedEdge<Integer>> integerGraph
+                = new WeightedGraph<>();
+        integerGraph.addEdge(1, 2, 0.1f);
+        integerGraph.addEdge(2, 5, 0.2f);
+        integerGraph.addEdge(5, 3, 5f);
+        integerGraph.addEdge(4, 5, 2.3f);
+        integerGraph.addEdge(1, 5,1f);
+
+        String expectedPathBetween1And3 = "1 2 5 3";
+        String expectedPathBetween1And4 = "1 2 5 4";
         String expectedPathBetween3And2 = "3 5 2";
         String expectedPathBetween5And2 = "5 2";
         String expectedPathBetween5And5 = "5";
@@ -116,14 +121,25 @@ public class WeightedGraphTest {
         assertEquals(expectedPathBetween5And5, integerGraph.shortestPath(5, 5));
     }
 
-    @Disabled // TODO: Remover quando for resolvido o problema da especificação
-    // sobre ciclos negativos.
+    @Test
+    public void graphWithNegativeCircleShortestPathTest() {
+        try {
+            integerGraph.shortestPath(1, 3);
+            fail("Should have thrown exception when trying to find the" +
+                    " shortest path in a graph with negative circle.");
+        } catch (Exception e) {
+            assertEquals("The shortest path cannot be found in a" +
+                            " graph with negative circle.",
+                    e.getMessage(), "A mensagem de erro está errada.");
+        }
+    }
+
     @Test
     public void disconnectedGraphShortestPathTest() {
         IWeightedGraph<Integer, WeightedEdge<Integer>> disconnectedGraph = new WeightedGraph<>();
         Integer i1 = 1, i2 = 2, i3 = 3;
         disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i2, i3);
+        disconnectedGraph.addEdge(i2, i3, 5f);
         String expectedPathBetween2And3 = "2 3";
         assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
 

@@ -1,7 +1,5 @@
 package com.ufcg.atg.graph;
 
-import java.util.*;
-
 /**
  * Represents a implementation of a undirected and unweighted graph, based on
  * the interface defined by {@link IGraph}.
@@ -43,28 +41,6 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
     @Override
     protected String mapOperatorListRepresentation(Edge<V> e) {
         return e.getTargetVertex().toString();
-    }
-
-    @Override
-    public String shortestPath(V v1, V v2) {
-        if (v1.equals(v2)) return v1.toString();
-        Map<V, Float> distances = new HashMap<>();
-        Map<V, V> predecessors = new HashMap<>();
-        setUpShortestPath(v1, distances, predecessors);
-        Queue<V> priorityQueue = new PriorityQueue<>((o1, o2) ->
-                Float.compare(distances.get(o1), distances.get(o2)));
-        priorityQueue.addAll(getAllVertexes());
-
-        while (!priorityQueue.isEmpty()) {
-            V current = priorityQueue.poll();
-            if (current.equals(v2)) break;
-            for (Edge<V> e: getEdgesOfVertex(current)) {
-                V adjacent = e.getTargetVertex();
-                relax(current, adjacent, e, distances, predecessors);
-            }
-        }
-
-        return setUpShortestPathString(v1, v2, predecessors);
     }
 
 }

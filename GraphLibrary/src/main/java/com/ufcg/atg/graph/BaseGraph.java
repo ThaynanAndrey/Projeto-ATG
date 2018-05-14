@@ -218,6 +218,41 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return null;
     }
 
+    @Override
+    public String shortestPath(V v1, V v2) {
+        if (v1.equals(v2)) return v1.toString();
+        if (containsNegativeWeightedEdge()) {
+            throw new RuntimeException("The shortest path cannot be found in a" +
+                    " graph with negative circle.");
+        }
+        Map<V, Float> distances = new HashMap<>();
+        Map<V, V> predecessors = new HashMap<>();
+        setUpShortestPath(v1, distances, predecessors);
+        Queue<V> priorityQueue = new PriorityQueue<>((o1, o2) ->
+                Float.compare(distances.get(o1), distances.get(o2)));
+        priorityQueue.addAll(getAllVertexes());
+
+        while (!priorityQueue.isEmpty()) {
+            V current = priorityQueue.poll();
+            if (current.equals(v2)) break;
+            for (E e: getEdgesOfVertex(current)) {
+                V adjacent = e.getTargetVertex();
+                relax(current, adjacent, e, distances, predecessors);
+            }
+        }
+
+        return setUpShortestPathString(v1, v2, predecessors);
+    }
+
+    /**
+     * Returns if the current graph contains negative weighted edges. This base
+     * class, as a representation of a unweighted graph, trivially, do not contains.
+     * However, classes that extends {@link BaseGraph}, may do.
+     */
+    protected boolean containsNegativeWeightedEdge() {
+        return false;
+    }
+
     /**
      * Sets up the configuration to run the shortest path algorithm.
      *
@@ -288,7 +323,6 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
             distances.replace(targetVertex, distances.get(originVertex) + edgeWeight);
         }
     }
-
 
     @Override
     public String MST() {
