@@ -54,6 +54,14 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * @return Specified vertex's edges.
      */
     Set<E> getVertexsEdges(V v);
+    
+    /**
+     * Returns all adjcents of the specified vertex.
+     *
+     * @param v Vertex to have all its adjcents returned.
+     * @return Specified vertex's adjcents.
+     */
+    Set<E> getAdjacents(V v);
 
     /**
      * Returns all adjacent vertexes of the specified vertex.
@@ -89,6 +97,11 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * specified.
      *
      * @param representationType Type of the representation to be returned.
+     * @throws RuntimeException If the representation type isn't supported.
+     * @throws RuntimeException If the representation type is
+     * {@code ADJACENCY_MATRIX} and {@link V} doesn't have a {@code int}
+     * representation.
+     *
      * @return The graph representation.
      */
     String graphRepresentation(RepresentationType representationType);

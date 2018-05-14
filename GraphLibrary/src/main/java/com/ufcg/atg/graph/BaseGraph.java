@@ -1,11 +1,13 @@
 package com.ufcg.atg.graph;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import com.ufcg.atg.util.Utils;
+
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
+import static com.ufcg.atg.util.Utils.STRING_EMPTY;
+
 
 /**
  * Represents a skeletal implementation of a graph, based on the interface
@@ -80,13 +82,98 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public int getEdgesNumber() {
-        return getAllEdges().size();
+        return getAllEdges().size() / 2;
     }
 
     @Override
     public float getMeanEdge() {
         return getVertexesNumber() > 0 ? ((2*getEdgesNumber()) / getVertexesNumber()) : 0;
     }
+
+    @Override
+    public String graphRepresentation(RepresentationType representationType) {
+        if (representationType == RepresentationType.ADJACENCY_MATRIX) {
+            return adjacencyMatrixRepresentation();
+        } else if (representationType == RepresentationType.ADJACENCY_LIST) {
+            return adjacencyListRepresentation();
+        } else {
+            throw new RuntimeException("Tipo de representação não suportado.");
+        }
+    }
+
+    /**
+     * Returns the adjacency matrix representation.
+     */
+    private String adjacencyMatrixRepresentation() {
+        List<V> orderedVertexes = getOrderedVertexesList();
+        float adjacencyMatrix[][] = getAdjacencyMatrix(orderedVertexes);
+        return setUpAdjacencyMatrixString(orderedVertexes, adjacencyMatrix);
+    }
+
+    private float[][] getAdjacencyMatrix(List<V> orderedVertexes) {
+        int vertexesNumber = getVertexesNumber();
+        float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
+        for(int i = 0; i < vertexesNumber; i++) {
+            V currentVertex = orderedVertexes.get(i);
+            Set<E> connectedEdges = vertexes.get(currentVertex);
+            for (E edge : connectedEdges) {
+                V targetVertex = edge.getTargetVertex();
+                adjacencyMatrix[i][orderedVertexes.indexOf(targetVertex)] = getEdgeWeight(edge);
+            }
+        }
+        return adjacencyMatrix;
+    }
+
+    private String setUpAdjacencyMatrixString(List<V> orderedVertexes, float adjacencyMatrix[][]) {
+        int vertexesNumber = getVertexesNumber();
+        StringBuilder matrixSB = new StringBuilder("  ");
+
+        for (int i = 0; i < vertexesNumber; i++) {
+            matrixSB.append(orderedVertexes.get(i));
+            boolean shouldAddSpace = vertexesNumber - i > 1;
+            if (shouldAddSpace) matrixSB.append(" ");
+        }
+        matrixSB.append(LINE_SEPARATOR);
+        for(int i = 0; i < vertexesNumber; i++) {
+            StringBuilder line = new StringBuilder(orderedVertexes.get(i) + " ");
+            for(int j = 0; j < vertexesNumber; j++) {
+                line.append(Utils.floatToString(adjacencyMatrix[i][j]));
+                boolean shouldAddSpace = vertexesNumber - j > 1;
+                if (shouldAddSpace) line.append(" ");
+            }
+            matrixSB.append(line).append(LINE_SEPARATOR);
+        }
+        return matrixSB.toString();
+    }
+
+    /**
+     * Returns the adjacency list representation.
+     */
+    private String adjacencyListRepresentation() {
+        List<V> orderedVertexes = getOrderedVertexesList();
+        StringBuilder list = new StringBuilder();
+
+        for (V v: orderedVertexes) {
+            String neighbors = vertexes.get(v).stream()
+                    .map(E::getTargetVertex)
+                    .sorted()
+                    .map(V::toString)
+                    .reduce((s, s2) -> s + " " + s2).orElse(STRING_EMPTY);
+            list.append(v).append(" - ").append(neighbors).append(LINE_SEPARATOR);
+        }
+        return list.toString();
+    }
+
+    /**
+     * Returns a ordered list with all vertexes.
+     */
+    private List<V> getOrderedVertexesList() {
+        List<V> orderedVertexes = new ArrayList<>(getAllVertexes());
+        Collections.sort(orderedVertexes);
+        return orderedVertexes;
+    }
+
+    protected abstract float getEdgeWeight(E e);
 
     @Override
     public String BFS(V v) {

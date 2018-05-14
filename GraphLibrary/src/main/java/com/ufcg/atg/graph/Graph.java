@@ -10,6 +10,8 @@ package com.ufcg.atg.graph;
  */
 public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implements IGraph<V, Edge<V>> {
 
+    private static final int EDGE_WEIGHT = 1;
+
     /**
      * Constructs a {@link Graph}.
      */
@@ -32,8 +34,8 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
     }
 
     @Override
-    public String graphRepresentation(RepresentationType representationType) {
-        return null;
+    protected float getEdgeWeight(Edge<V> e) {
+        return EDGE_WEIGHT;
     }
 
     @Override
