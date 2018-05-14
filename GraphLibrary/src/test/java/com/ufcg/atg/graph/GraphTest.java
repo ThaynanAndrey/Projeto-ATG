@@ -14,11 +14,11 @@ public class GraphTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        setUpIntegerGraph();
-        setUpStringGraph();
+        setUpGraphOfIntegers();
+        setUpGraphOfStrings();
     }
 
-    private void setUpIntegerGraph() {
+    private void setUpGraphOfIntegers() {
         Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5;
         integerGraph = new Graph<>();
         integerGraph.addEdge(i1, i2);
@@ -28,7 +28,7 @@ public class GraphTest {
         integerGraph.addEdge(i1, i5);
     }
 
-    private void setUpStringGraph() {
+    private void setUpGraphOfStrings() {
         String s1 = "A", s2 = "B", s3 = "C", s4 = "D", s5 = "E";
         stringGraph = new Graph<>();
         stringGraph.addEdge(s1, s2);
@@ -39,7 +39,7 @@ public class GraphTest {
     }
 
     @Test
-    public void graphOfIntegerVertexesMatrizRepresentationTest() throws Exception {
+    public void graphOfIntegersMatrixRepresentationTest() throws Exception {
         String expectedMatrix = new StringBuilder()
                 .append("  1 2 3 4 5").append(LINE_SEPARATOR)
                 .append("1 0 1 0 0 1").append(LINE_SEPARATOR)
@@ -54,7 +54,7 @@ public class GraphTest {
     }
 
     @Test
-    public void graphOfStringVertexesMatrizRepresentationTest() throws Exception {
+    public void graphOfStringsMatrixRepresentationTest() throws Exception {
         String expectedMatrix = new StringBuilder()
                 .append("  A B C D E").append(LINE_SEPARATOR)
                 .append("A 0 1 0 0 1").append(LINE_SEPARATOR)
@@ -69,7 +69,7 @@ public class GraphTest {
     }
 
     @Test
-    public void graphOfIntegerVertexesListRepresentationTest() throws Exception {
+    public void graphOfIntegersListRepresentationTest() throws Exception {
         String expectedList = new StringBuilder()
                 .append("1 - 2 5").append(LINE_SEPARATOR)
                 .append("2 - 1 5").append(LINE_SEPARATOR)
@@ -83,7 +83,7 @@ public class GraphTest {
     }
 
     @Test
-    public void graphOfStringVertexesListRepresentationTest() throws Exception {
+    public void graphOfStringsListRepresentationTest() throws Exception {
         String expectedList = new StringBuilder()
                 .append("A - B E").append(LINE_SEPARATOR)
                 .append("B - A E").append(LINE_SEPARATOR)

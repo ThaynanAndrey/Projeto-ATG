@@ -41,6 +41,11 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
     }
 
     @Override
+    protected String mapOperatorListRepresentation(Edge<V> e) {
+        return e.getTargetVertex().toString();
+    }
+
+    @Override
     public String shortestPath(V v1, V v2) {
         if (v1.equals(v2)) return v1.toString();
         Map<V, Float> distances = new HashMap<>();
@@ -60,56 +65,6 @@ public class Graph<V extends Comparable<V>> extends BaseGraph<V, Edge<V>> implem
         }
 
         return setUpShortestPathString(v1, v2, predecessors);
-    }
-
-    /**
-     * Sets up the shortest path between {@code pathStart} and {@code pathEnd}
-     * string representation.
-     *
-     * @param pathStart Vertex that starts the path.
-     * @param pathEnd Vertex that ends the path.
-     * @param predecessors {@link Map} that links a vertex to its predecessor.
-     * @return Shortest path string representation.
-     */
-    private String setUpShortestPathString(V pathStart, V pathEnd, Map<V, V> predecessors) {
-        StringBuilder shortestPath = new StringBuilder(pathEnd.toString());
-        V predecessor = predecessors.get(pathEnd);
-        V lastAddedPredecessor = predecessor;
-        while(predecessor != null) {
-            StringBuilder currentSB = new StringBuilder(predecessor.toString());
-            shortestPath = currentSB.append(" ").append(shortestPath);
-            lastAddedPredecessor = predecessor;
-            predecessor = predecessors.get(predecessor);
-        }
-        if (lastAddedPredecessor == null || !lastAddedPredecessor.equals(pathStart)) {
-            throw new RuntimeException("There isn't a path between " + pathStart
-                    + " and " + pathEnd);
-        }
-        return shortestPath.toString();
-    }
-
-    /**
-     * Relaxes the {@link Edge} between vertexes {@code originVertex} and
-     * {@code targetVertex}. Only if the distance between
-     * {@code originVertex} and {@code targetVertex} is lesser than the
-     * distance already leaded to {@code targetVertex}.
-     *
-     * @param originVertex Origin vertex of the {@link Edge}.
-     * @param targetVertex Target vertex of the {@link Edge}.
-     * @param e Edge from {@code originVertex} to {@code targetVertex}.
-     * @param distances {@link Map} that links a vertex to its distance to origin
-     *                             of the shortest path.
-     * @param predecessors {@link Map} that links a vertex to its predecessor.
-     */
-    private void relax(V originVertex, V targetVertex, Edge<V> e, Map<V, Float> distances,
-                       Map<V, V> predecessors) {
-        Float targetVertexDistance = distances.get(targetVertex),
-              originVertexDistance = distances.get(originVertex),
-              edgeWeight = getEdgeWeight(e);
-        if (targetVertexDistance > (originVertexDistance + edgeWeight)) {
-            predecessors.put(targetVertex, originVertex);
-            distances.replace(targetVertex, distances.get(originVertex) + edgeWeight);
-        }
     }
 
 }

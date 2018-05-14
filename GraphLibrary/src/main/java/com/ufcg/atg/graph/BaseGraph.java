@@ -163,14 +163,21 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
         for (V v: orderedVertexes) {
             String neighbors = vertexes.get(v).stream()
-                    .map(E::getTargetVertex)
-                    .sorted()
-                    .map(V::toString)
-                    .reduce((s, s2) -> s + " " + s2).orElse(STRING_EMPTY);
+                    .sorted(Comparator.comparing(Edge::getTargetVertex))
+                    .map(this::mapOperatorListRepresentation)
+                    .reduce((s1, s2) -> s1 + " " + s2).orElse(STRING_EMPTY);
             list.append(v).append(" - ").append(neighbors).append(LINE_SEPARATOR);
         }
         return list.toString();
     }
+
+    /**
+     * Maps a edge to a string representation in adjacency list.
+     *
+     * @param e Edge to have its string representation returned.
+     * @return Edge string representation.
+     */
+    protected abstract String mapOperatorListRepresentation(E e);
 
     /**
      * Returns a ordered list with all vertexes.
@@ -225,6 +232,57 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         }
         distances.replace(pathStart, 0f);
     }
+
+    /**
+     * Sets up the shortest path between {@code pathStart} and {@code pathEnd}
+     * string representation.
+     *
+     * @param pathStart Vertex that starts the path.
+     * @param pathEnd Vertex that ends the path.
+     * @param predecessors {@link Map} that links a vertex to its predecessor.
+     * @return Shortest path string representation.
+     */
+    protected String setUpShortestPathString(V pathStart, V pathEnd, Map<V, V> predecessors) {
+        StringBuilder shortestPath = new StringBuilder(pathEnd.toString());
+        V predecessor = predecessors.get(pathEnd);
+        V lastAddedPredecessor = predecessor;
+        while(predecessor != null) {
+            StringBuilder currentSB = new StringBuilder(predecessor.toString());
+            shortestPath = currentSB.append(" ").append(shortestPath);
+            lastAddedPredecessor = predecessor;
+            predecessor = predecessors.get(predecessor);
+        }
+        if (lastAddedPredecessor == null || !lastAddedPredecessor.equals(pathStart)) {
+            throw new RuntimeException("There isn't a path between " + pathStart
+                    + " and " + pathEnd);
+        }
+        return shortestPath.toString();
+    }
+
+    /**
+     * Relaxes the edge between vertexes {@code originVertex} and
+     * {@code targetVertex}. Only if the distance between
+     * {@code originVertex} and {@code targetVertex} is lesser than the
+     * distance already leaded to {@code targetVertex}.
+     *
+     * @param originVertex Origin vertex of the edge.
+     * @param targetVertex Target vertex of the edge.
+     * @param e Edge from {@code originVertex} to {@code targetVertex}.
+     * @param distances {@link Map} that links a vertex to its distance to origin
+     *                             of the shortest path.
+     * @param predecessors {@link Map} that links a vertex to its predecessor.
+     */
+    protected void relax(V originVertex, V targetVertex, E e, Map<V, Float> distances,
+                         Map<V, V> predecessors) {
+        Float targetVertexDistance = distances.get(targetVertex),
+                originVertexDistance = distances.get(originVertex),
+                edgeWeight = getEdgeWeight(e);
+        if (targetVertexDistance > (originVertexDistance + edgeWeight)) {
+            predecessors.put(targetVertex, originVertex);
+            distances.replace(targetVertex, distances.get(originVertex) + edgeWeight);
+        }
+    }
+
 
     @Override
     public String MST() {
