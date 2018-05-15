@@ -214,7 +214,19 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String DFS(V v) {
+        List<V> visited = new ArrayList<V>();
+        dfs(v, visited);
         return null;
+    }
+
+    private void dfs(V currentVertex, List<V> visited){
+        visited.add(currentVertex);
+        // Process vertex.
+        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+            if(!visited.contains(adjacentVertex)){
+                dfs(adjacentVertex, visited);
+            }
+        }
     }
 
     @Override
