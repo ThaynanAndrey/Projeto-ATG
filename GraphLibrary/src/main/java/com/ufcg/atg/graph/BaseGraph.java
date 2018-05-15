@@ -177,7 +177,21 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String BFS(V v) {
-        return null;
+    	Queue<V> queue = new LinkedList<V>();
+    	List<V> visited = new ArrayList<V>();
+    	queue.add(v);
+    	visited.add(v);
+    	
+    	while(!queue.isEmpty()){
+    		V actualVertex = queue.poll();
+    		for(V adjacentVertex : getAdjacentVertexes(actualVertex)){
+    			if(!visited.contains(adjacentVertex)){
+    				visited.add(adjacentVertex);
+    				queue.add(adjacentVertex);
+    			}
+    		}
+    	}
+        return visited.toString();
     }
 
     @Override
