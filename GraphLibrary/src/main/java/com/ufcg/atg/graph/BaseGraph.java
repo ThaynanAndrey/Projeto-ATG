@@ -230,8 +230,8 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     @Override
-    public String SCC() {
-        return null;
+    public boolean connected() {
+        return false;
     }
 
     @Override

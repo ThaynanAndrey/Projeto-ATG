@@ -304,14 +304,13 @@ public class GraphLibrary<V extends Comparable<V>> {
     }
 
     /**
-     * Returns a representation of all strongly connected components (SCC)
-     * of the graph.
+     * Returns a boolean indicating if the graph is connect or not.
      *
-     * @param graph Graph to be obtained SCC.
-     * @return All SCCs of the graph.
+     * @param graph Graph to obtain the connectivity.
+     * @return Connectivity of the graph.
      */
-    public String SCC(IGraph<V, ? extends Edge<V>> graph) {
-        return graph.SCC();
+    public boolean connected(IGraph<V, ? extends Edge<V>> graph) {
+        return graph.connected();
     }
 
     /**
