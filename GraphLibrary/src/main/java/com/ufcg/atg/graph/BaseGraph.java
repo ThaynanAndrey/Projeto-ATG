@@ -179,12 +179,9 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     public String BFS(V v) {
     	Queue<V> queue = new LinkedList<V>();
     	Map<V, Boolean> visited = new HashMap<V, Boolean>();
+    	setUpBFS(visited);
+    	
     	queue.add(v);  	
-    	
-    	for(V vertex : getAllVertexes()) {
-    		visited.put(vertex, false);
-    	}
-    	
     	visited.put(v, true);
     	
     	while(!queue.isEmpty()){
@@ -212,6 +209,12 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     @Override
     public String MST() {
         return null;
+    }
+    
+    protected void setUpBFS(Map<V, Boolean> visited) {
+    	for(V vertex : getAllVertexes()) {
+    		visited.put(vertex, false);
+    	}
     }
 
     @Override
