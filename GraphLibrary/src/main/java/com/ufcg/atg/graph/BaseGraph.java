@@ -225,7 +225,23 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     			}
     		}
     	}
-        return visited.toString();
+    	
+    	return visited.toString();
+        
+    }
+    
+    /**
+    * Sets up the configuration to run the BFS algorithm.
+    *
+    * Actions:
+    * - Sets the status of all vertexes as not visited;
+    *
+    * @param visited {@link Map} that store the vertexes and their status.
+    */
+    protected void setUpBFS(Map<V, Boolean> visited) {
+    	for(V vertex : getAllVertexes()) {
+    		visited.put(vertex, false);
+    	}
     }
 
     @Override
@@ -349,11 +365,6 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return null;
     }
     
-    protected void setUpBFS(Map<V, Boolean> visited) {
-    	for(V vertex : getAllVertexes()) {
-    		visited.put(vertex, false);
-    	}
-    }
 
     @Override
     public boolean equals(Object o) {
