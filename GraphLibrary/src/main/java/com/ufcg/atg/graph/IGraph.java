@@ -127,12 +127,11 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
     String DFS(V v);
 
     /**
-     * Returns a representation of all strongly connected components (SCC)
-     * of the graph.
+     * Returns a boolean indicating if the graph is connect or not.
      *
-     * @return All SCCs of the graph.
+     * @return Connectivity of the graph.
      */
-    String SCC();
+    boolean connected();
 
     /**
      * Returns a representation of the shortest path between the specified
