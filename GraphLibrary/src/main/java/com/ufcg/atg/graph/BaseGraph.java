@@ -1,5 +1,6 @@
 package com.ufcg.atg.graph;
 
+import com.ufcg.atg.util.Kruskal;
 import com.ufcg.atg.util.Utils;
 
 import java.util.*;
@@ -330,7 +331,8 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String MST() {
-        return null;
+    	Kruskal<V,E> mst = new Kruskal<>(this.getAllVertexes(),this.getAllEdges());
+    	return mst.kruskal();
     }
 
     @Override
