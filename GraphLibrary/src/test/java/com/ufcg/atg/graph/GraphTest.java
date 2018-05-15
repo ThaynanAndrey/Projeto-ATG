@@ -129,5 +129,20 @@ public class GraphTest {
                     e.getMessage(), "A mensagem de erro está errada.");
         }
     }
-
+    
+    @Test
+    public void BFSTest() {
+    	String expectedResultRoot1 = "1 2 5 3 4";
+    	String expectedResultRoot2 = "2 1 5 3 4";
+    	String expectedResultRoot3 = "3 5 1 2 4";
+    	String expectedResultRoot4 = "4 5 1 2 3";
+    	String expectedResultRoot5 = "5 1 2 3 4";
+    	
+    	assertEquals(expectedResultRoot1, integerGraph.BFS(1));
+    	assertEquals(expectedResultRoot2, integerGraph.BFS(2));
+    	assertEquals(expectedResultRoot3, integerGraph.BFS(3));
+    	assertEquals(expectedResultRoot4, integerGraph.BFS(4));
+    	assertEquals(expectedResultRoot5, integerGraph.BFS(5));
+    }
+  
 }
