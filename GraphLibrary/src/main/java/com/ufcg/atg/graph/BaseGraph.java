@@ -235,9 +235,25 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         }
     }
 
+    private void dfs(V currentVertex, Set<V> visited){
+        visited.add(currentVertex);
+        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+            if(!visited.contains(adjacentVertex))
+                dfs(adjacentVertex, visited);
+        }
+    }
+
     @Override
     public boolean connected() {
-        return false;
+        Set<V> visited = new HashSet<V>();
+        V currentVertex = null;
+        try{
+            currentVertex = this.vertexes.keySet().iterator().next();
+        } catch (NoSuchElementException e) {
+            // A graph with a single vertex is connected by the trivial path.
+            return true;
+        }
+        return visited.equals(this.vertexes.keySet());
     }
 
     @Override
