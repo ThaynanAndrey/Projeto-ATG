@@ -1,15 +1,11 @@
 package com.ufcg.atg.library;
 
-import com.ufcg.atg.graph.Edge;
-import com.ufcg.atg.graph.Graph;
-import com.ufcg.atg.graph.IGraph;
-import com.ufcg.atg.graph.IWeightedGraph;
-import com.ufcg.atg.graph.RepresentationType;
-import com.ufcg.atg.graph.WeightedEdge;
-import com.ufcg.atg.graph.WeightedGraph;
-import java.io.FileReader;
+import com.ufcg.atg.graph.*;
+
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Library to Graphs and Weighted Graphs.
@@ -24,7 +20,7 @@ public class GraphLibrary<V extends Comparable<V>> {
     private static final int INDEXES_WEIGHT_ON_FILE = 2;
 
     /**
-     * Reads a graph from file and returns it.
+     * Reads a graph from file.
      *
      * @param path File path.
      * @return Read graph.
@@ -36,7 +32,7 @@ public class GraphLibrary<V extends Comparable<V>> {
     }
 
     /**
-     * Reads a weighted graph from file and returns it.
+     * Reads a weighted graph from a file.
      *
      * @param path File path.
      * @return Read graph.
@@ -52,7 +48,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * Analyse, if the graph is weighted, so places the weighted edges
      * on {@link WeightedGraph}, else places the edges on {@link Graph}.
      *
-     * @param graph Graph to be placed on the edges.
+     * @param graph Graph to have a new edges added.
      * @param path Path from where the edges will be obtained.
      */
     private void readFile(IGraph<Integer, ? extends Edge<Integer>> graph, String path) {
@@ -66,9 +62,9 @@ public class GraphLibrary<V extends Comparable<V>> {
             for (int i=0; i < edgesAmount; i++) {
                 String edge = bfFile.readLine();
                 if(isWeightedGraph) {
-                    addEdgeWeightedGraph((IWeightedGraph<Integer, WeightedEdge<Integer>>) graph, edge);
+                    addWeightedEdge((IWeightedGraph<Integer, WeightedEdge<Integer>>) graph, edge);
                 } else {
-                    addEdgeGraph((IGraph<Integer, Edge<Integer>>) graph, edge);
+                    addEdge((IGraph<Integer, Edge<Integer>>) graph, edge);
                 }
             }
             file.close();
@@ -79,12 +75,12 @@ public class GraphLibrary<V extends Comparable<V>> {
     }
 
     /**
-     * Add edge in {@link Graph}.
+     * Adds edge in {@link Graph}.
      *
-     * @param graph Graph to be placed on the edge.
-     * @param edge Edge to be inserted.
+     * @param graph Graph to have a new edge added.
+     * @param edge Edge to be added.
      */
-    private void addEdgeGraph(IGraph<Integer, Edge<Integer>> graph, String edge) {
+    private void addEdge(IGraph<Integer, Edge<Integer>> graph, String edge) {
         String[] vertexes = edge.split(EMPTY_SPACE_STRING_EDGE);
         Integer v1 = Integer.parseInt(vertexes[INDEX_FIRST_VERTEX_ON_FILE]);
         Integer v2 = Integer.parseInt(vertexes[INDEX_SECOND_VERTEX_ON_FILE]);
@@ -92,12 +88,12 @@ public class GraphLibrary<V extends Comparable<V>> {
     }
 
     /**
-     * Add weighted edge in {@link WeightedGraph}.
+     * Adds weighted edge in {@link WeightedGraph}.
      *
-     * @param graph Graph to be placed on the edge.
-     * @param edge Edge to be inserted.
+     * @param graph Graph to have a new edge added.
+     * @param edge Edge to be added.
      */
-    private void addEdgeWeightedGraph(IWeightedGraph<Integer, WeightedEdge<Integer>> graph, String edge) {
+    private void addWeightedEdge(IWeightedGraph<Integer, WeightedEdge<Integer>> graph, String edge) {
         String[] vertexes = edge.split(EMPTY_SPACE_STRING_EDGE);
         Integer v1 = Integer.parseInt(vertexes[INDEX_FIRST_VERTEX_ON_FILE]);
         Integer v2 = Integer.parseInt(vertexes[INDEX_SECOND_VERTEX_ON_FILE]);
@@ -106,13 +102,150 @@ public class GraphLibrary<V extends Comparable<V>> {
     }
 
     /**
+     * Adds a edge to the graph. {@code v1} is going to be the edge origin and
+     * {@code v2} the edge target. As this is an undirected graph, each added
+     * edge, internally, will be represented by two edges, one from {@code v1}
+     * to {@code v2} and another from {@code v2} to {@code v1}.
+     *
+     * @param graph Graph to have a new edge added.
+     * @param v1 Vertex to be the edge origin.
+     * @param v2 Vertex to be the edge target.
+     * @throws RuntimeException If already there is a edge connecting {@code v1}
+     * and {@code v2}.
+     * @return The added edge between {@code v1} and {@code v2}.
+     */
+    public Edge<V> addEdge(IGraph<V, ? extends Edge<V>> graph, V v1, V v2) {
+        if (graph.containsEdge(new Edge<V>(v1, v2))) {
+            throw new RuntimeException("The graph already contains the specified edge");
+        }
+        return graph.addEdge(v1, v2);
+    }
+
+    /**
+     * Adds a weighted edge to the graph. {@code v1} is going to be the edge
+     * origin and {@code v2} the edge target. As the weight wasn't specified,
+     * it will be defined as one (1).
+     *
+     * @param graph Graph to have a new weighted edge added.
+     * @param v1 Vertex to be the edge origin.
+     * @param v2 Vertex to be the edge target.
+     * @throws RuntimeException If already there is a edge connecting {@code v1}
+     * and {@code v2}.
+     * @return The added weighted edge.
+     */
+    public WeightedEdge<V> addEdge(IWeightedGraph<V, ? extends WeightedEdge<V>> graph,
+                                   V v1, V v2) {
+        if (graph.containsEdge(new WeightedEdge<V>(v1, v2,
+                WeightedGraph.EDGE_DEFAULT_WEIGHT))) {
+            throw new RuntimeException("The graph already contains the specified edge");
+        }
+        return graph.addEdge(v1, v2);
+    }
+
+    /**
+     * Adds a weighted edge to the graph. {@code v1} is going to be the edge
+     * origin and {@code v2} the edge target.
+     *
+     * @param graph Graph to have a new weighted edge added.
+     * @param v1 Vertex to be the edge origin.
+     * @param v2 Vertex to be the edge target.
+     * @param weight The weight of the edge.
+     * @throws RuntimeException If already there is a edge connecting {@code v1}
+     * and {@code v2}.
+     * @return The added weighted edge.
+     */
+    public WeightedEdge<V> addEdge(IWeightedGraph<V, ? extends WeightedEdge<V>> graph,
+                                   V v1, V v2, float weight){
+        if (graph.containsEdge(new WeightedEdge<V>(v1, v2, weight))) {
+            throw new RuntimeException("The graph already contains the specified edge");
+        }
+        return graph.addEdge(v1, v2, weight);
+    }
+
+    /**
+     * Adds the specified vertex to the specified graph.
+     *
+     * @param graph Graph to have a new vertex added.
+     * @param v Vertex to be added
+     * @throws RuntimeException If the vertex is already on graph.
+     */
+    public void addVertex(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (graph.containsVertex(v)) {
+            throw new RuntimeException("The graph already contains the specified vertex");
+        }
+        graph.addVertex(v);
+    }
+
+    /**
+     * Returns all vertexes of the specified graph.
+     *
+     * @param graph Graph to have all its vertexes returned.
+     * @return All vertexes of the specified graph
+     */
+    public Set<V> getAllVertexes(IGraph<V, ? extends Edge<V>> graph) {
+        return graph.getAllVertexes();
+    }
+
+    /**
+     * Returns all edges of the specified graph.
+     *
+     * @param graph Graph to have all its edges returned.
+     * @return All edges of the specified graph
+     */
+    public Set<? extends Edge<V>> getAllEdges(IGraph<V, ? extends Edge<V>> graph) {
+        return graph.getAllEdges();
+    }
+
+    /**
+     * Returns all edges of the specified vertex, which belongs to the specified
+     * graph.
+     *
+     * @param v Vertex to have all its edges returned.
+     * @return Specified vertex's edges.
+     */
+    public Set<? extends Edge<V>> getEdgesOfVertex(IGraph<V, ? extends Edge<V>> graph, V v) {
+        return graph.getEdgesOfVertex(v);
+    }
+
+    /**
+     * Returns all adjacent vertexes of the specified vertex, which belongs to
+     * the specified graph.
+     *
+     * @param v Vertex to have all its adjacent vertexes returned.
+     * @return Specified vertex's adjacent vertexes.
+     */
+    public Set<V> getAdjacentVertexes(IGraph<V, ? extends Edge<V>> graph, V v) {
+        return graph.getAdjacentVertexes(v);
+    }
+
+    /**
+     * Returns if the specified graph contains the specified vertex.
+     *
+     * @param v Vertex that will have its existence in the graph verified.
+     * @return {@code true} if contains, {@code false} otherwise.
+     */
+    public boolean containsVertex(IGraph<V, ? extends Edge<V>> graph, V v) {
+        return graph.containsVertex(v);
+    }
+
+    /**
+     * Returns if the specified graph contains the specified edge.
+     *
+     * @param e Edge that will have its existence in the graph verified.
+     * @return {@code true} if contains, {@code false} otherwise.
+     */
+    public boolean containsEdge(IGraph<V, ? extends Edge<V>> graph, Edge<V> e) {
+        return graph.containsEdge(e);
+    }
+
+    /**
      * Returns the number of vertexes of the graph.
      *
-     * @param graph Graph to be obtained vertexes' number.
+     * @param graph Graph to have its vertex number returned.
      * @return Number of vertexes of the graph.
      */
     public int getVertexNumber(IGraph<V, ? extends Edge<V>> graph) {
-        return  graph.getVertexesNumber();
+        return graph.getVertexesNumber();
     }
 
     /**
@@ -140,7 +273,6 @@ public class GraphLibrary<V extends Comparable<V>> {
      * specified.
      *
      * @param type Type of the representation to be returned.
-     * @throws RuntimeException If the representation type isn't supported.
      * @return The graph representation.
      */
     public String graphRepresentation(IGraph<V, ? extends Edge<V>> graph, RepresentationType type) {
@@ -153,7 +285,6 @@ public class GraphLibrary<V extends Comparable<V>> {
      *
      * @param graph Graph to be obtained BFS.
      * @param v The vertex to be the root of the returned tree.
-     * @throws RuntimeException If the vertex specified isn't in the graph.
      * @return BFS of the graph.
      */
     public String BFS(IGraph<V, ? extends Edge<V>> graph, V v) {
@@ -166,8 +297,6 @@ public class GraphLibrary<V extends Comparable<V>> {
      *
      * @param graph Graph to be obtained BFS.
      * @param v The vertex to be the root of the returned tree.
-     * @throws RuntimeException If the vertex specified doesn't belong to
-     * the graph.
      * @return DFS of the graph.
      */
     public String DFS(IGraph<V, ? extends Edge<V>> graph, V v) {
@@ -192,8 +321,6 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @param graph Graph to be obtained shortest path between v1 and v2.
      * @param v1 Origin vertex of the path.
      * @param v2 Target vertex of the path.
-     * @throws RuntimeException If {@code v1} or {@code v2} doesn't belong
-     * to the graph.
      * @return Shortest path between {@code v1} e {@code v2}.
      */
     public String shortestPath(IGraph<V, ? extends Edge<V>> graph, V v1, V v2) {

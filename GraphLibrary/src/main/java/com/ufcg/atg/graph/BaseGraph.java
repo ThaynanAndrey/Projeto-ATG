@@ -30,12 +30,6 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public void addVertex(V v) {
-        if (v == null) {
-            throw new IllegalArgumentException();
-        }
-        if (vertexes.containsKey(v)) {
-            throw new RuntimeException();
-        }
         addIfAbsent(v);
     }
 
@@ -75,6 +69,16 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     @Override
+    public boolean containsVertex(V v) {
+        return getAllVertexes().contains(v);
+    }
+
+    @Override
+    public boolean containsEdge(Edge<V> e) {
+        return vertexes.get(e.getOriginVertex()).contains(e);
+    }
+
+    @Override
     public int getVertexesNumber() {
         return vertexes.size();
     }
@@ -96,7 +100,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         } else if (representationType == RepresentationType.ADJACENCY_LIST) {
             return adjacencyListRepresentation();
         } else {
-            throw new RuntimeException("Tipo de representação não suportado.");
+            return Utils.STRING_EMPTY;
         }
     }
 

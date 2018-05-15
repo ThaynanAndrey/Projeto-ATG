@@ -16,8 +16,6 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * Adds a vertex to the graph.
      *
      * @param v Vertex to be added.
-     * @throws IllegalArgumentException If the vertex is {@code null}.
-     * @throws RuntimeException If the vertex is already on graph.
      */
     void addVertex(V v);
 
@@ -29,8 +27,6 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      *
      * @param v1 Vertex to be the edge origin.
      * @param v2 Vertex to be the edge target.
-     * @throws RuntimeException If already there is a edge connecting {@code v1}
-     * and {@code v2}.
      * @return The added edge between {@code v1} and {@code v2}.
      */
     E addEdge(V v1, V v2);
@@ -66,6 +62,22 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
     Set<V> getAdjacentVertexes(V v);
 
     /**
+     * Returns if the graph contains the specified vertex.
+     *
+     * @param v Vertex that will have its existence in the graph verified.
+     * @return {@code true} if contains, {@code false} otherwise.
+     */
+    boolean containsVertex(V v);
+
+    /**
+     * Returns if the graph contains the specified edge.
+     *
+     * @param e Edge that will have its existence in the graph verified.
+     * @return {@code true} if contains, {@code false} otherwise.
+     */
+    boolean containsEdge(Edge<V> e);
+
+    /**
      * Returns the number of vertexes of the graph.
      *
      * @return Number of vertexes of the graph.
@@ -91,10 +103,6 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * specified.
      *
      * @param representationType Type of the representation to be returned.
-     * @throws RuntimeException If the representation type isn't supported.
-     * @throws RuntimeException If the representation type is
-     * {@code ADJACENCY_MATRIX} and {@link V} doesn't have a {@code int}
-     * representation.
      *
      * @return The graph representation.
      */
@@ -105,7 +113,6 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * algorithm starting from the vertex specified.
      *
      * @param v The vertex to be the root of the returned tree.
-     * @throws RuntimeException If the vertex specified isn't in the graph.
      * @return BFS of the graph.
      */
     String BFS(V v);
@@ -115,8 +122,6 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      * algorithm starting from the vertex specified.
      *
      * @param v The vertex to be the root of the returned tree.
-     * @throws RuntimeException If the vertex specified doesn't belong to
-     * the graph.
      * @return DFS of the graph.
      */
     String DFS(V v);
@@ -135,8 +140,6 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      *
      * @param v1 Origin vertex of the path.
      * @param v2 Target vertex of the path.
-     * @throws RuntimeException If {@code v1} or {@code v2} doesn't belong
-     * to the graph.
      * @return Shortest path between {@code v1} e {@code v2}.
      */
     String shortestPath(V v1, V v2);

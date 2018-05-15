@@ -13,7 +13,7 @@ import com.ufcg.atg.util.Utils;
 public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, WeightedEdge<V>>
         implements IWeightedGraph<V, WeightedEdge<V>> {
 
-    private static final float EDGE_DEFAULT_WEIGHT = 1f;
+    public static final float EDGE_DEFAULT_WEIGHT = 1f;
 
     /**
      * Constructs a {@link WeightedGraph}.
@@ -33,10 +33,7 @@ public class WeightedGraph<V extends Comparable<V>> extends BaseGraph<V, Weighte
         addIfAbsent(v2);
         WeightedEdge<V> edgeToReturn = new WeightedEdge<>(v1, v2, weight),
                 reverseEdge = new WeightedEdge<>(v2, v1, weight);
-        boolean added = vertexes.get(v1).add(edgeToReturn);
-        if (!added) {
-            throw new RuntimeException();
-        }
+        vertexes.get(v1).add(edgeToReturn);
         vertexes.get(v2).add(reverseEdge);
         return edgeToReturn;
     }
