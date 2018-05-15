@@ -215,6 +215,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     	
     	queue.add(v);  	
     	visited.put(v, true);
+    	String resultString = v.toString();
     	
     	while(!queue.isEmpty()){
     		V currentVertex = queue.poll();
@@ -222,12 +223,12 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     			if(!visited.get(adjacentVertex)){
     				visited.put(adjacentVertex, true);
     				queue.add(adjacentVertex);
+    				resultString = resultString + " " + adjacentVertex.toString();
     			}
     		}
     	}
     	
-    	return visited.toString();
-        
+        return resultString;
     }
     
     /**
