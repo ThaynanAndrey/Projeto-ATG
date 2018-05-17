@@ -215,22 +215,27 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     @Override
     public String DFS(V v) {
         List<V> visited = new ArrayList<V>();
+        List<String> stringRepresentation = new ArrayList<String>();
         StringBuilder stringBuilder = new StringBuilder();
-        dfs(v, v,0, visited, stringBuilder);
+        dfs(v, v,0, visited, stringRepresentation);
+        stringRepresentation.sort(String::compareToIgnoreCase);
+        for(String str : stringRepresentation ){
+            stringBuilder.append(str);
+        }
         return stringBuilder.toString();
     }
 
-    private void dfs(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, StringBuilder stringBuilder){
+    private void dfs(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
         visited.add(currentVertex);
         // Process vertex.
         if(currentVertex.equals(prevVertex)){
-            stringBuilder.append(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
         } else {
-            stringBuilder.append(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
         }
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
             if(!visited.contains(adjacentVertex)){
-                dfs(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringBuilder);
+                dfs(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringRepresentation);
             }
         }
     }
