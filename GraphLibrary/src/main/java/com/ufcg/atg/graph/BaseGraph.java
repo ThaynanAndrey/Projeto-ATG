@@ -214,12 +214,51 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String DFS(V v) {
-        return null;
+        List<V> visited = new ArrayList<V>();
+        List<String> stringRepresentation = new ArrayList<String>();
+        StringBuilder stringBuilder = new StringBuilder();
+        dfs(v, v,0, visited, stringRepresentation);
+        stringRepresentation.sort(String::compareToIgnoreCase);
+        for(String str : stringRepresentation ){
+            stringBuilder.append(str);
+        }
+        return stringBuilder.toString();
+    }
+
+    private void dfs(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
+        visited.add(currentVertex);
+        // Process vertex.
+        if(currentVertex.equals(prevVertex)){
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
+        } else {
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
+        }
+        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+            if(!visited.contains(adjacentVertex)){
+                dfs(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringRepresentation);
+            }
+        }
+    }
+
+    private void dfs(V currentVertex, Set<V> visited){
+        visited.add(currentVertex);
+        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+            if(!visited.contains(adjacentVertex))
+                dfs(adjacentVertex, visited);
+        }
     }
 
     @Override
     public boolean connected() {
-        return false;
+        Set<V> visited = new HashSet<V>();
+        V currentVertex = null;
+        try{
+            currentVertex = this.vertexes.keySet().iterator().next();
+            dfs(currentVertex, visited);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return visited.equals(this.vertexes.keySet());
     }
 
     @Override

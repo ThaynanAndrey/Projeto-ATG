@@ -4,8 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GraphTest {
 
@@ -128,6 +127,121 @@ public class GraphTest {
             assertEquals("There isn't a path between 1 and 2",
                     e.getMessage(), "A mensagem de erro está errada.");
         }
+    }
+
+    @Test
+    public void disconnectedGraphTest(){
+        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        disconnectedGraph.addVertex(i1);
+        disconnectedGraph.addEdge(i2, i3);
+
+        assertFalse(disconnectedGraph.connected());
+    }
+
+    @Test
+    public void dfsInConnectedGraph1Test(){
+        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        connectedGraph.addVertex(i1);
+        connectedGraph.addEdge(i1, i2);
+        connectedGraph.addEdge(i2, i3);
+
+        StringBuilder sb = new StringBuilder()
+                .append("1 - 0 -" + LINE_SEPARATOR)
+                .append("2 - 1 1" + LINE_SEPARATOR)
+                .append("3 - 2 2" + LINE_SEPARATOR);
+
+        assertEquals(sb.toString(), connectedGraph.DFS(i1));
+
+    }
+
+    @Test
+    public void dfsInConnectedGraph2Test(){
+        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        connectedGraph.addVertex(i1);
+        connectedGraph.addEdge(i1, i2);
+        connectedGraph.addEdge(i2, i3);
+
+        StringBuilder sb = new StringBuilder()
+                .append("1 - 1 2" + LINE_SEPARATOR)
+                .append("2 - 0 -" + LINE_SEPARATOR)
+                .append("3 - 1 2" + LINE_SEPARATOR);
+
+        assertEquals(sb.toString(), connectedGraph.DFS(i2));
+    }
+
+    @Test
+    public void dfsInConnectedGraph3Test(){
+        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        connectedGraph.addVertex(i1);
+        connectedGraph.addEdge(i1, i2);
+        connectedGraph.addEdge(i2, i3);
+
+        StringBuilder sb = new StringBuilder()
+                .append("1 - 2 2" + LINE_SEPARATOR)
+                .append("2 - 1 3" + LINE_SEPARATOR)
+                .append("3 - 0 -" + LINE_SEPARATOR);
+
+        assertEquals(sb.toString(), connectedGraph.DFS(i3));
+
+    }
+
+    @Test
+    public void dfsInDisconnectedGraph1Test(){
+        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4;
+        disconnectedGraph.addVertex(i1);
+        disconnectedGraph.addEdge(i1, i2);
+        disconnectedGraph.addEdge(i2, i3);
+        disconnectedGraph.addVertex(i4);
+
+        StringBuilder sb = new StringBuilder()
+                .append("1 - 2 2" + LINE_SEPARATOR)
+                .append("2 - 1 3" + LINE_SEPARATOR)
+                .append("3 - 0 -" + LINE_SEPARATOR);
+
+        assertEquals(sb.toString(), disconnectedGraph.DFS(i3));
+
+    }
+
+    @Test
+    public void dfsInDisconnectedGraph2Test(){
+        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4;
+        disconnectedGraph.addVertex(i1);
+        disconnectedGraph.addEdge(i1, i2);
+        disconnectedGraph.addEdge(i2, i3);
+        disconnectedGraph.addVertex(i4);
+
+        StringBuilder sb = new StringBuilder()
+                .append("4 - 0 -" + LINE_SEPARATOR);
+
+        assertEquals(sb.toString(), disconnectedGraph.DFS(i4gi));
+
+    }
+
+    @Test
+    public void connectedGraphSingleVertexTest(){
+        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
+        Integer i1 = 1;
+        connectedGraph.addVertex(i1);
+
+        assertTrue(connectedGraph.connected());
+    }
+
+    @Test
+    public void connectedGraphTest(){
+        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        connectedGraph.addVertex(i1);
+        connectedGraph.addEdge(i1, i2);
+        connectedGraph.addEdge(i2, i3);
+
+        assertTrue(connectedGraph.connected());
+
     }
 
 }
