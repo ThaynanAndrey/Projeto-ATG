@@ -4,78 +4,111 @@ import java.util.*;
 
 import com.ufcg.atg.graph.Edge;
 
+import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
+
+/**
+ * Implementation of the Kruskal algorithm with the help of the union-find 
+ * implementation of the joint-disjoint structure.
+ * @author Wesley Almeida
+ *
+ * @param <V> Type of the vertex.
+ * @param <E> Type of the edge.
+ */
 public class Kruskal<V extends Comparable<V>, E extends Edge<V>>{
-	//conjunto dos vertices do grafo
+	
+	
 	private Set<V> vertexes;
-	//conjunto das arestas do grafo
 	private Set<E> edges;
-	//conjunto das aresta da MST
-	private Set<E> edgesMst;
-	//subconjunto auxiliar que armazena as relações dos vertices
+	
+	private List<E> edgesMst;
 	private Map<V,V> subEdges;
 	
-	//iteratores para pecorrer os conjuntos
-	private Iterator<E> edgeIterator;
 	private Iterator<V> vertexeIterator;
 	
-	//construtor com inicializações
+	/**
+     * Constructs a {@link Kruskal}.
+     * @param vertexes Set of vertexes of the graph.
+     * @param edges Set of edges of the graph
+     */
 	public Kruskal(Set<V> vertexes, Set<E> edges){
 		this.vertexes = vertexes;
 		this.edges = edges;
 		
-		this.edgesMst = new HashSet<>();
+		this.edgesMst = new ArrayList<>();
 		this.subEdges = new HashMap<>();
 		
-		this.edgeIterator = this.edges.iterator();
 		this.vertexeIterator = this.vertexes.iterator();
 	}
 	
+	/**
+	 * Determines whether the vertex is already grouped to a subset, using recursion,
+	 * and if so verifies in the sub set of this vertex until finding
+	 * a vertex of the non-associated subset
+	 * @param subEdges subset of the vertexes of the graph with its associations.
+	 * @param vertexe vertex to be checked in the subset
+	 * @return associated vertex
+	 */
 	private V find(Map<V,V> subEdges, V vertexe) {
-		//verifica se a relação do vertice ta vazia, se sim, retorna o vertice
 		if(subEdges.get(vertexe) == null) {
 			return vertexe;
 		}
-		//caso contrario retorna a relacao do vertice ao qual ja possui relação
 		return this.find(subEdges, subEdges.get(vertexe));
 	}
 	
-	//faz a união das relaçoes do vertice
+	/**
+	 * Combines two vertexes creating a subset, which is the relationship between those vertices.
+	 * @param subEdges subset of the vertexes of the graph with its associations.
+	 * @param originVertexe The origin vertex of the edge.
+	 * @param targetVertexe The target vertex of the edge.
+	 */
 	private void union(Map<V,V> subEdges, V originVertexe, V targetVertexe) {
 		V originVertexePut = this.find(subEdges, originVertexe);
 		V targetVertexePut = this.find(subEdges, targetVertexe);
 		subEdges.put(originVertexePut, targetVertexePut);
 	}
 	
-	private String kruskalToString() {
-		String result = "";
-		Iterator<E> edgeIt = this.edgesMst.iterator();
-		while(edgeIt.hasNext()) {
-			E edge = edgeIt.next();
-			result += "["+edge.getOriginVertex()+","+edge.getTargetVertex()+"]\n";
-		}
-		return result;
-	}
+	/**
+	 * Algorithm of kruskal, runs through the ordered set of edges of the graph,
+	 * adding to the final set of minimal spanning tree in case the edge does not form a cycle.
+	 * @return minimal spanning tree(MST) in string representation.
+	 */
 	
 	public String kruskal() {
-		//popula o conjunto de retorno com todos os vertices da arvore e seta o valor inicial de relacao como null
+		//
 		while(this.vertexeIterator.hasNext()) {
 			this.subEdges.put(this.vertexeIterator.next(), null);
 		}
-		
-		//Verifica cada uma das arestas
-		while(this.edgeIterator.hasNext()) {
-			E egdeOperation = this.edgeIterator.next();
+
+		List<E> listEdges = new ArrayList<>(this.edges);
+		Collections.sort(listEdges);
+	
+		for(int i=0; i < listEdges.size(); i++) {
+			E egdeOperation = listEdges.get(i);
 			V originVertexe = this.find(subEdges, egdeOperation.getOriginVertex());
 			V targetVertexe = this.find(subEdges, egdeOperation.getTargetVertex());
 			
-			//caso a relação dos vertices sejam iguais significa que possui um cilco 
-			//e assim nao deve entrar no grafo MST
+			/**
+			 * if the vertices are equal, it means that they share the same subset,
+			 *forming a cycle.
+			 */
 			if(!originVertexe.equals(targetVertexe)) {
 				this.edgesMst.add(egdeOperation);
 				this.union(subEdges, originVertexe, targetVertexe);
 			}
 		}
 		return this.kruskalToString();		
+	}
+	
+	/**
+	 * Generates the string representing minimal spanning tree
+	 * @return minimal spanning tree(MST) in string representation.
+	 */
+	private String kruskalToString() {
+		String result = "";
+		for(int i=0; i < this.edgesMst.size(); i++) {
+			result += this.edgesMst.get(i).toString()+LINE_SEPARATOR;
+		}
+		return result;
 	}
 	
 }

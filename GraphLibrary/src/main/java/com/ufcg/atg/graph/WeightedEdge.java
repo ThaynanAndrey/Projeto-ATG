@@ -53,4 +53,9 @@ public class WeightedEdge<V extends Comparable<V>> extends Edge<V> {
         int weightComparison = Float.compare(weight, that.weight);
         return weightComparison == 0 ? super.compareTo(o) : weightComparison;
     }
+    
+    @Override
+    public String toString() {
+    	return "["+this.getOriginVertex()+", "+this.getTargetVertex()+"] : "+this.getWeight();
+    }
 }

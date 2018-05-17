@@ -367,9 +367,17 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
             distances.replace(targetVertex, distances.get(originVertex) + edgeWeight);
         }
     }
-
+    
+    /**
+     * Identifies the minimal spanning tree (MST) of the graph after delegation 
+     * to the kruskal algorithm
+     * @return minimal spanning tree(MST) in string representation
+     */
     @Override
     public String MST() {
+    	if(!this.connected()) {
+    		return "disconneted graph";
+    	}
     	Kruskal<V,E> mst = new Kruskal<>(this.getAllVertexes(),this.getAllEdges());
     	return mst.kruskal();
     }

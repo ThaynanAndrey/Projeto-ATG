@@ -9,12 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GraphTest {
 
     private IGraph<Integer, Edge<Integer>> integerGraph;
+    private IGraph<Integer, Edge<Integer>> integerGraphDuplicate;
     private IGraph<String, Edge<String>> stringGraph;
+    private IGraph<Integer, Edge<Integer>> disconnectedGraph;
 
     @BeforeEach
     public void setUp() {
         setUpGraphOfIntegers();
         setUpGraphOfStrings();
+        setUpDisconnectedGraph();
+        setUpGraphOfIntegersDuplicate();
     }
 
     private void setUpGraphOfIntegers() {
@@ -26,6 +30,21 @@ public class GraphTest {
         integerGraph.addEdge(i4, i5);
         integerGraph.addEdge(i1, i5);
     }
+    
+    private void setUpGraphOfIntegersDuplicate() {
+        Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5, i6 = 6;
+        integerGraphDuplicate = new Graph<>();
+        integerGraphDuplicate.addEdge(i1, i2);
+        integerGraphDuplicate.addEdge(i1, i4);
+        integerGraphDuplicate.addEdge(i1, i5);
+        integerGraphDuplicate.addEdge(i2, i3);
+        integerGraphDuplicate.addEdge(i2, i6);
+        integerGraphDuplicate.addEdge(i2, i5);
+        integerGraphDuplicate.addEdge(i3, i4);
+        integerGraphDuplicate.addEdge(i3, i6);
+        integerGraphDuplicate.addEdge(i4, i5);
+        integerGraphDuplicate.addEdge(i5, i6);
+    }
 
     private void setUpGraphOfStrings() {
         String s1 = "A", s2 = "B", s3 = "C", s4 = "D", s5 = "E";
@@ -35,6 +54,32 @@ public class GraphTest {
         stringGraph.addEdge(s5, s3);
         stringGraph.addEdge(s4, s5);
         stringGraph.addEdge(s1, s5);
+    }
+    
+    private void setUpDisconnectedGraph() {
+    	Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5;
+    	disconnectedGraph = new Graph<>();
+    	disconnectedGraph.addVertex(i1);
+    	disconnectedGraph.addVertex(i2);
+    	disconnectedGraph.addVertex(i3);
+    	disconnectedGraph.addVertex(i4);
+    	disconnectedGraph.addVertex(i5);
+    }
+    
+    @Test
+    public void graphOfIntegersDuplicateMatrixRepresentationTest() {
+        String expectedMatrix = new StringBuilder()
+                .append("  1 2 3 4 5 6").append(LINE_SEPARATOR)
+                .append("1 0 1 0 1 1 0").append(LINE_SEPARATOR)
+                .append("2 1 0 1 0 1 1").append(LINE_SEPARATOR)
+                .append("3 0 1 0 1 0 1").append(LINE_SEPARATOR)
+                .append("4 1 0 1 0 1 0").append(LINE_SEPARATOR)
+                .append("5 1 1 0 1 0 1").append(LINE_SEPARATOR)
+                .append("6 0 1 1 0 1 0").append(LINE_SEPARATOR)
+                .toString();
+
+        String matrix = integerGraphDuplicate.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
+        assertEquals(matrix, expectedMatrix);
     }
 
     @Test
@@ -66,6 +111,36 @@ public class GraphTest {
         String matrix = stringGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
         assertEquals(matrix, expectedMatrix);
     }
+    
+    @Test
+    public void graphDisconnetedMatrixRepresentationTest() {
+        String expectedMatrix = new StringBuilder()
+                .append("  1 2 3 4 5").append(LINE_SEPARATOR)
+                .append("1 0 0 0 0 0").append(LINE_SEPARATOR)
+                .append("2 0 0 0 0 0").append(LINE_SEPARATOR)
+                .append("3 0 0 0 0 0").append(LINE_SEPARATOR)
+                .append("4 0 0 0 0 0").append(LINE_SEPARATOR)
+                .append("5 0 0 0 0 0").append(LINE_SEPARATOR)
+                .toString();
+
+        String matrix = disconnectedGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
+        assertEquals(matrix, expectedMatrix);
+    }
+    
+    @Test
+    public void graphOfIntegersDuplicateListRepresentationTest() {
+        String expectedList = new StringBuilder()
+                .append("1 - 2 4 5").append(LINE_SEPARATOR)
+                .append("2 - 1 3 5 6").append(LINE_SEPARATOR)
+                .append("3 - 2 4 6").append(LINE_SEPARATOR)
+                .append("4 - 1 3 5").append(LINE_SEPARATOR)
+                .append("5 - 1 2 4 6").append(LINE_SEPARATOR)
+                .append("6 - 2 3 5").append(LINE_SEPARATOR)
+                .toString();
+
+        String list = integerGraphDuplicate.graphRepresentation(RepresentationType.ADJACENCY_LIST);
+        assertEquals(list, expectedList);
+    }
 
     @Test
     public void graphOfIntegersListRepresentationTest() {
@@ -95,6 +170,20 @@ public class GraphTest {
         assertEquals(list, expectedList);
     }
 
+    @Test
+    public void graphDisconnetecListRepresentationTest() {
+        String expectedList = new StringBuilder()
+                .append("1 - ").append(LINE_SEPARATOR)
+                .append("2 - ").append(LINE_SEPARATOR)
+                .append("3 - ").append(LINE_SEPARATOR)
+                .append("4 - ").append(LINE_SEPARATOR)
+                .append("5 - ").append(LINE_SEPARATOR)
+                .toString();
+
+        String list = disconnectedGraph.graphRepresentation(RepresentationType.ADJACENCY_LIST);
+        assertEquals(list, expectedList);
+    }
+    
     @Test
     public void graphOfIntegersShortestPathTest() {
         String expectedPathBetween1And3 = "1 5 3";
@@ -219,7 +308,7 @@ public class GraphTest {
         StringBuilder sb = new StringBuilder()
                 .append("4 - 0 -" + LINE_SEPARATOR);
 
-        assertEquals(sb.toString(), disconnectedGraph.DFS(i4gi));
+        assertEquals(sb.toString(), disconnectedGraph.DFS(i4));
 
     }
 
@@ -241,7 +330,44 @@ public class GraphTest {
         connectedGraph.addEdge(i2, i3);
 
         assertTrue(connectedGraph.connected());
-
     }
-
+    
+    @Test
+    public void mstIntegerGraphTest() {
+    	 String expectedMST = new StringBuilder()
+                 .append("[1, 2]").append(LINE_SEPARATOR)
+                 .append("[1, 5]").append(LINE_SEPARATOR)
+                 .append("[3, 5]").append(LINE_SEPARATOR)
+                 .append("[4, 5]").append(LINE_SEPARATOR)
+                 .toString();
+    	assertEquals(integerGraph.MST(), expectedMST);
+    }
+    
+    @Test
+    public void mstIntegerDuplicateGraphTest() {
+    	 String expectedMST = new StringBuilder()
+    			 .append("[1, 2]").append(LINE_SEPARATOR)
+                 .append("[1, 4]").append(LINE_SEPARATOR)
+                 .append("[1, 5]").append(LINE_SEPARATOR)
+                 .append("[2, 3]").append(LINE_SEPARATOR)
+                 .append("[2, 6]").append(LINE_SEPARATOR)
+                 .toString();
+    	assertEquals(integerGraphDuplicate.MST(), expectedMST);
+    }
+    
+    @Test
+    public void mstStringGraphTest() {
+    	String expectedMST = new StringBuilder()
+                .append("[A, B]").append(LINE_SEPARATOR)
+                .append("[A, E]").append(LINE_SEPARATOR)
+                .append("[C, E]").append(LINE_SEPARATOR)
+                .append("[D, E]").append(LINE_SEPARATOR) 
+                .toString();
+   	assertEquals(stringGraph.MST(), expectedMST);
+    }
+    
+    @Test
+    public void mstDisconnectedGraphTest() {
+    	assertEquals(disconnectedGraph.MST(), "disconneted graph");
+    }
 }
