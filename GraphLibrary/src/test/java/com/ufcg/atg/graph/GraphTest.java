@@ -217,6 +217,20 @@ public class GraphTest {
                     e.getMessage(), "A mensagem de erro está errada.");
         }
     }
+    
+    @Test
+    public void BFSTest() {
+    	String expectedResult = new StringBuilder()
+    			.append("1 - 0 -" + LINE_SEPARATOR)
+    			.append("2 - 1 1" + LINE_SEPARATOR)
+    			.append("3 - 2 5" + LINE_SEPARATOR)
+    			.append("4 - 2 5" + LINE_SEPARATOR)
+    			.append("5 - 1 1" + LINE_SEPARATOR)
+    			.toString();				
+    	
+    	assertEquals(expectedResult, integerGraph.BFS(1));
+    }
+    
 
     @Test
     public void disconnectedGraphTest(){
