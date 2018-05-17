@@ -212,53 +212,55 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return null;
     }
 
-    @Override
-    public String DFS(V v) {
-        List<V> visited = new ArrayList<V>();
-        List<String> stringRepresentation = new ArrayList<String>();
-        StringBuilder stringBuilder = new StringBuilder();
-        dfs(v, v,0, visited, stringRepresentation);
-        stringRepresentation.sort(String::compareToIgnoreCase);
-        for(String str : stringRepresentation ){
-            stringBuilder.append(str);
+    private void setUpWalk(Map<V, Boolean> visited) {
+        for(V vertex : getAllVertexes()) {
+            visited.put(vertex, false);
         }
-        return stringBuilder.toString();
     }
 
-    private void dfs(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
-        visited.add(currentVertex);
-        // Process vertex.
-        if(currentVertex.equals(prevVertex)){
-            stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
-        } else {
-            stringRepresentation.add(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
-        }
+    @Override
+    public String DFS(V v) {
+        Map<V, Boolean> visited = new HashMap<>();
+        setUpWalk(visited);
+        List<String> DFSString = new ArrayList<String>();
+        DFS(v, null,0, visited, DFSString);
+        DFSString.sort(String::compareToIgnoreCase);
+        return DFSString.stream()
+                .reduce((s1, s2) -> s1 + s2)
+                .orElse(Utils.STRING_EMPTY);
+    }
+
+    private void DFS(V currentVertex, V prevVertex, int vertexLevel, Map<V, Boolean> visited,
+                     List<String> DFSString){
+        visited.put(currentVertex, true);
+        String previousVertex = prevVertex != null ? prevVertex.toString() : "-";
+        DFSString.add(new StringBuilder()
+                .append(currentVertex).append(" - ")
+                .append(vertexLevel).append(" ")
+                .append(previousVertex).append(LINE_SEPARATOR)
+                .toString());
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-            if(!visited.contains(adjacentVertex)){
-                dfs(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringRepresentation);
+            if(!visited.get(adjacentVertex)){
+                DFS(adjacentVertex, currentVertex, vertexLevel + 1, visited, DFSString);
             }
         }
     }
 
-    private void dfs(V currentVertex, Set<V> visited){
+    private void DFS(V currentVertex, Set<V> visited){
         visited.add(currentVertex);
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
             if(!visited.contains(adjacentVertex))
-                dfs(adjacentVertex, visited);
+                DFS(adjacentVertex, visited);
         }
     }
 
     @Override
     public boolean connected() {
-        Set<V> visited = new HashSet<V>();
-        V currentVertex = null;
-        try{
-            currentVertex = this.vertexes.keySet().iterator().next();
-            dfs(currentVertex, visited);
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-        return visited.equals(this.vertexes.keySet());
+        if (getAllVertexes().isEmpty()) return true;
+        Set<V> visited = new HashSet<>();
+        V currentVertex = vertexes.keySet().iterator().next();
+        DFS(currentVertex, visited);
+        return visited.equals(vertexes.keySet());
     }
 
     @Override
