@@ -17,4 +17,5 @@ dist/
 nbdist/
 .nb-gradle/
 
-out/
+### Diretórios ###
+target/**
