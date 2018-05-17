@@ -220,19 +220,18 @@ public class GraphTest {
     
     @Test
     public void BFSTest() {
-    	String expectedResultRoot1 = "1 2 5 3 4";
-    	String expectedResultRoot2 = "2 1 5 3 4";
-    	String expectedResultRoot3 = "3 5 1 2 4";
-    	String expectedResultRoot4 = "4 5 1 2 3";
-    	String expectedResultRoot5 = "5 1 2 3 4";
+    	String expectedResult = new StringBuilder()
+    			.append("1 - 0 -" + LINE_SEPARATOR)
+    			.append("2 - 1 1" + LINE_SEPARATOR)
+    			.append("3 - 2 5" + LINE_SEPARATOR)
+    			.append("4 - 2 5" + LINE_SEPARATOR)
+    			.append("5 - 1 1" + LINE_SEPARATOR)
+    			.toString();
+    				
     	
-    	assertEquals(expectedResultRoot1, integerGraph.BFS(1));
-    	assertEquals(expectedResultRoot2, integerGraph.BFS(2));
-    	assertEquals(expectedResultRoot3, integerGraph.BFS(3));
-    	assertEquals(expectedResultRoot4, integerGraph.BFS(4));
-    	assertEquals(expectedResultRoot5, integerGraph.BFS(5));
+    	assertEquals(expectedResult, integerGraph.BFS(1));
     }
-  
+    
 
     @Test
     public void disconnectedGraphTest(){
