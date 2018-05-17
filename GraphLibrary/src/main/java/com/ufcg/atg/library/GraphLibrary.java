@@ -204,6 +204,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Specified vertex's edges.
      */
     public Set<? extends Edge<V>> getEdgesOfVertex(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.getEdgesOfVertex(v);
     }
 
@@ -215,6 +218,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Specified vertex's adjacent vertexes.
      */
     public Set<V> getAdjacentVertexes(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.getAdjacentVertexes(v);
     }
 
@@ -288,6 +294,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return BFS of the graph.
      */
     public String BFS(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.BFS(v);
     }
 
@@ -300,6 +309,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return DFS of the graph.
      */
     public String DFS(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.DFS(v);
     }
 
@@ -323,6 +335,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Shortest path between {@code v1} e {@code v2}.
      */
     public String shortestPath(IGraph<V, ? extends Edge<V>> graph, V v1, V v2) {
+        if (!graph.containsVertex(v1) || !graph.containsVertex(v2) ) {
+            throw new RuntimeException("The graph doesn't contains both specified vertexes.");
+        }
         return graph.shortestPath(v1, v2);
     }
 
@@ -336,4 +351,5 @@ public class GraphLibrary<V extends Comparable<V>> {
     String MST(IGraph<V, ? extends Edge<V>> graph) {
         return graph.MST();
     }
+
 }
