@@ -62,5 +62,10 @@ public class Edge<V extends Comparable<V>> implements Comparable<Edge<V>> {
         return originVertexComparison == 0 ?
                 targetVertex.compareTo(o.targetVertex) : originVertexComparison;
     }
+    
+    @Override
+    public String toString() {
+    	return "["+this.getOriginVertex()+", "+this.getTargetVertex()+"]";
+    }
 
 }

@@ -152,5 +152,27 @@ public class WeightedGraphTest {
                     e.getMessage(), "A mensagem de erro está errada.");
         }
     }
+    
+    @Test
+    public void integerMstGraphTest() {
+    	 String expectedMST = new StringBuilder()
+                 .append("[3, 4] : -9.5").append(LINE_SEPARATOR)
+                 .append("[1, 2] : 0.1").append(LINE_SEPARATOR)
+                 .append("[2, 5] : 0.2").append(LINE_SEPARATOR)
+                 .append("[4, 5] : 2.3").append(LINE_SEPARATOR)
+                 .toString();
+    	assertEquals(integerGraph.MST(), expectedMST);
+    }
+    
+    @Test
+    public void stringMstGraphTest() {
+    	 String expectedMST = new StringBuilder()
+                 .append("[C, D] : -9.5").append(LINE_SEPARATOR)
+                 .append("[A, B] : 0.1").append(LINE_SEPARATOR)
+                 .append("[B, E] : 0.2").append(LINE_SEPARATOR)
+                 .append("[D, E] : 2.3").append(LINE_SEPARATOR)
+                 .toString();
+    	assertEquals(stringGraph.MST(), expectedMST);
+    }
 
 }
