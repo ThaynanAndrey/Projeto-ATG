@@ -19,3 +19,5 @@ nbdist/
 /bin/
 
 out/
+### Diretórios ###
+target/**

@@ -1,5 +1,6 @@
 package com.ufcg.atg.graph;
 
+import com.ufcg.atg.util.Kruskal;
 import com.ufcg.atg.util.Utils;
 
 import java.util.*;
@@ -247,12 +248,51 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String DFS(V v) {
-        return null;
+        List<V> visited = new ArrayList<V>();
+        List<String> stringRepresentation = new ArrayList<String>();
+        StringBuilder stringBuilder = new StringBuilder();
+        dfs(v, v,0, visited, stringRepresentation);
+        stringRepresentation.sort(String::compareToIgnoreCase);
+        for(String str : stringRepresentation ){
+            stringBuilder.append(str);
+        }
+        return stringBuilder.toString();
+    }
+
+    private void dfs(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
+        visited.add(currentVertex);
+        // Process vertex.
+        if(currentVertex.equals(prevVertex)){
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
+        } else {
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
+        }
+        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+            if(!visited.contains(adjacentVertex)){
+                dfs(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringRepresentation);
+            }
+        }
+    }
+
+    private void dfs(V currentVertex, Set<V> visited){
+        visited.add(currentVertex);
+        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+            if(!visited.contains(adjacentVertex))
+                dfs(adjacentVertex, visited);
+        }
     }
 
     @Override
     public boolean connected() {
-        return false;
+        Set<V> visited = new HashSet<V>();
+        V currentVertex = null;
+        try{
+            currentVertex = this.vertexes.keySet().iterator().next();
+            dfs(currentVertex, visited);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return visited.equals(this.vertexes.keySet());
     }
 
     @Override
@@ -360,10 +400,19 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
             distances.replace(targetVertex, distances.get(originVertex) + edgeWeight);
         }
     }
-
+    
+    /**
+     * Identifies the minimal spanning tree (MST) of the graph after delegation 
+     * to the kruskal algorithm
+     * @return minimal spanning tree(MST) in string representation
+     */
     @Override
     public String MST() {
-        return null;
+    	if(!this.connected()) {
+    		return "disconneted graph";
+    	}
+    	Kruskal<V,E> mst = new Kruskal<>(this.getAllVertexes(),this.getAllEdges());
+    	return mst.kruskal();
     }
     
 
