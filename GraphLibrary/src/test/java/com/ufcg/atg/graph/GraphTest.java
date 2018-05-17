@@ -4,8 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GraphTest {
 
@@ -128,6 +127,37 @@ public class GraphTest {
             assertEquals("There isn't a path between 1 and 2",
                     e.getMessage(), "A mensagem de erro está errada.");
         }
+    }
+
+    @Test
+    public void disconnectedGraphTest(){
+        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        disconnectedGraph.addVertex(i1);
+        disconnectedGraph.addEdge(i2, i3);
+
+        assertFalse(disconnectedGraph.connected());
+    }
+
+    @Test
+    public void connectedGraphSingleVertexTest(){
+        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
+        Integer i1 = 1;
+        connectedGraph.addVertex(i1);
+
+        assertTrue(connectedGraph.connected());
+    }
+
+    @Test
+    public void connectedGraphTest(){
+        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
+        Integer i1 = 1, i2 = 2, i3 = 3;
+        connectedGraph.addVertex(i1);
+        connectedGraph.addEdge(i1, i2);
+        connectedGraph.addEdge(i2, i3);
+
+        assertTrue(connectedGraph.connected());
+
     }
 
 }

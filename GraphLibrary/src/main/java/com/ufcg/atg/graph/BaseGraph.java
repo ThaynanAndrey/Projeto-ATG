@@ -249,9 +249,9 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         V currentVertex = null;
         try{
             currentVertex = this.vertexes.keySet().iterator().next();
+            dfs(currentVertex, visited);
         } catch (NoSuchElementException e) {
-            // A graph with a single vertex is connected by the trivial path.
-            return true;
+            return false;
         }
         return visited.equals(this.vertexes.keySet());
     }
