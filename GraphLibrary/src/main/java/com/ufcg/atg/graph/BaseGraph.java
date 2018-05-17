@@ -212,24 +212,28 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     public String BFS(V v) {
     	Queue<V> queue = new LinkedList<V>();
     	Map<V, Boolean> visited = new HashMap<V, Boolean>();
-    	setUpBFS(visited);
+    	Map<V, V> predecessor = new HashMap<V, V>();
+    	Map<V, Integer> level = new HashMap<V, Integer>();
+    			
+    	setUpBFS(visited, predecessor, level, v);
     	
-    	queue.add(v);  	
-    	visited.put(v, true);
-    	String resultString = v.toString();
+    	queue.add(v);  
     	
     	while(!queue.isEmpty()){
     		V currentVertex = queue.poll();
     		for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
     			if(!visited.get(adjacentVertex)){
     				visited.put(adjacentVertex, true);
+    				predecessor.put(adjacentVertex, currentVertex);
+    				level.put(adjacentVertex, level.get(currentVertex) + 1);
     				queue.add(adjacentVertex);
-    				resultString = resultString + " " + adjacentVertex.toString();
     			}
     		}
     	}
     	
-        return resultString;
+    	String resultString = BFSStringBuilder(visited, predecessor, level);
+    	
+    	return resultString;
     }
     
     /**
@@ -237,13 +241,56 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     *
     * Actions:
     * - Sets the status of all vertexes as not visited;
+    * - Set the root as visited;
+    * - Set the root level as 0;
+    * - Set the predecessor of the root to "-";
+    * 
     *
     * @param visited {@link Map} that store the vertexes and their status.
+    * @param predecesor {@link Map} that store the vertexes and their predecessor.
+    * @param level {@link Map} that store the vertexes and their level.
+    * @param root Vertex root of the graph.
     */
-    protected void setUpBFS(Map<V, Boolean> visited) {
+    protected void setUpBFS(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level, V root) {
     	for(V vertex : getAllVertexes()) {
     		visited.put(vertex, false);
     	}
+    	
+    	visited.put(root, true);
+    	predecessor.put(root, null);
+    	level.put(root, 0);
+    	
+    }
+    
+    /**
+     * Build the result string of the BFS algorithm.
+     *
+     * Actions:
+     * - Build the result string.
+     *
+     * @param visited {@link Map} that store the vertexes and their status.
+     * @param predecesor {@link Map} that store the vertexes and their predecessor.
+     * @param level {@link Map} that store the vertexes and their level.
+     */
+    protected String BFSStringBuilder(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level) {
+    	StringBuilder stringBuilder = new StringBuilder();
+    	
+    	for(V vertex : visited.keySet()) {
+    		stringBuilder.append(vertex.toString() +
+    				" - " + 
+    				level.get(vertex).toString() +
+    				" ");
+    		if(predecessor.get(vertex) == null) {
+    			stringBuilder.append("-" +
+    					LINE_SEPARATOR);
+    		}else{
+    			stringBuilder.append(predecessor.get(vertex).toString() +
+    				LINE_SEPARATOR);
+    		}
+    				
+    	} 
+    	
+    	return stringBuilder.toString();
     }
 
     @Override

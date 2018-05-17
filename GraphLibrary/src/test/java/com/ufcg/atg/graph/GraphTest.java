@@ -226,8 +226,7 @@ public class GraphTest {
     			.append("3 - 2 5" + LINE_SEPARATOR)
     			.append("4 - 2 5" + LINE_SEPARATOR)
     			.append("5 - 1 1" + LINE_SEPARATOR)
-    			.toString();
-    				
+    			.toString();				
     	
     	assertEquals(expectedResult, integerGraph.BFS(1));
     }
