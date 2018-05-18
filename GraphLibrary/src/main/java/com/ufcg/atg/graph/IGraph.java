@@ -82,14 +82,14 @@ public interface IGraph<V extends Comparable<V>, E extends Edge<V>> {
      *
      * @return Number of vertexes of the graph.
      */
-    int getVertexesNumber();
+    int getVertexNumber();
 
     /**
      * Returns the number of edges of the graph.
      *
      * @return Number of edges of the graph.
      */
-    int getEdgesNumber();
+    int getEdgeNumber();
 
     /**
      * Returns the mean edge of the graph.

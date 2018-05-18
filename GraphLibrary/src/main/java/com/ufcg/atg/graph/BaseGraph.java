@@ -75,22 +75,23 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public boolean containsEdge(Edge<V> e) {
+        if (!containsVertex(e.getOriginVertex())) return false;
         return vertexes.get(e.getOriginVertex()).contains(e);
     }
 
     @Override
-    public int getVertexesNumber() {
+    public int getVertexNumber() {
         return vertexes.size();
     }
 
     @Override
-    public int getEdgesNumber() {
+    public int getEdgeNumber() {
         return getAllEdges().size();
     }
 
     @Override
     public float getMeanEdge() {
-        return getVertexesNumber() > 0 ? ((getEdgesNumber()) / getVertexesNumber()) : 0;
+        return getVertexNumber() > 0 ? ((getEdgeNumber()) / getVertexNumber()) : 0;
     }
 
     @Override
@@ -121,7 +122,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @return Adjacency matrix with all connections between specified vertexes.
      */
     private float[][] setUpAdjacencyMatrix(List<V> orderedVertexes) {
-        int vertexesNumber = getVertexesNumber();
+        int vertexesNumber = getVertexNumber();
         float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
         for(int i = 0; i < vertexesNumber; i++) {
             V currentVertex = orderedVertexes.get(i);
@@ -143,7 +144,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @return The string representation of specified adjacency matrix.
      */
     private String getAdjacencyMatrixString(List<V> orderedVertexes, float adjacencyMatrix[][]) {
-        int vertexesNumber = getVertexesNumber();
+        int vertexesNumber = getVertexNumber();
         StringBuilder matrixSB = new StringBuilder("  ");
 
         for (int i = 0; i < vertexesNumber; i++) {

@@ -118,8 +118,8 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return The added edge between {@code v1} and {@code v2}.
      */
     public Edge<V> addEdge(IGraph<V, ? extends Edge<V>> graph, V v1, V v2) {
-        if (graph.containsEdge(new Edge<V>(v1, v2))) {
-            throw new RuntimeException("The graph already contains the specified edge");
+        if (graph.containsEdge(new Edge<>(v1, v2))) {
+            throw new RuntimeException("The graph already contains the specified edge.");
         }
         return graph.addEdge(v1, v2);
     }
@@ -138,9 +138,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      */
     public WeightedEdge<V> addEdge(IWeightedGraph<V, ? extends WeightedEdge<V>> graph,
                                    V v1, V v2) {
-        if (graph.containsEdge(new WeightedEdge<V>(v1, v2,
+        if (graph.containsEdge(new WeightedEdge<>(v1, v2,
                 WeightedGraph.EDGE_DEFAULT_WEIGHT))) {
-            throw new RuntimeException("The graph already contains the specified edge");
+            throw new RuntimeException("The graph already contains the specified edge.");
         }
         return graph.addEdge(v1, v2);
     }
@@ -160,7 +160,7 @@ public class GraphLibrary<V extends Comparable<V>> {
     public WeightedEdge<V> addEdge(IWeightedGraph<V, ? extends WeightedEdge<V>> graph,
                                    V v1, V v2, float weight){
         if (graph.containsEdge(new WeightedEdge<V>(v1, v2, weight))) {
-            throw new RuntimeException("The graph already contains the specified edge");
+            throw new RuntimeException("The graph already contains the specified edge.");
         }
         return graph.addEdge(v1, v2, weight);
     }
@@ -174,7 +174,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      */
     public void addVertex(IGraph<V, ? extends Edge<V>> graph, V v) {
         if (graph.containsVertex(v)) {
-            throw new RuntimeException("The graph already contains the specified vertex");
+            throw new RuntimeException("The graph already contains the specified vertex.");
         }
         graph.addVertex(v);
     }
@@ -254,7 +254,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Number of vertexes of the graph.
      */
     public int getVertexNumber(IGraph<V, ? extends Edge<V>> graph) {
-        return graph.getVertexesNumber();
+        return graph.getVertexNumber();
     }
 
     /**
@@ -264,7 +264,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Number of edges of the graph.
      */
     public int getEdgeNumber(IGraph<V, ? extends Edge<V>> graph) {
-        return graph.getEdgesNumber();
+        return graph.getEdgeNumber();
     }
 
     /**
