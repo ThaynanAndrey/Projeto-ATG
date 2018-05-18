@@ -209,53 +209,40 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String BFS(V v) {
-    	Queue<V> queue = new LinkedList<V>();
-    	Map<V, Boolean> visited = new HashMap<V, Boolean>();
-    	Map<V, V> predecessor = new HashMap<V, V>();
-    	Map<V, Integer> level = new HashMap<V, Integer>();
-
-    	setUpBFS(visited, predecessor, level, v);
+    	Queue<V> queue = new LinkedList<>();
+        Set<V> visited = new HashSet<>();
+        Map<V, V> predecessor = new HashMap<>();
+    	Map<V, Integer> level = new HashMap<>();
+    	setUpBFS(predecessor, level, v);
     	queue.add(v);
     	while(!queue.isEmpty()){
     		V currentVertex = queue.poll();
     		for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-    			if(!visited.get(adjacentVertex)){
-    				visited.put(adjacentVertex, true);
+    			if(!visited.contains(adjacentVertex)){
+    				visited.add(adjacentVertex);
     				predecessor.put(adjacentVertex, currentVertex);
     				level.put(adjacentVertex, level.get(currentVertex) + 1);
     				queue.add(adjacentVertex);
     			}
     		}
     	}
-    	String resultString = BFSStringBuilder(visited, predecessor, level);
-
-    	return resultString;
+        return BFSStringBuilder(visited, predecessor, level);
     }
 
     /**
     * Sets up the configuration to run the BFS algorithm.
     *
     * Actions:
-    * - Sets the status of all vertexes as not visited;
-    * - Set the root as visited;
-    * - Set the root level as 0;
-    * - Set the predecessor of the root to "-";
+    * - Set the predecessor of the root to null;
+    * - Set the root level as 0.
     *
-    *
-    * @param visited {@link Map} that store the vertexes and their status.
     * @param predecessor {@link Map} that store the vertexes and their predecessor.
     * @param level {@link Map} that store the vertexes and their level.
     * @param root Vertex root of the graph.
     */
-    protected void setUpBFS(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level, V root) {
-    	for(V vertex : getAllVertexes()) {
-    		visited.put(vertex, false);
-    	}
-
-    	visited.put(root, true);
+    protected void setUpBFS(Map<V,V> predecessor, Map<V,Integer> level, V root) {
     	predecessor.put(root, null);
     	level.put(root, 0);
-
     }
 
     /**
@@ -268,20 +255,17 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @param predecessor {@link Map} that store the vertexes and their predecessor.
      * @param level {@link Map} that store the vertexes and their level.
      */
-    protected String BFSStringBuilder(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level) {
+    protected String BFSStringBuilder(Set<V> visited, Map<V,V> predecessor, Map<V,Integer> level) {
     	StringBuilder stringBuilder = new StringBuilder();
+    	List<V> visitedVertexes = new ArrayList<>(visited);
 
-    	for(V vertex : visited.keySet()) {
-    		stringBuilder.append(vertex.toString() +
-    				" - " +
-    				level.get(vertex).toString() +
-    				" ");
+    	for(V vertex : visitedVertexes) {
+    		stringBuilder.append(vertex.toString()).append(" - ")
+                         .append(level.get(vertex).toString()).append(" ");
     		if(predecessor.get(vertex) == null) {
-    			stringBuilder.append("-" +
-    					LINE_SEPARATOR);
+    			stringBuilder.append("-").append(LINE_SEPARATOR);
     		}else{
-    			stringBuilder.append(predecessor.get(vertex).toString() +
-    				LINE_SEPARATOR);
+    			stringBuilder.append(predecessor.get(vertex).toString()).append(LINE_SEPARATOR);
     		}
 
     	}
@@ -289,18 +273,11 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     	return stringBuilder.toString();
     }
 
-    private void setUpWalk(Map<V, Boolean> visited) {
-        for(V vertex : getAllVertexes()) {
-            visited.put(vertex, false);
-        }
-    }
-
     @Override
     public String DFS(V v) {
-        Map<V, Boolean> visited = new HashMap<>();
-        setUpWalk(visited);
-        List<String> DFSString = new ArrayList<String>();
-        DFS(v, null,0, visited, DFSString);
+        Set<V> visited = new HashSet<>();
+        List<String> DFSString = new ArrayList<>();
+        getDFSPath(v, null,0, visited, DFSString);
         DFSString.sort(String::compareToIgnoreCase);
         return DFSString.stream()
                 .reduce((s1, s2) -> s1 + s2)
@@ -314,18 +291,11 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @param prevVertex currentVertex's previous.
      * @param vertexLevel Vertex level in DFS's tree.
      * @param visited List of visited vertexes.
-     * @param stringRepresentation List of string's representation to DFS tree.
+     * @param DFSString List of string's representation to DFS tree.
      */
-    private void getDFSPath(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
-        visited.add(currentVertex);
-        if(currentVertex.equals(prevVertex)){
-            stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
-        } else {
-            stringRepresentation.add(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
-        }
-    private void DFS(V currentVertex, V prevVertex, int vertexLevel, Map<V, Boolean> visited,
+    private void getDFSPath(V currentVertex, V prevVertex, int vertexLevel, Set<V> visited,
                      List<String> DFSString){
-        visited.put(currentVertex, true);
+        visited.add(currentVertex);
         String previousVertex = prevVertex != null ? prevVertex.toString() : "-";
         DFSString.add(new StringBuilder()
                 .append(currentVertex).append(" - ")
@@ -333,8 +303,8 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
                 .append(previousVertex).append(LINE_SEPARATOR)
                 .toString());
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-            if(!visited.get(adjacentVertex)){
-                DFS(adjacentVertex, currentVertex, vertexLevel + 1, visited, DFSString);
+            if(!visited.contains(adjacentVertex)){
+                getDFSPath(adjacentVertex, currentVertex, vertexLevel + 1, visited, DFSString);
             }
         }
     }
@@ -345,7 +315,6 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @param currentVertex Current vertex to be process in DFS.
      * @param visited Vertexes' visited set.
      */
-    private void dfs(V currentVertex, Set<V> visited){
     private void DFS(V currentVertex, Set<V> visited){
         visited.add(currentVertex);
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
@@ -529,7 +498,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     private String MSTRepresentation(List<E> edgesMst) {
         StringBuilder representation = new StringBuilder();
         for(int i=0; i < edgesMst.size(); i++) {
-            representation.append(edgesMst.get(i).toString() + LINE_SEPARATOR);
+            representation.append(edgesMst.get(i).toString()).append(LINE_SEPARATOR);
         }
         return representation.toString();
     }
