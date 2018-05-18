@@ -483,9 +483,9 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @param targetVertex The target vertex of the edge.
      */
     private void union(Map<V,V> subEdges, V originVertex, V targetVertex) {
-        V originVertexePut = this.find(subEdges, originVertex);
-        V targetVertexePut = this.find(subEdges, targetVertex);
-        subEdges.put(originVertexePut, targetVertexePut);
+        V originVertexPut = this.find(subEdges, originVertex);
+        V targetVertexPut = this.find(subEdges, targetVertex);
+        subEdges.put(originVertexPut, targetVertexPut);
     }
 
     /**
@@ -494,7 +494,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @param subEdges subset of the vertexes of the graph with its associations.
      * @return List of MST's edges.
      */
-    public List<E> getEdgesMst(Map<V,V> subEdges) {
+    public List<E> getEdgesMST(Map<V,V> subEdges) {
         List<E> edgesMst = new ArrayList<>();
         List<E> listEdges = new ArrayList<>(this.getAllEdges());
         Collections.sort(listEdges);
@@ -516,7 +516,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @param edgesMst List of MST's edges.
      * @return minimal spanning tree(MST) in string representation.
      */
-    private String kruskalRepresentation(List<E> edgesMst) {
+    private String MSTRepresentation(List<E> edgesMst) {
         StringBuilder representation = new StringBuilder();
         for(int i=0; i < edgesMst.size(); i++) {
             representation.append(edgesMst.get(i).toString() + LINE_SEPARATOR);
@@ -525,33 +525,20 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     /**
-     * Algorithm of kruskal, runs through the ordered set of edges of the graph,
-     * adding to the final set of minimal spanning tree in case the edge does not form a cycle.
+     * Identifies the minimal spanning tree (MST) of the graph.
      *
-     * @return minimal spanning tree(MST) in string representation.
+     * @return Minimal spanning tree (MST) in string representation
      */
-    public String kruskal() {
+    @Override
+    public String MST() {
         Iterator<V> vertexIterator = this.getAllVertexes().iterator();
         Map<V,V> subEdges = new HashMap<>();
         while(vertexIterator.hasNext()) {
             subEdges.put(vertexIterator.next(), null);
         }
-        List<E> edgesMst =  getEdgesMst(subEdges);
+        List<E> edgesMst =  getEdgesMST(subEdges);
 
-        return this.kruskalRepresentation(edgesMst);
-    }
-
-    /**
-     * Identifies the minimal spanning tree (MST) of the graph after delegation 
-     * to the kruskal algorithm
-     * @return minimal spanning tree(MST) in string representation
-     */
-    @Override
-    public String MST() {
-    	if(!this.connected()) {
-    		return DISCONNECTED_GRAPH;
-    	}
-    	return this.kruskal();
+        return this.MSTRepresentation(edgesMst);
     }
 
     @Override
