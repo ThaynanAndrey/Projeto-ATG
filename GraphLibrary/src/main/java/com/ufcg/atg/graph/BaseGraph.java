@@ -209,7 +209,84 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String BFS(V v) {
-        return null;
+    	Queue<V> queue = new LinkedList<V>();
+    	Map<V, Boolean> visited = new HashMap<V, Boolean>();
+    	Map<V, V> predecessor = new HashMap<V, V>();
+    	Map<V, Integer> level = new HashMap<V, Integer>();
+
+    	setUpBFS(visited, predecessor, level, v);
+    	queue.add(v);
+    	while(!queue.isEmpty()){
+    		V currentVertex = queue.poll();
+    		for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+    			if(!visited.get(adjacentVertex)){
+    				visited.put(adjacentVertex, true);
+    				predecessor.put(adjacentVertex, currentVertex);
+    				level.put(adjacentVertex, level.get(currentVertex) + 1);
+    				queue.add(adjacentVertex);
+    			}
+    		}
+    	}
+    	String resultString = BFSStringBuilder(visited, predecessor, level);
+
+    	return resultString;
+    }
+
+    /**
+    * Sets up the configuration to run the BFS algorithm.
+    *
+    * Actions:
+    * - Sets the status of all vertexes as not visited;
+    * - Set the root as visited;
+    * - Set the root level as 0;
+    * - Set the predecessor of the root to "-";
+    *
+    *
+    * @param visited {@link Map} that store the vertexes and their status.
+    * @param predecessor {@link Map} that store the vertexes and their predecessor.
+    * @param level {@link Map} that store the vertexes and their level.
+    * @param root Vertex root of the graph.
+    */
+    protected void setUpBFS(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level, V root) {
+    	for(V vertex : getAllVertexes()) {
+    		visited.put(vertex, false);
+    	}
+
+    	visited.put(root, true);
+    	predecessor.put(root, null);
+    	level.put(root, 0);
+
+    }
+
+    /**
+     * Build the result string of the BFS algorithm.
+     *
+     * Actions:
+     * - Build the result string.
+     *
+     * @param visited {@link Map} that store the vertexes and their status.
+     * @param predecessor {@link Map} that store the vertexes and their predecessor.
+     * @param level {@link Map} that store the vertexes and their level.
+     */
+    protected String BFSStringBuilder(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level) {
+    	StringBuilder stringBuilder = new StringBuilder();
+
+    	for(V vertex : visited.keySet()) {
+    		stringBuilder.append(vertex.toString() +
+    				" - " +
+    				level.get(vertex).toString() +
+    				" ");
+    		if(predecessor.get(vertex) == null) {
+    			stringBuilder.append("-" +
+    					LINE_SEPARATOR);
+    		}else{
+    			stringBuilder.append(predecessor.get(vertex).toString() +
+    				LINE_SEPARATOR);
+    		}
+
+    	}
+
+    	return stringBuilder.toString();
     }
 
     private void setUpWalk(Map<V, Boolean> visited) {
@@ -230,6 +307,22 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
                 .orElse(Utils.STRING_EMPTY);
     }
 
+    /**
+     * Gets the full DFS tree.
+     *
+     * @param currentVertex Current vertex to be process.
+     * @param prevVertex currentVertex's previous.
+     * @param vertexLevel Vertex level in DFS's tree.
+     * @param visited List of visited vertexes.
+     * @param stringRepresentation List of string's representation to DFS tree.
+     */
+    private void getDFSPath(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
+        visited.add(currentVertex);
+        if(currentVertex.equals(prevVertex)){
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
+        } else {
+            stringRepresentation.add(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
+        }
     private void DFS(V currentVertex, V prevVertex, int vertexLevel, Map<V, Boolean> visited,
                      List<String> DFSString){
         visited.put(currentVertex, true);
@@ -246,6 +339,13 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         }
     }
 
+    /**
+     * Performs an in-depth search on the graph.
+     *
+     * @param currentVertex Current vertex to be process in DFS.
+     * @param visited Vertexes' visited set.
+     */
+    private void dfs(V currentVertex, Set<V> visited){
     private void DFS(V currentVertex, Set<V> visited){
         visited.add(currentVertex);
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
@@ -369,9 +469,86 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         }
     }
 
+    /**
+     * Determines whether the vertex is already grouped to a subset, using recursion,
+     * and if so verifies in the sub set of this vertex until finding
+     * a vertex of the non-associated subset.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @param vertex vertex to be checked in the subset
+     * @return associated vertex
+     */
+    private V find(Map<V,V> subEdges, V vertex) {
+        if(subEdges.get(vertex) == null) {
+            return vertex;
+        }
+        return this.find(subEdges, subEdges.get(vertex));
+    }
+
+    /**
+     * Combines two vertexes, creating a subset, which is the relationship between those vertices.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @param originVertex The origin vertex of the edge.
+     * @param targetVertex The target vertex of the edge.
+     */
+    private void union(Map<V,V> subEdges, V originVertex, V targetVertex) {
+        V originVertexPut = this.find(subEdges, originVertex);
+        V targetVertexPut = this.find(subEdges, targetVertex);
+        subEdges.put(originVertexPut, targetVertexPut);
+    }
+
+    /**
+     * Gets list of MST's edges.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @return List of MST's edges.
+     */
+    public List<E> getEdgesMST(Map<V,V> subEdges) {
+        List<E> edgesMst = new ArrayList<>();
+        List<E> listEdges = new ArrayList<>(this.getAllEdges());
+        Collections.sort(listEdges);
+        for(int i=0; i < listEdges.size(); i++) {
+            E egdeOperation = listEdges.get(i);
+            V originVertex = this.find(subEdges, egdeOperation.getOriginVertex());
+            V targetVertex = this.find(subEdges, egdeOperation.getTargetVertex());
+            if(!originVertex.equals(targetVertex)) {
+                edgesMst.add(egdeOperation);
+                this.union(subEdges, originVertex, targetVertex);
+            }
+        }
+        return edgesMst;
+    }
+
+    /**
+     * Generates the string representing minimal spanning tree.
+     *
+     * @param edgesMst List of MST's edges.
+     * @return minimal spanning tree(MST) in string representation.
+     */
+    private String MSTRepresentation(List<E> edgesMst) {
+        StringBuilder representation = new StringBuilder();
+        for(int i=0; i < edgesMst.size(); i++) {
+            representation.append(edgesMst.get(i).toString() + LINE_SEPARATOR);
+        }
+        return representation.toString();
+    }
+
+    /**
+     * Identifies the minimal spanning tree (MST) of the graph.
+     *
+     * @return Minimal spanning tree (MST) in string representation
+     */
     @Override
     public String MST() {
-        return null;
+        Iterator<V> vertexIterator = this.getAllVertexes().iterator();
+        Map<V,V> subEdges = new HashMap<>();
+        while(vertexIterator.hasNext()) {
+            subEdges.put(vertexIterator.next(), null);
+        }
+        List<E> edgesMst =  getEdgesMST(subEdges);
+
+        return this.MSTRepresentation(edgesMst);
     }
 
     @Override

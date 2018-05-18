@@ -23,6 +23,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * Reads a graph from file.
      *
      * @param path File path.
+     * @throws RuntimeException If there is an error reading the file.
      * @return Read graph.
      */
     public IGraph<Integer, Edge<Integer>> readGraph(String path) {
@@ -35,6 +36,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * Reads a weighted graph from a file.
      *
      * @param path File path.
+     * @throws RuntimeException If there is an error reading the file.
      * @return Read graph.
      */
     public IWeightedGraph<Integer, WeightedEdge<Integer>> readWeightedGraph(String path) {
@@ -50,6 +52,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      *
      * @param graph Graph to have a new edges added.
      * @param path Path from where the edges will be obtained.
+     * @throws RuntimeException If there is an error reading the file.
      */
     private void readFile(IGraph<Integer, ? extends Edge<Integer>> graph, String path) {
         boolean isWeightedGraph = graph instanceof IWeightedGraph;
