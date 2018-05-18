@@ -1,6 +1,5 @@
 package com.ufcg.atg.graph;
 
-import com.ufcg.atg.util.Kruskal;
 import com.ufcg.atg.util.Utils;
 
 import java.util.*;
@@ -218,9 +217,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     	Map<V, Integer> level = new HashMap<V, Integer>();
     			
     	setUpBFS(visited, predecessor, level, v);
-    	
-    	queue.add(v);  
-    	
+    	queue.add(v);
     	while(!queue.isEmpty()){
     		V currentVertex = queue.poll();
     		for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
@@ -232,7 +229,6 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     			}
     		}
     	}
-    	
     	String resultString = BFSStringBuilder(visited, predecessor, level);
     	
     	return resultString;
@@ -249,7 +245,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     * 
     *
     * @param visited {@link Map} that store the vertexes and their status.
-    * @param predecesor {@link Map} that store the vertexes and their predecessor.
+    * @param predecessor {@link Map} that store the vertexes and their predecessor.
     * @param level {@link Map} that store the vertexes and their level.
     * @param root Vertex root of the graph.
     */
@@ -271,7 +267,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * - Build the result string.
      *
      * @param visited {@link Map} that store the vertexes and their status.
-     * @param predecesor {@link Map} that store the vertexes and their predecessor.
+     * @param predecessor {@link Map} that store the vertexes and their predecessor.
      * @param level {@link Map} that store the vertexes and their level.
      */
     protected String BFSStringBuilder(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level) {
@@ -462,7 +458,89 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
             distances.replace(targetVertex, distances.get(originVertex) + edgeWeight);
         }
     }
-    
+
+    /**
+     * Determines whether the vertex is already grouped to a subset, using recursion,
+     * and if so verifies in the sub set of this vertex until finding
+     * a vertex of the non-associated subset.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @param vertex vertex to be checked in the subset
+     * @return associated vertex
+     */
+    private V find(Map<V,V> subEdges, V vertex) {
+        if(subEdges.get(vertex) == null) {
+            return vertex;
+        }
+        return this.find(subEdges, subEdges.get(vertex));
+    }
+
+    /**
+     * Combines two vertexes, creating a subset, which is the relationship between those vertices.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @param originVertex The origin vertex of the edge.
+     * @param targetVertex The target vertex of the edge.
+     */
+    private void union(Map<V,V> subEdges, V originVertex, V targetVertex) {
+        V originVertexePut = this.find(subEdges, originVertex);
+        V targetVertexePut = this.find(subEdges, targetVertex);
+        subEdges.put(originVertexePut, targetVertexePut);
+    }
+
+    /**
+     * Gets list of MST's edges.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @return List of MST's edges.
+     */
+    public List<E> getEdgesMst(Map<V,V> subEdges) {
+        List<E> edgesMst = new ArrayList<>();
+        List<E> listEdges = new ArrayList<>(this.getAllEdges());
+        Collections.sort(listEdges);
+        for(int i=0; i < listEdges.size(); i++) {
+            E egdeOperation = listEdges.get(i);
+            V originVertex = this.find(subEdges, egdeOperation.getOriginVertex());
+            V targetVertex = this.find(subEdges, egdeOperation.getTargetVertex());
+            if(!originVertex.equals(targetVertex)) {
+                edgesMst.add(egdeOperation);
+                this.union(subEdges, originVertex, targetVertex);
+            }
+        }
+        return edgesMst;
+    }
+
+    /**
+     * Generates the string representing minimal spanning tree.
+     *
+     * @param edgesMst List of MST's edges.
+     * @return minimal spanning tree(MST) in string representation.
+     */
+    private String kruskalRepresentation(List<E> edgesMst) {
+        StringBuilder representation = new StringBuilder();
+        for(int i=0; i < edgesMst.size(); i++) {
+            representation.append(edgesMst.get(i).toString() + LINE_SEPARATOR);
+        }
+        return representation.toString();
+    }
+
+    /**
+     * Algorithm of kruskal, runs through the ordered set of edges of the graph,
+     * adding to the final set of minimal spanning tree in case the edge does not form a cycle.
+     *
+     * @return minimal spanning tree(MST) in string representation.
+     */
+    public String kruskal() {
+        Iterator<V> vertexIterator = this.getAllVertexes().iterator();
+        Map<V,V> subEdges = new HashMap<>();
+        while(vertexIterator.hasNext()) {
+            subEdges.put(vertexIterator.next(), null);
+        }
+        List<E> edgesMst =  getEdgesMst(subEdges);
+
+        return this.kruskalRepresentation(edgesMst);
+    }
+
     /**
      * Identifies the minimal spanning tree (MST) of the graph after delegation 
      * to the kruskal algorithm
@@ -473,10 +551,8 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     	if(!this.connected()) {
     		return DISCONNECTED_GRAPH;
     	}
-    	Kruskal<V,E> mst = new Kruskal<>(this.getAllVertexes(),this.getAllEdges());
-    	return mst.kruskal();
+    	return this.kruskal();
     }
-    
 
     @Override
     public boolean equals(Object o) {
