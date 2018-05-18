@@ -213,7 +213,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         Set<V> visited = new HashSet<>();
         Map<V, V> predecessor = new HashMap<>();
     	Map<V, Integer> level = new HashMap<>();
-    	setUpBFS(predecessor, level, v);
+    	setUpBFS(visited, predecessor, level, v);
     	queue.add(v);
     	while(!queue.isEmpty()){
     		V currentVertex = queue.poll();
@@ -226,36 +226,36 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     			}
     		}
     	}
-        return BFSStringBuilder(visited, predecessor, level);
+        return setUpBFSString(visited, predecessor, level);
     }
 
     /**
     * Sets up the configuration to run the BFS algorithm.
     *
     * Actions:
-    * - Set the predecessor of the root to null;
-    * - Set the root level as 0.
+    * - Sets the root as a visited vertex;
+    * - Sets the predecessor of the root to null;
+    * - Sets the root level as 0.
     *
+    * @param visited {@link Set} that store the visited vertexes.
     * @param predecessor {@link Map} that store the vertexes and their predecessor.
     * @param level {@link Map} that store the vertexes and their level.
     * @param root Vertex root of the graph.
     */
-    protected void setUpBFS(Map<V,V> predecessor, Map<V,Integer> level, V root) {
-    	predecessor.put(root, null);
-    	level.put(root, 0);
+    protected void setUpBFS(Set<V> visited, Map<V, V> predecessor, Map<V, Integer> level, V root) {
+        visited.add(root);
+        predecessor.put(root, null);
+        level.put(root, 0);
     }
 
     /**
-     * Build the result string of the BFS algorithm.
+     * Sets up the result string of the BFS algorithm.
      *
-     * Actions:
-     * - Build the result string.
-     *
-     * @param visited {@link Map} that store the vertexes and their status.
+     * @param visited {@link Set} that store the vertexes and their status.
      * @param predecessor {@link Map} that store the vertexes and their predecessor.
      * @param level {@link Map} that store the vertexes and their level.
      */
-    protected String BFSStringBuilder(Set<V> visited, Map<V,V> predecessor, Map<V,Integer> level) {
+    protected String setUpBFSString(Set<V> visited, Map<V,V> predecessor, Map<V,Integer> level) {
     	StringBuilder stringBuilder = new StringBuilder();
     	List<V> visitedVertexes = new ArrayList<>(visited);
 

@@ -1,5 +1,6 @@
 package com.ufcg.atg.graph;
 
+import com.ufcg.atg.util.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -273,81 +274,119 @@ public class GraphTest {
      */
     @Test
     public void BFSTest() {
-    	String expectedResult = new StringBuilder()
-    			.append("1 - 0 -" + LINE_SEPARATOR)
-    			.append("2 - 1 1" + LINE_SEPARATOR)
-    			.append("3 - 2 5" + LINE_SEPARATOR)
-    			.append("4 - 2 5" + LINE_SEPARATOR)
-    			.append("5 - 1 1" + LINE_SEPARATOR)
-    			.toString();				
-    	
-    	assertEquals(expectedResult, integerGraph.BFS(1));
+    	String bfsFrom1 = new StringBuilder()
+    			.append("1 - 0 -").append(LINE_SEPARATOR)
+    			.append("2 - 1 1").append(LINE_SEPARATOR)
+    			.append("3 - 2 5").append(LINE_SEPARATOR)
+    			.append("4 - 2 5").append(LINE_SEPARATOR)
+    			.append("5 - 1 1").append(LINE_SEPARATOR)
+    			.toString();
+    	String bfsFrom2 = new StringBuilder()
+    			.append("1 - 1 2").append(LINE_SEPARATOR)
+    			.append("2 - 0 -").append(LINE_SEPARATOR)
+    			.append("3 - 2 5").append(LINE_SEPARATOR)
+    			.append("4 - 2 5").append(LINE_SEPARATOR)
+    			.append("5 - 1 2").append(LINE_SEPARATOR)
+    			.toString();
+    	String bfsFrom5 = new StringBuilder()
+    			.append("1 - 1 5").append(LINE_SEPARATOR)
+    			.append("2 - 1 5").append(LINE_SEPARATOR)
+    			.append("3 - 1 5").append(LINE_SEPARATOR)
+    			.append("4 - 1 5").append(LINE_SEPARATOR)
+    			.append("5 - 0 -").append(LINE_SEPARATOR)
+    			.toString();
+
+    	assertEquals(bfsFrom1, integerGraph.BFS(1));
+    	assertEquals(bfsFrom2, integerGraph.BFS(2));
+    	assertEquals(bfsFrom5, integerGraph.BFS(5));
     }
 
     /**
-     * Tests whether the connected method of the {@link Graph} returns false when
-     * the graph is disconnected.
+     * Tests the return's string of BFD in a disconnected {@link Graph}.
      */
     @Test
-    public void disconnectedGraphTest(){
-        assertFalse(disconnectedGraph.connected());
+    public void BFSInDisconnectedGraphTest(){
+        String bfsFrom1 = new StringBuilder()
+                .append("1 - 0 -").append(LINE_SEPARATOR)
+                .toString();
+        String bfsFrom2 = new StringBuilder()
+                .append("2 - 0 -").append(LINE_SEPARATOR)
+                .toString();
+        String bfsFrom3 = new StringBuilder()
+                .append("3 - 0 -").append(LINE_SEPARATOR)
+                .toString();
+        String bfsFrom4 = new StringBuilder()
+                .append("4 - 0 -").append(LINE_SEPARATOR)
+                .toString();
+        String bfsFrom5 = new StringBuilder()
+                .append("5 - 0 -").append(LINE_SEPARATOR)
+                .toString();
+
+        assertEquals(bfsFrom1, disconnectedGraph.BFS(1));
+        assertEquals(bfsFrom2, disconnectedGraph.BFS(2));
+        assertEquals(bfsFrom3, disconnectedGraph.BFS(3));
+        assertEquals(bfsFrom4, disconnectedGraph.BFS(4));
+        assertEquals(bfsFrom5, disconnectedGraph.BFS(5));
     }
 
     /**
-     * Tests the return's string of DFS in a connected {@link Graph}.
+     * Tests the return's string of DFS in {@link Graph}.
      */
     @Test
-    public void dfsInConnectedGraphTest(){
-        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        connectedGraph.addVertex(i1);
-        connectedGraph.addEdge(i1, i2);
-        connectedGraph.addEdge(i2, i3);
-
+    public void DFSTest(){
         String dfsFrom1 = new StringBuilder()
-                .append("1 - 0 -" + LINE_SEPARATOR)
-                .append("2 - 1 1" + LINE_SEPARATOR)
-                .append("3 - 2 2" + LINE_SEPARATOR)
+                .append("1 - 0 -").append(LINE_SEPARATOR)
+                .append("2 - 1 1").append(LINE_SEPARATOR)
+                .append("3 - 3 5").append(LINE_SEPARATOR)
+                .append("4 - 3 5").append(LINE_SEPARATOR)
+                .append("5 - 2 2").append(LINE_SEPARATOR)
                 .toString();
         String dfsFrom2 = new StringBuilder()
-                .append("1 - 1 2" + LINE_SEPARATOR)
-                .append("2 - 0 -" + LINE_SEPARATOR)
-                .append("3 - 1 2" + LINE_SEPARATOR)
+                .append("1 - 1 2").append(LINE_SEPARATOR)
+                .append("2 - 0 -").append(LINE_SEPARATOR)
+                .append("3 - 3 5").append(LINE_SEPARATOR)
+                .append("4 - 3 5").append(LINE_SEPARATOR)
+                .append("5 - 2 1").append(LINE_SEPARATOR)
                 .toString();
-        String dfsFrom3 = new StringBuilder()
-                .append("1 - 2 2" + LINE_SEPARATOR)
-                .append("2 - 1 3" + LINE_SEPARATOR)
-                .append("3 - 0 -" + LINE_SEPARATOR)
+        String dfsFrom5 = new StringBuilder()
+                .append("1 - 1 5").append(LINE_SEPARATOR)
+                .append("2 - 2 1").append(LINE_SEPARATOR)
+                .append("3 - 1 5").append(LINE_SEPARATOR)
+                .append("4 - 1 5").append(LINE_SEPARATOR)
+                .append("5 - 0 -").append(LINE_SEPARATOR)
                 .toString();
 
-        assertEquals(dfsFrom1, connectedGraph.DFS(i1));
-        assertEquals(dfsFrom2, connectedGraph.DFS(i2));
-        assertEquals(dfsFrom3, connectedGraph.DFS(i3));
+        assertEquals(dfsFrom1, integerGraph.DFS(1));
+        assertEquals(dfsFrom2, integerGraph.DFS(2));
+        assertEquals(dfsFrom5, integerGraph.DFS(5));
     }
 
     /**
      * Tests the return's string of DFS in a disconnected {@link Graph}.
      */
     @Test
-    public void dfsInDisconnectedGraphTest(){
-        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i1, i2);
-        disconnectedGraph.addEdge(i2, i3);
-        disconnectedGraph.addVertex(i4);
-
+    public void DFSInDisconnectedGraphTest(){
+        String dfsFrom1 = new StringBuilder()
+                .append("1 - 0 -").append(LINE_SEPARATOR)
+                .toString();
+        String dfsFrom2 = new StringBuilder()
+                .append("2 - 0 -").append(LINE_SEPARATOR)
+                .toString();
         String dfsFrom3 = new StringBuilder()
-                .append("1 - 2 2" + LINE_SEPARATOR)
-                .append("2 - 1 3" + LINE_SEPARATOR)
-                .append("3 - 0 -" + LINE_SEPARATOR)
+                .append("3 - 0 -").append(LINE_SEPARATOR)
                 .toString();
         String dfsFrom4 = new StringBuilder()
-                .append("4 - 0 -" + LINE_SEPARATOR)
+                .append("4 - 0 -").append(LINE_SEPARATOR)
+                .toString();
+        String dfsFrom5 = new StringBuilder()
+                .append("5 - 0 -").append(LINE_SEPARATOR)
                 .toString();
 
-        assertEquals(dfsFrom3, disconnectedGraph.DFS(i3));
-        assertEquals(dfsFrom4, disconnectedGraph.DFS(i4));
+        assertEquals(dfsFrom1, disconnectedGraph.DFS(1));
+        assertEquals(dfsFrom2, disconnectedGraph.DFS(2));
+        assertEquals(dfsFrom3, disconnectedGraph.DFS(3));
+        assertEquals(dfsFrom4, disconnectedGraph.DFS(4));
+        assertEquals(dfsFrom5, disconnectedGraph.DFS(5));
     }
 
     /**
@@ -394,7 +433,7 @@ public class GraphTest {
                  .append("[2, 3]").append(LINE_SEPARATOR)
                  .append("[2, 6]").append(LINE_SEPARATOR)
                  .toString();
-    	assertEquals(integerGraph.MST(), expectedMST);
+    	assertEquals(expectedMST, integerGraphDuplicate.MST());
     }
 
     /**
@@ -408,7 +447,7 @@ public class GraphTest {
                 .append("[C, E]").append(LINE_SEPARATOR)
                 .append("[D, E]").append(LINE_SEPARATOR) 
                 .toString();
-   	assertEquals(stringGraph.MST(), expectedMST);
+   	assertEquals(expectedMST, stringGraph.MST());
     }
 
     /**
@@ -416,6 +455,6 @@ public class GraphTest {
      */
     @Test
     public void mstDisconnectedGraphTest() {
-    	assertEquals(disconnectedGraph.MST(), "disconneted graph");
+    	assertEquals(Utils.STRING_EMPTY, disconnectedGraph.MST());
     }
 }
