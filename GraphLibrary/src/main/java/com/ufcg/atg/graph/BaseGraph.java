@@ -211,124 +211,115 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     public String BFS(V v) {
     	Queue<V> queue = new LinkedList<>();
         Set<V> visited = new HashSet<>();
-        Map<V, V> predecessor = new HashMap<>();
+        Map<V, V> predecessors = new HashMap<>();
     	Map<V, Integer> level = new HashMap<>();
-    	setUpBFS(visited, predecessor, level, v);
+    	setUpWalkByGraph(v, visited, predecessors, level);
     	queue.add(v);
-    	while(!queue.isEmpty()){
-    		V currentVertex = queue.poll();
-    		for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-    			if(!visited.contains(adjacentVertex)){
-    				visited.add(adjacentVertex);
-    				predecessor.put(adjacentVertex, currentVertex);
-    				level.put(adjacentVertex, level.get(currentVertex) + 1);
-    				queue.add(adjacentVertex);
-    			}
-    		}
-    	}
-        return setUpBFSString(visited, predecessor, level);
+        BFSWalkByGraph(queue, visited, predecessors, level);
+        return setUpWalkByGraphString(visited, predecessors, level);
     }
 
     /**
-    * Sets up the configuration to run the BFS algorithm.
-    *
-    * Actions:
-    * - Sets the root as a visited vertex;
-    * - Sets the predecessor of the root to null;
-    * - Sets the root level as 0.
-    *
-    * @param visited {@link Set} that store the visited vertexes.
-    * @param predecessor {@link Map} that store the vertexes and their predecessor.
-    * @param level {@link Map} that store the vertexes and their level.
-    * @param root Vertex root of the graph.
-    */
-    protected void setUpBFS(Set<V> visited, Map<V, V> predecessor, Map<V, Integer> level, V root) {
-        visited.add(root);
-        predecessor.put(root, null);
-        level.put(root, 0);
+     * Walks by the graph in BFS.
+     *
+     * @param queue {@link Queue} of vertexes to be visited.
+     * @param visited {@link Set} of visited vertexes.
+     * @param predecessors {@link Map} that store the vertexes and their predecessors.
+     * @param level {@link Map} that store the vertexes and their level.
+     */
+    private void BFSWalkByGraph(Queue<V> queue, Set<V> visited, Map<V, V> predecessors, Map<V, Integer> level) {
+        while(!queue.isEmpty()){
+            V currentVertex = queue.poll();
+            for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+                if(!visited.contains(adjacentVertex)){
+                    visited.add(adjacentVertex);
+                    predecessors.put(adjacentVertex, currentVertex);
+                    level.put(adjacentVertex, level.get(currentVertex) + 1);
+                    queue.add(adjacentVertex);
+                }
+            }
+        }
+    }
+
+    @Override
+    public String DFS(V v) {
+        Set<V> visited = new HashSet<>();
+        Map<V, V> predecessors = new HashMap<>();
+        Map<V, Integer> level = new HashMap<>();
+        setUpWalkByGraph(v, visited, predecessors, level);
+        DFSWalkByGraph(v, visited, predecessors, level);
+        return setUpWalkByGraphString(visited, predecessors, level);
+    }
+
+    /**
+     * Walks by the graph in DFS.
+     *
+     * @param currentVertex Current vertex to be process.
+     * @param visited List of visited vertexes.
+     * @param predecessors {@link Map} that store the vertexes and their predecessor.
+     * @param level {@link Map} that store the vertexes and their level.
+     */
+    private void DFSWalkByGraph(V currentVertex, Set<V> visited, Map<V, V> predecessors, Map<V, Integer> level){
+        visited.add(currentVertex);
+        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+            if(!visited.contains(adjacentVertex)){
+                predecessors.put(adjacentVertex, currentVertex);
+                level.put(adjacentVertex, level.get(currentVertex) + 1);
+                DFSWalkByGraph(adjacentVertex, visited, predecessors, level);
+            }
+        }
     }
 
     /**
      * Sets up the result string of the BFS algorithm.
      *
      * @param visited {@link Set} that store the vertexes and their status.
-     * @param predecessor {@link Map} that store the vertexes and their predecessor.
+     * @param predecessors {@link Map} that store the vertexes and their predecessors.
      * @param level {@link Map} that store the vertexes and their level.
      */
-    protected String setUpBFSString(Set<V> visited, Map<V,V> predecessor, Map<V,Integer> level) {
-    	StringBuilder stringBuilder = new StringBuilder();
-    	List<V> visitedVertexes = new ArrayList<>(visited);
+    protected String setUpWalkByGraphString(Set<V> visited, Map<V,V> predecessors, Map<V,Integer> level) {
+        StringBuilder walkByGraphString = new StringBuilder();
+        List<V> visitedVertexes = new ArrayList<>(visited);
 
-    	for(V vertex : visitedVertexes) {
-    		stringBuilder.append(vertex.toString()).append(" - ")
-                         .append(level.get(vertex).toString()).append(" ");
-    		if(predecessor.get(vertex) == null) {
-    			stringBuilder.append("-").append(LINE_SEPARATOR);
-    		}else{
-    			stringBuilder.append(predecessor.get(vertex).toString()).append(LINE_SEPARATOR);
-    		}
+        for(V vertex : visitedVertexes) {
+            V predecessor = predecessors.get(vertex);
+            walkByGraphString.append(vertex.toString()).append(" - ")
+                    .append(level.get(vertex).toString()).append(" ")
+                    .append(predecessor != null ? predecessor.toString() : "-")
+                    .append(LINE_SEPARATOR);
+        }
 
-    	}
-
-    	return stringBuilder.toString();
-    }
-
-    @Override
-    public String DFS(V v) {
-        Set<V> visited = new HashSet<>();
-        List<String> DFSString = new ArrayList<>();
-        getDFSPath(v, null,0, visited, DFSString);
-        DFSString.sort(String::compareToIgnoreCase);
-        return DFSString.stream()
-                .reduce((s1, s2) -> s1 + s2)
-                .orElse(Utils.STRING_EMPTY);
+        return walkByGraphString.toString();
     }
 
     /**
-     * Gets the full DFS tree.
+     * Sets up the configurations to walk by the graph.
      *
-     * @param currentVertex Current vertex to be process.
-     * @param prevVertex currentVertex's previous.
-     * @param vertexLevel Vertex level in DFS's tree.
-     * @param visited List of visited vertexes.
-     * @param DFSString List of string's representation to DFS tree.
-     */
-    private void getDFSPath(V currentVertex, V prevVertex, int vertexLevel, Set<V> visited,
-                     List<String> DFSString){
-        visited.add(currentVertex);
-        String previousVertex = prevVertex != null ? prevVertex.toString() : "-";
-        DFSString.add(new StringBuilder()
-                .append(currentVertex).append(" - ")
-                .append(vertexLevel).append(" ")
-                .append(previousVertex).append(LINE_SEPARATOR)
-                .toString());
-        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-            if(!visited.contains(adjacentVertex)){
-                getDFSPath(adjacentVertex, currentVertex, vertexLevel + 1, visited, DFSString);
-            }
-        }
-    }
-
-    /**
-     * Performs an in-depth search on the graph.
+     * Actions:
+     * - Sets the root as a visited vertex;
+     * - Sets the predecessor of the root to null;
+     * - Sets the root level as 0.
      *
-     * @param currentVertex Current vertex to be process in DFS.
-     * @param visited Vertexes' visited set.
+     * @param root Vertex root of the graph.
+     * @param visited {@link Set} that store the visited vertexes.
+     * @param predecessors {@link Map} that store the vertexes and their predecessor.
+     * @param level {@link Map} that store the vertexes and their level.
      */
-    private void DFS(V currentVertex, Set<V> visited){
-        visited.add(currentVertex);
-        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-            if(!visited.contains(adjacentVertex))
-                DFS(adjacentVertex, visited);
-        }
+    protected void setUpWalkByGraph(V root, Set<V> visited, Map<V, V> predecessors, Map<V, Integer> level) {
+        visited.add(root);
+        predecessors.put(root, null);
+        level.put(root, 0);
     }
 
     @Override
     public boolean connected() {
         if (getAllVertexes().isEmpty()) return true;
         Set<V> visited = new HashSet<>();
-        V currentVertex = vertexes.keySet().iterator().next();
-        DFS(currentVertex, visited);
+        Map<V, V> predecessors = new HashMap<>();
+        Map<V, Integer> level = new HashMap<>();
+        V v = vertexes.keySet().iterator().next();
+        setUpWalkByGraph(v, visited, predecessors, level);
+        DFSWalkByGraph(v, visited, predecessors, level);
         return visited.equals(vertexes.keySet());
     }
 
