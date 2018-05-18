@@ -37,19 +37,4 @@ public interface IWeightedGraph<V extends Comparable<V>, E extends WeightedEdge<
      * @return The added weighted edge.
      */
     E addEdge(V v1, V v2, float weight);
-
-    /**
-     * Returns a representation of the shortest path between the specified
-     * vertexes. As this is an undirected graph, there's no way to find the
-     * shortest path in a graph with negative weighted edges, because these
-     * ones would represent a negative circle.
-     *
-     * @param v1 Origin vertex of the path.
-     * @param v2 Target vertex of the path.
-     * @throws RuntimeException If {@code v1} or {@code v2} doesn't belong
-     * to the graph.
-     * @return Shortest path between {@code v1} e {@code v2}.
-     */
-    String shortestPath(V v1, V v2);
-
 }

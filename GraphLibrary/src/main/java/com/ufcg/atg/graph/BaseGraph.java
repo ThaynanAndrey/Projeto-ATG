@@ -20,6 +20,8 @@ import static com.ufcg.atg.util.Utils.STRING_EMPTY;
  */
 public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> implements IGraph<V, E> {
 
+    private static final String DISCONNECTED_GRAPH = "disconneted graph";
+
     protected Map<V, Set<E>> vertexes;
 
     /**
@@ -298,7 +300,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         List<V> visited = new ArrayList<V>();
         List<String> stringRepresentation = new ArrayList<String>();
         StringBuilder stringBuilder = new StringBuilder();
-        dfs(v, v,0, visited, stringRepresentation);
+        getDFSPath(v, v,0, visited, stringRepresentation);
         stringRepresentation.sort(String::compareToIgnoreCase);
         for(String str : stringRepresentation ){
             stringBuilder.append(str);
@@ -306,9 +308,17 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         return stringBuilder.toString();
     }
 
-    private void dfs(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
+    /**
+     * Gets the full DFS tree.
+     *
+     * @param currentVertex Current vertex to be process.
+     * @param prevVertex currentVertex's previous.
+     * @param vertexLevel Vertex level in DFS's tree.
+     * @param visited List of visited vertexes.
+     * @param stringRepresentation List of string's representation to DFS tree.
+     */
+    private void getDFSPath(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
         visited.add(currentVertex);
-        // Process vertex.
         if(currentVertex.equals(prevVertex)){
             stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
         } else {
@@ -316,11 +326,17 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
         }
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
             if(!visited.contains(adjacentVertex)){
-                dfs(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringRepresentation);
+                getDFSPath(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringRepresentation);
             }
         }
     }
 
+    /**
+     * Performs an in-depth search on the graph.
+     *
+     * @param currentVertex Current vertex to be process in DFS.
+     * @param visited Vertexes' visited set.
+     */
     private void dfs(V currentVertex, Set<V> visited){
         visited.add(currentVertex);
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
@@ -332,9 +348,8 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     @Override
     public boolean connected() {
         Set<V> visited = new HashSet<V>();
-        V currentVertex = null;
         try{
-            currentVertex = this.vertexes.keySet().iterator().next();
+            V currentVertex = this.vertexes.keySet().iterator().next();
             dfs(currentVertex, visited);
         } catch (NoSuchElementException e) {
             return false;
@@ -456,7 +471,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     @Override
     public String MST() {
     	if(!this.connected()) {
-    		return "disconneted graph";
+    		return DISCONNECTED_GRAPH;
     	}
     	Kruskal<V,E> mst = new Kruskal<>(this.getAllVertexes(),this.getAllEdges());
     	return mst.kruskal();
@@ -475,5 +490,4 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     public int hashCode() {
         return Objects.hash(vertexes);
     }
-
 }

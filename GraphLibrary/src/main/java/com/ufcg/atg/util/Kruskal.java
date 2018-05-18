@@ -72,9 +72,7 @@ public class Kruskal<V extends Comparable<V>, E extends Edge<V>>{
 	 * adding to the final set of minimal spanning tree in case the edge does not form a cycle.
 	 * @return minimal spanning tree(MST) in string representation.
 	 */
-	
 	public String kruskal() {
-		//
 		while(this.vertexeIterator.hasNext()) {
 			this.subEdges.put(this.vertexeIterator.next(), null);
 		}
@@ -110,5 +108,4 @@ public class Kruskal<V extends Comparable<V>, E extends Edge<V>>{
 		}
 		return result;
 	}
-	
 }
