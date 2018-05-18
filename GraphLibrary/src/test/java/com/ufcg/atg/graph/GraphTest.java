@@ -1,6 +1,5 @@
 package com.ufcg.atg.graph;
 
-import com.ufcg.atg.util.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +7,7 @@ import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests the class {@link Graph}.
+ * Tests the class {@link Graph} as an implementation of {@link IGraph}.
  */
 public class GraphTest {
 
@@ -213,23 +212,6 @@ public class GraphTest {
     }
 
     /**
-     * Tests the adjacency list representation of a integer's disconnected {@link Graph}.
-     */
-    @Test
-    public void graphDisconnetecListRepresentationTest() {
-        String expectedList = new StringBuilder()
-                .append("1 - ").append(LINE_SEPARATOR)
-                .append("2 - ").append(LINE_SEPARATOR)
-                .append("3 - ").append(LINE_SEPARATOR)
-                .append("4 - ").append(LINE_SEPARATOR)
-                .append("5 - ").append(LINE_SEPARATOR)
-                .toString();
-
-        String list = disconnectedGraph.graphRepresentation(RepresentationType.ADJACENCY_LIST);
-        assertEquals(list, expectedList);
-    }
-
-    /**
      * Tests the shortest path between two vertexes at {@link Graph}.
      */
     @Test
@@ -247,165 +229,6 @@ public class GraphTest {
         assertEquals(expectedPathBetween5And5, integerGraph.shortestPath(5, 5));
     }
 
-    /**
-     * Tests if throws exception when try get shortest path between disconnected vertexes.
-     */
-    @Test
-    public void disconnectedGraphShortestPathTest() {
-        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i2, i3);
-        String expectedPathBetween2And3 = "2 3";
-        assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
-
-        try {
-            disconnectedGraph.shortestPath(i1, i2);
-            fail("Should have thrown exception when trying to find the" +
-                    " shortest path between disconnected vertexes.");
-        } catch (Exception e) {
-            assertEquals("There isn't a path between 1 and 2",
-                    e.getMessage(), "A mensagem de erro está errada.");
-        }
-    }
-
-    /**
-     * Tests the return's string of BFS in {@link Graph}.
-     */
-    @Test
-    public void BFSTest() {
-    	String bfsFrom1 = new StringBuilder()
-    			.append("1 - 0 -").append(LINE_SEPARATOR)
-    			.append("2 - 1 1").append(LINE_SEPARATOR)
-    			.append("3 - 2 5").append(LINE_SEPARATOR)
-    			.append("4 - 2 5").append(LINE_SEPARATOR)
-    			.append("5 - 1 1").append(LINE_SEPARATOR)
-    			.toString();
-    	String bfsFrom2 = new StringBuilder()
-    			.append("1 - 1 2").append(LINE_SEPARATOR)
-    			.append("2 - 0 -").append(LINE_SEPARATOR)
-    			.append("3 - 2 5").append(LINE_SEPARATOR)
-    			.append("4 - 2 5").append(LINE_SEPARATOR)
-    			.append("5 - 1 2").append(LINE_SEPARATOR)
-    			.toString();
-    	String bfsFrom5 = new StringBuilder()
-    			.append("1 - 1 5").append(LINE_SEPARATOR)
-    			.append("2 - 1 5").append(LINE_SEPARATOR)
-    			.append("3 - 1 5").append(LINE_SEPARATOR)
-    			.append("4 - 1 5").append(LINE_SEPARATOR)
-    			.append("5 - 0 -").append(LINE_SEPARATOR)
-    			.toString();
-
-    	assertEquals(bfsFrom1, integerGraph.BFS(1));
-    	assertEquals(bfsFrom2, integerGraph.BFS(2));
-    	assertEquals(bfsFrom5, integerGraph.BFS(5));
-    }
-
-    /**
-     * Tests the return's string of BFD in a disconnected {@link Graph}.
-     */
-    @Test
-    public void BFSInDisconnectedGraphTest(){
-        String bfsFrom1 = new StringBuilder()
-                .append("1 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String bfsFrom2 = new StringBuilder()
-                .append("2 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String bfsFrom3 = new StringBuilder()
-                .append("3 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String bfsFrom4 = new StringBuilder()
-                .append("4 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String bfsFrom5 = new StringBuilder()
-                .append("5 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-
-        assertEquals(bfsFrom1, disconnectedGraph.BFS(1));
-        assertEquals(bfsFrom2, disconnectedGraph.BFS(2));
-        assertEquals(bfsFrom3, disconnectedGraph.BFS(3));
-        assertEquals(bfsFrom4, disconnectedGraph.BFS(4));
-        assertEquals(bfsFrom5, disconnectedGraph.BFS(5));
-    }
-
-    /**
-     * Tests the return's string of DFS in {@link Graph}.
-     */
-    @Test
-    public void DFSTest(){
-        String dfsFrom1 = new StringBuilder()
-                .append("1 - 0 -").append(LINE_SEPARATOR)
-                .append("2 - 1 1").append(LINE_SEPARATOR)
-                .append("3 - 3 5").append(LINE_SEPARATOR)
-                .append("4 - 3 5").append(LINE_SEPARATOR)
-                .append("5 - 2 2").append(LINE_SEPARATOR)
-                .toString();
-        String dfsFrom2 = new StringBuilder()
-                .append("1 - 1 2").append(LINE_SEPARATOR)
-                .append("2 - 0 -").append(LINE_SEPARATOR)
-                .append("3 - 3 5").append(LINE_SEPARATOR)
-                .append("4 - 3 5").append(LINE_SEPARATOR)
-                .append("5 - 2 1").append(LINE_SEPARATOR)
-                .toString();
-        String dfsFrom5 = new StringBuilder()
-                .append("1 - 1 5").append(LINE_SEPARATOR)
-                .append("2 - 2 1").append(LINE_SEPARATOR)
-                .append("3 - 1 5").append(LINE_SEPARATOR)
-                .append("4 - 1 5").append(LINE_SEPARATOR)
-                .append("5 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-
-        assertEquals(dfsFrom1, integerGraph.DFS(1));
-        assertEquals(dfsFrom2, integerGraph.DFS(2));
-        assertEquals(dfsFrom5, integerGraph.DFS(5));
-    }
-
-    /**
-     * Tests the return's string of DFS in a disconnected {@link Graph}.
-     */
-    @Test
-    public void DFSInDisconnectedGraphTest(){
-        String dfsFrom1 = new StringBuilder()
-                .append("1 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String dfsFrom2 = new StringBuilder()
-                .append("2 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String dfsFrom3 = new StringBuilder()
-                .append("3 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String dfsFrom4 = new StringBuilder()
-                .append("4 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-        String dfsFrom5 = new StringBuilder()
-                .append("5 - 0 -").append(LINE_SEPARATOR)
-                .toString();
-
-        assertEquals(dfsFrom1, disconnectedGraph.DFS(1));
-        assertEquals(dfsFrom2, disconnectedGraph.DFS(2));
-        assertEquals(dfsFrom3, disconnectedGraph.DFS(3));
-        assertEquals(dfsFrom4, disconnectedGraph.DFS(4));
-        assertEquals(dfsFrom5, disconnectedGraph.DFS(5));
-    }
-
-    /**
-     * Tests connected {@link Graph}.
-     */
-    @Test
-    public void connectedGraphTest(){
-        IGraph<Integer, Edge<Integer>> singleVertexGraph = new Graph<>();
-        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        singleVertexGraph.addVertex(i1);
-        connectedGraph.addVertex(i1);
-        connectedGraph.addEdge(i1, i2);
-        connectedGraph.addEdge(i2, i3);
-
-        assertTrue(singleVertexGraph.connected());
-        assertTrue(connectedGraph.connected());
-        assertFalse(disconnectedGraph.connected());
-    }
 
     /**
      * Tests MST in integer's {@link Graph}.
@@ -447,14 +270,7 @@ public class GraphTest {
                 .append("[C, E]").append(LINE_SEPARATOR)
                 .append("[D, E]").append(LINE_SEPARATOR) 
                 .toString();
-   	assertEquals(expectedMST, stringGraph.MST());
+   	    assertEquals(expectedMST, stringGraph.MST());
     }
 
-    /**
-     * Tests MST in disconnected {@link Graph}.
-     */
-    @Test
-    public void mstDisconnectedGraphTest() {
-    	assertEquals(Utils.STRING_EMPTY, disconnectedGraph.MST());
-    }
 }
