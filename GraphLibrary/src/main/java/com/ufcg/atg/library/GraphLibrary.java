@@ -59,15 +59,13 @@ public class GraphLibrary<V extends Comparable<V>> {
         try {
             FileReader file = new FileReader(path);
             BufferedReader bfFile = new BufferedReader(file);
-
-            String currentLine = bfFile.readLine();
-            Integer edgesAmount = Integer.parseInt(currentLine);
-            for (int i=0; i < edgesAmount; i++) {
-                String edge = bfFile.readLine();
+            int vertexesQuantity = Integer.parseInt(bfFile.readLine());
+            String edgeStringRepr;
+            while((edgeStringRepr = bfFile.readLine()) != null) {
                 if(isWeightedGraph) {
-                    addWeightedEdge((IWeightedGraph<Integer, WeightedEdge<Integer>>) graph, edge);
+                    addWeightedEdge((IWeightedGraph<Integer, WeightedEdge<Integer>>) graph, edgeStringRepr);
                 } else {
-                    addEdge((IGraph<Integer, Edge<Integer>>) graph, edge);
+                    addEdge((IGraph<Integer, Edge<Integer>>) graph, edgeStringRepr);
                 }
             }
             file.close();
