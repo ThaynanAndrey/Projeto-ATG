@@ -272,7 +272,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
     }
 
     /**
-     * Sets up the result string of the BFS algorithm.
+     * Sets up the result string of a 'walk by graph' algorithm.
      *
      * @param visited {@link Set} that store the vertexes and their status.
      * @param predecessors {@link Map} that store the vertexes and their predecessors.
@@ -290,6 +290,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
                     .append(LINE_SEPARATOR);
         }
 
+        Collections.sort(visitedVertexes);
         return walkByGraphString.toString();
     }
 
