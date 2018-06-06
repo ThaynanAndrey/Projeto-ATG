@@ -60,6 +60,9 @@ public class GraphLibrary<V extends Comparable<V>> {
             FileReader file = new FileReader(path);
             BufferedReader bfFile = new BufferedReader(file);
             int vertexesQuantity = Integer.parseInt(bfFile.readLine());
+            for (int i = 1; i <= vertexesQuantity; i++) {
+                graph.addVertex(i);
+            }
             String edgeStringRepr;
             while((edgeStringRepr = bfFile.readLine()) != null) {
                 if(isWeightedGraph) {
