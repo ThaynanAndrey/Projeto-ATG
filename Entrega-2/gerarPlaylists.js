@@ -56,8 +56,6 @@ function createMusicsGraph() {
     let nodes = [];
 
     playlists.forEach((playlist, h) => {
-        
-        if(h<1000) {
 
         for(let i = 0; i < playlist.tracks.length; i++) {
             const track = playlist.tracks[i];
@@ -78,7 +76,6 @@ function createMusicsGraph() {
                     edges.push([track.track_name, otherTrack.track_name, 1]);
                 }
             }
-        }
         }
     });
     console.log("Grafo criado!");
@@ -101,7 +98,7 @@ function filterLittlePopularMusics() {
                     }
                 });
             });
-            if(contador < 300) {
+            if(contador < 100) {
                 novaPlaylist[i].tracks.splice(j, 1);
             }
         });
