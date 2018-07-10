@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Tests the class {@link WeightedGraph}.
+ * Tests the class {@link WeightedGraph} as an implementation of {@link IWeightedGraph}.
  */
 public class WeightedGraphTest {
 
@@ -166,29 +166,6 @@ public class WeightedGraphTest {
     }
 
     /**
-     * Tests if throws exception when trying to find the shortest path
-     * between disconnected vertexes.
-     */
-    @Test
-    public void disconnectedGraphShortestPathTest() {
-        IWeightedGraph<Integer, WeightedEdge<Integer>> disconnectedGraph = new WeightedGraph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i2, i3, 5f);
-        String expectedPathBetween2And3 = "2 3";
-        assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
-
-        try {
-            disconnectedGraph.shortestPath(i1, i2);
-            fail("Should have thrown exception when trying to find the" +
-                    " shortest path between disconnected vertexes.");
-        } catch (Exception e) {
-            assertEquals("There isn't a path between 1 and 2",
-                    e.getMessage(), "A mensagem de erro está errada.");
-        }
-    }
-
-    /**
      * Tests MST in integer's {@link WeightedGraph}.
      */
     @Test
@@ -215,4 +192,5 @@ public class WeightedGraphTest {
                  .toString();
     	assertEquals(stringGraph.MST(), expectedMST);
     }
+
 }
