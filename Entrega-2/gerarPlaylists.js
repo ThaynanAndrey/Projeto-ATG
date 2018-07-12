@@ -1,6 +1,6 @@
-// Importa com <npm install underscore>
 const _ = require('underscore');
 const fs = require('fs');
+const stringify = require('csv-stringify');
 
 let playlists = [];
 
@@ -34,14 +34,6 @@ function kruskal(nodes, edges) {
         }
     }
     return mst;
-}
-
-function breakTree(tree) {
-    const minElement = _.min(tree, (branch) => branch[WEIGHTED_EDGE_INDEX])[WEIGHTED_EDGE_INDEX];
-    const indexMinElement = _.findIndex(tree, (branch) => branch[WEIGHTED_EDGE_INDEX] === minElement);
-    tree.splice(indexMinElement, 1);
-    console.log("---------");
-    console.log(tree);
 }
 
 function loadPlaylists() {
@@ -120,6 +112,13 @@ function filterLittlePopularMusics() {
     console.log("Gerando árvore máxima geradora..");
     const maximumSpanningTree = kruskal(graph.nodes, graph.edges);
 
-    console.log(maximumSpanningTree);
-    //breakTree(kruskal(nodes, edges));
+    stringify(maximumSpanningTree, function(err, resultado) {
+      fs.writeFile('maximumSpanningTree.csv', resultado, 'utf8', function(err) {
+        if (err) {
+          console.log('Ocorreu um erro na gravação do arquivo...');
+        } else {
+          console.log('maximumSpanningTree salvo!');
+        }
+      });
+    });
 })();
