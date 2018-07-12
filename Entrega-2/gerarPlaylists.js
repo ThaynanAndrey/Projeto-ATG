@@ -109,9 +109,9 @@ function filterLittlePopularMusics() {
     graph.edges = graph.edges.filter((edge) => edge[WEIGHTED_EDGE_INDEX] > 10);
     console.log("Filtrou-se as arestas..");
 
-    console.log("Gerando árvore máxima geradora..");
-    const maximumSpanningTree = kruskal(graph.nodes, graph.edges);
-
+    console.log("Gerando árvore máxima geradora..");  
+    let maximumSpanningTree = kruskal(graph.nodes, graph.edges);
+    maximumSpanningTree = [["source", "target", "weight"]].concat(maximumSpanningTree);
     stringify(maximumSpanningTree, function(err, resultado) {
       fs.writeFile('maximumSpanningTree.csv', resultado, 'utf8', function(err) {
         if (err) {
