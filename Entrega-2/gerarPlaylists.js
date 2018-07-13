@@ -27,7 +27,7 @@ function kruskal(nodes, edges) {
             return _.include(tree, n2);
         });
 
-        if (t1 != t2) {
+        if (!_.isEqual(t1, t2)) {
             forest = _.without(forest, t1[0], t2[0]);
             forest.push(_.union(t1[0], t2[0]));
             mst.push(edge);
