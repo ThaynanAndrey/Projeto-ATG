@@ -4,20 +4,16 @@ const stringify = require('csv-stringify');
 
 let playlists = [];
 
-const FIRST_NODE_INDEX = 0;
-const SECOND_NODE_INDEX = 1;
-const WEIGHTED_EDGE_INDEX = 2;
-
 function kruskal(nodes, edges) {
     const mst = [];
     let forest = _.map(nodes, (node) => [node]);
-    const sortedEdges = _.sortBy(edges, (edge) => edge[WEIGHTED_EDGE_INDEX]);
+    const sortedEdges = _.sortBy(edges, (edge) => edge.weight);
     
     while(forest.length > 1 && sortedEdges.length > 0) {
         const edge = sortedEdges.pop();
 
-        const n1 = edge[FIRST_NODE_INDEX],
-            n2 = edge[SECOND_NODE_INDEX];
+        const n1 = edge.out,
+            n2 = edge.in;
 
         const t1 = _.filter(forest, function(tree) {
             return _.include(tree, n1);
@@ -42,36 +38,37 @@ function loadPlaylists() {
     playlists = temp.playlists;
 };
 
-function createMusicsGraph() {
-    console.log("Criando grafo..");
-    let edges = [];
-    let nodes = [];
+function createMusicsRelations() {
+    console.log("Criando relações entre as músicas..");
+    let edges = {};
 
-    playlists.forEach((playlist, h) => {
+    playlists.forEach((playlist, i) => {
+        console.log("Playlist de número: " + i);
 
         for(let i = 0; i < playlist.tracks.length; i++) {
-            const track = playlist.tracks[i];
-
-            if(_.findIndex(nodes, (node) => node === track.track_name) === -1) {
-                nodes.push(track.track_name);
-            }
+            const track = playlist.tracks[i].track_name;
 
             for(let j = i+1; j < playlist.tracks.length; j++) {
-                const otherTrack = playlist.tracks[j];
-                const newIndex = _.findIndex(edges, (branch) => 
-                    (branch[FIRST_NODE_INDEX] === track.track_name && branch[SECOND_NODE_INDEX] === otherTrack.track_name)
-                    || (branch[SECOND_NODE_INDEX] === track.track_name && branch[FIRST_NODE_INDEX] === otherTrack.track_name));
-
-                if(newIndex !== -1) {
-                    edges[newIndex][WEIGHTED_EDGE_INDEX] = edges[newIndex][WEIGHTED_EDGE_INDEX] + 1;
-                } else {
-                    edges.push([track.track_name, otherTrack.track_name, 1]);
+                const otherTrack = playlist.tracks[j].track_name;
+                let outEdgeIndex = _.findIndex(edges[track], edge => edge.in === otherTrack);
+                let inEdgeIndex = _.findIndex(edges[otherTrack], edge => edge.in === track);
+                let existsOutEdge = outEdgeIndex >= 0;
+                let existsInEdge = inEdgeIndex >= 0;
+                
+                if (!existsOutEdge && !existsInEdge) {
+                    edges[track] = edges[track] || [];
+                    let edge = {out: track, in: otherTrack, weight: 1};
+                    edges[track].push(edge);
+                } else if (existsOutEdge && !existsInEdge) {
+                    edges[track][outEdgeIndex].weight = edges[track][outEdgeIndex].weight + 1;
+                } else if (!existsOutEdge && existsInEdge) {
+                    edges[otherTrack][inEdgeIndex].weight = edges[otherTrack][inEdgeIndex].weight + 1;
                 }
             }
         }
     });
-    console.log("Grafo criado!");
-    return {edges: edges, nodes: nodes};
+    console.log("Relações criadas!");
+    return edges;
 }
 
 function filterLittlePopularMusics() {
@@ -99,26 +96,53 @@ function filterLittlePopularMusics() {
     return novaPlaylist.slice();
 }
 
-(() => {
-    loadPlaylists();
-    playlists = filterLittlePopularMusics();
-
-    const graph = createMusicsGraph();
-
-    console.log("Filtrando-se músicas com poucas relações");
-    graph.edges = graph.edges.filter((edge) => edge[WEIGHTED_EDGE_INDEX] > 10);
-    console.log("Filtrou-se as arestas..");
-
-    console.log("Gerando árvore máxima geradora..");  
-    let maximumSpanningTree = kruskal(graph.nodes, graph.edges);
-    maximumSpanningTree = [["source", "target", "weight"]].concat(maximumSpanningTree);
-    stringify(maximumSpanningTree, function(err, resultado) {
-      fs.writeFile('maximumSpanningTree.csv', resultado, 'utf8', function(err) {
+const writeFile = (nodes, fileName) => {
+    console.log("Salvando " + fileName);
+    stringify(nodes, function(err, resultado) {
+      fs.writeFile(fileName, resultado, 'utf8', function(err) {
         if (err) {
           console.log('Ocorreu um erro na gravação do arquivo...');
-        } else {
-          console.log('maximumSpanningTree salvo!');
+        } else {''
+          console.log(fileName + ' salvo!');
         }
       });
     });
+};
+
+const getNodes = (edges) => {
+    let nodes = [];
+    edges.forEach(e => {
+        if (!_.contains(nodes, e.out)){
+            nodes.push(e.out);
+        }
+        if (!_.contains(nodes, e.in)){
+            nodes.push(e.in);
+        }
+    });
+    return nodes;
+};
+
+(() => {
+    loadPlaylists();
+    playlists = filterLittlePopularMusics();
+    const musicsRelations = createMusicsRelations();
+
+    let edges = _.values(musicsRelations)
+            .reduce((a, e) => [...a,...e])
+            .filter(edge => edge.weight > 10);
+
+    let nodes = getNodes(edges);
+    let mstEdges = [];
+
+    nodes = [["id", "label"]].concat(nodes.map(node => [node, node]));
+    mstEdges = [["source", "target", "weight", "label"]]
+            .concat(kruskal(edges)
+                    .map(edge => [edge.out, edge.in, edge.weight, edge.weight]));
+    edges = [["source", "target", "weight", "label"]]
+            .concat(edges
+                    .map(edge => [edge.out, edge.in, edge.weight, edge.weight]));
+    
+    writeFile(nodes, 'nodes.csv');
+    writeFile(nodes, 'mstEdges.csv');
+    writeFile(edges, 'edges.csv');
 })();
