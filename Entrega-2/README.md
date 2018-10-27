@@ -6,6 +6,7 @@
   <a href="#Objetivo"><strong>Objetivo</strong></a> ·
   <a href="#Modelagem"><strong>Modelagem</strong></a> ·
   <a href="#Metodologia"><strong>Modelagem</strong></a> ·
+  <a href="#Execução"><strong>Execução</strong></a> ·
   <a href="#Grafo"><strong>Grafo</strong></a> ·
   <a href="#Playlists"><strong>Playlists</strong></a> ·
 </p>
