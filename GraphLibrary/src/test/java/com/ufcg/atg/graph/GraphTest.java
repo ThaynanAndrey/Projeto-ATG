@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests the class {@link Graph} as an implementation of {@link IGraph}.
+ */
 public class GraphTest {
 
     private IGraph<Integer, Edge<Integer>> integerGraph;
@@ -13,6 +16,9 @@ public class GraphTest {
     private IGraph<String, Edge<String>> stringGraph;
     private IGraph<Integer, Edge<Integer>> disconnectedGraph;
 
+    /**
+     * Tests' set up.
+     */
     @BeforeEach
     public void setUp() {
         setUpGraphOfIntegers();
@@ -21,6 +27,9 @@ public class GraphTest {
         setUpGraphOfIntegersDuplicate();
     }
 
+    /**
+     * Constructs a {@link Graph} with vertices of integer value.
+     */
     private void setUpGraphOfIntegers() {
         Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5;
         integerGraph = new Graph<>();
@@ -30,7 +39,10 @@ public class GraphTest {
         integerGraph.addEdge(i4, i5);
         integerGraph.addEdge(i1, i5);
     }
-    
+
+    /**
+     * Constructs a {@link Graph} with vertices of integer duplicate value.
+     */
     private void setUpGraphOfIntegersDuplicate() {
         Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5, i6 = 6;
         integerGraphDuplicate = new Graph<>();
@@ -46,6 +58,9 @@ public class GraphTest {
         integerGraphDuplicate.addEdge(i5, i6);
     }
 
+    /**
+     * Constructs a {@link Graph} with vertices of string value.
+     */
     private void setUpGraphOfStrings() {
         String s1 = "A", s2 = "B", s3 = "C", s4 = "D", s5 = "E";
         stringGraph = new Graph<>();
@@ -55,7 +70,10 @@ public class GraphTest {
         stringGraph.addEdge(s4, s5);
         stringGraph.addEdge(s1, s5);
     }
-    
+
+    /**
+     * Constructs a disconnected {@link Graph} with vertices of integer value.
+     */
     private void setUpDisconnectedGraph() {
     	Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5;
     	disconnectedGraph = new Graph<>();
@@ -65,7 +83,11 @@ public class GraphTest {
     	disconnectedGraph.addVertex(i4);
     	disconnectedGraph.addVertex(i5);
     }
-    
+
+    /**
+     * Tests the adjacency matrix representation of a {@link Graph} with
+     * duplicated integers.
+     */
     @Test
     public void graphOfIntegersDuplicateMatrixRepresentationTest() {
         String expectedMatrix = new StringBuilder()
@@ -82,6 +104,9 @@ public class GraphTest {
         assertEquals(matrix, expectedMatrix);
     }
 
+    /**
+     * Tests the adjacency matrix representation of a integer's {@link Graph}.
+     */
     @Test
     public void graphOfIntegersMatrixRepresentationTest() {
         String expectedMatrix = new StringBuilder()
@@ -97,6 +122,9 @@ public class GraphTest {
         assertEquals(matrix, expectedMatrix);
     }
 
+    /**
+     * Tests the adjacency matrix representation of a string's {@link Graph}.
+     */
     @Test
     public void graphOfStringsMatrixRepresentationTest() {
         String expectedMatrix = new StringBuilder()
@@ -111,7 +139,10 @@ public class GraphTest {
         String matrix = stringGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
         assertEquals(matrix, expectedMatrix);
     }
-    
+
+    /**
+     * Tests the adjacency matrix representation of a integer's  disconnected {@link Graph}.
+     */
     @Test
     public void graphDisconnetedMatrixRepresentationTest() {
         String expectedMatrix = new StringBuilder()
@@ -126,7 +157,11 @@ public class GraphTest {
         String matrix = disconnectedGraph.graphRepresentation(RepresentationType.ADJACENCY_MATRIX);
         assertEquals(matrix, expectedMatrix);
     }
-    
+
+    /**
+     * Tests the adjacency list representation of a string's {@link Graph}
+     * with duplicated strings.
+     */
     @Test
     public void graphOfIntegersDuplicateListRepresentationTest() {
         String expectedList = new StringBuilder()
@@ -142,6 +177,9 @@ public class GraphTest {
         assertEquals(list, expectedList);
     }
 
+    /**
+     * Tests the adjacency list representation of a integer's  {@link Graph}.
+     */
     @Test
     public void graphOfIntegersListRepresentationTest() {
         String expectedList = new StringBuilder()
@@ -156,6 +194,9 @@ public class GraphTest {
         assertEquals(list, expectedList);
     }
 
+    /**
+     * Tests the adjacency list representation of a string's  {@link Graph}.
+     */
     @Test
     public void graphOfStringsListRepresentationTest() {
         String expectedList = new StringBuilder()
@@ -170,20 +211,9 @@ public class GraphTest {
         assertEquals(list, expectedList);
     }
 
-    @Test
-    public void graphDisconnetecListRepresentationTest() {
-        String expectedList = new StringBuilder()
-                .append("1 - ").append(LINE_SEPARATOR)
-                .append("2 - ").append(LINE_SEPARATOR)
-                .append("3 - ").append(LINE_SEPARATOR)
-                .append("4 - ").append(LINE_SEPARATOR)
-                .append("5 - ").append(LINE_SEPARATOR)
-                .toString();
-
-        String list = disconnectedGraph.graphRepresentation(RepresentationType.ADJACENCY_LIST);
-        assertEquals(list, expectedList);
-    }
-    
+    /**
+     * Tests the shortest path between two vertexes at {@link Graph}.
+     */
     @Test
     public void graphOfIntegersShortestPathTest() {
         String expectedPathBetween1And3 = "1 5 3";
@@ -199,153 +229,10 @@ public class GraphTest {
         assertEquals(expectedPathBetween5And5, integerGraph.shortestPath(5, 5));
     }
 
-    @Test
-    public void disconnectedGraphShortestPathTest() {
-        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i2, i3);
-        String expectedPathBetween2And3 = "2 3";
-        assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
 
-        try {
-            disconnectedGraph.shortestPath(i1, i2);
-            fail("Should have thrown exception when trying to find the" +
-                    " shortest path between disconnected vertexes.");
-        } catch (Exception e) {
-            assertEquals("There isn't a path between 1 and 2",
-                    e.getMessage(), "A mensagem de erro está errada.");
-        }
-    }
-    
-    @Test
-    public void BFSTest() {
-    	String expectedResult = new StringBuilder()
-    			.append("1 - 0 -" + LINE_SEPARATOR)
-    			.append("2 - 1 1" + LINE_SEPARATOR)
-    			.append("3 - 2 5" + LINE_SEPARATOR)
-    			.append("4 - 2 5" + LINE_SEPARATOR)
-    			.append("5 - 1 1" + LINE_SEPARATOR)
-    			.toString();				
-    	
-    	assertEquals(expectedResult, integerGraph.BFS(1));
-    }
-    
-
-    @Test
-    public void disconnectedGraphTest(){
-        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i2, i3);
-
-        assertFalse(disconnectedGraph.connected());
-    }
-
-    @Test
-    public void dfsInConnectedGraph1Test(){
-        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        connectedGraph.addVertex(i1);
-        connectedGraph.addEdge(i1, i2);
-        connectedGraph.addEdge(i2, i3);
-
-        StringBuilder sb = new StringBuilder()
-                .append("1 - 0 -" + LINE_SEPARATOR)
-                .append("2 - 1 1" + LINE_SEPARATOR)
-                .append("3 - 2 2" + LINE_SEPARATOR);
-
-        assertEquals(sb.toString(), connectedGraph.DFS(i1));
-
-    }
-
-    @Test
-    public void dfsInConnectedGraph2Test(){
-        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        connectedGraph.addVertex(i1);
-        connectedGraph.addEdge(i1, i2);
-        connectedGraph.addEdge(i2, i3);
-
-        StringBuilder sb = new StringBuilder()
-                .append("1 - 1 2" + LINE_SEPARATOR)
-                .append("2 - 0 -" + LINE_SEPARATOR)
-                .append("3 - 1 2" + LINE_SEPARATOR);
-
-        assertEquals(sb.toString(), connectedGraph.DFS(i2));
-    }
-
-    @Test
-    public void dfsInConnectedGraph3Test(){
-        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        connectedGraph.addVertex(i1);
-        connectedGraph.addEdge(i1, i2);
-        connectedGraph.addEdge(i2, i3);
-
-        StringBuilder sb = new StringBuilder()
-                .append("1 - 2 2" + LINE_SEPARATOR)
-                .append("2 - 1 3" + LINE_SEPARATOR)
-                .append("3 - 0 -" + LINE_SEPARATOR);
-
-        assertEquals(sb.toString(), connectedGraph.DFS(i3));
-
-    }
-
-    @Test
-    public void dfsInDisconnectedGraph1Test(){
-        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i1, i2);
-        disconnectedGraph.addEdge(i2, i3);
-        disconnectedGraph.addVertex(i4);
-
-        StringBuilder sb = new StringBuilder()
-                .append("1 - 2 2" + LINE_SEPARATOR)
-                .append("2 - 1 3" + LINE_SEPARATOR)
-                .append("3 - 0 -" + LINE_SEPARATOR);
-
-        assertEquals(sb.toString(), disconnectedGraph.DFS(i3));
-
-    }
-
-    @Test
-    public void dfsInDisconnectedGraph2Test(){
-        IGraph<Integer, Edge<Integer>> disconnectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i1, i2);
-        disconnectedGraph.addEdge(i2, i3);
-        disconnectedGraph.addVertex(i4);
-
-        StringBuilder sb = new StringBuilder()
-                .append("4 - 0 -" + LINE_SEPARATOR);
-
-        assertEquals(sb.toString(), disconnectedGraph.DFS(i4));
-
-    }
-
-    @Test
-    public void connectedGraphSingleVertexTest(){
-        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
-        Integer i1 = 1;
-        connectedGraph.addVertex(i1);
-
-        assertTrue(connectedGraph.connected());
-    }
-
-    @Test
-    public void connectedGraphTest(){
-        IGraph<Integer, Edge<Integer>> connectedGraph = new Graph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        connectedGraph.addVertex(i1);
-        connectedGraph.addEdge(i1, i2);
-        connectedGraph.addEdge(i2, i3);
-
-        assertTrue(connectedGraph.connected());
-    }
-    
+    /**
+     * Tests MST in integer's {@link Graph}.
+     */
     @Test
     public void mstIntegerGraphTest() {
     	 String expectedMST = new StringBuilder()
@@ -356,7 +243,10 @@ public class GraphTest {
                  .toString();
     	assertEquals(integerGraph.MST(), expectedMST);
     }
-    
+
+    /**
+     * Tests MST in integer's {@link Graph} with duplicated elements.
+     */
     @Test
     public void mstIntegerDuplicateGraphTest() {
     	 String expectedMST = new StringBuilder()
@@ -366,9 +256,12 @@ public class GraphTest {
                  .append("[2, 3]").append(LINE_SEPARATOR)
                  .append("[2, 6]").append(LINE_SEPARATOR)
                  .toString();
-    	assertEquals(integerGraphDuplicate.MST(), expectedMST);
+    	assertEquals(expectedMST, integerGraphDuplicate.MST());
     }
-    
+
+    /**
+     * Tests MST in string's {@link Graph}.
+     */
     @Test
     public void mstStringGraphTest() {
     	String expectedMST = new StringBuilder()
@@ -377,11 +270,7 @@ public class GraphTest {
                 .append("[C, E]").append(LINE_SEPARATOR)
                 .append("[D, E]").append(LINE_SEPARATOR) 
                 .toString();
-   	assertEquals(stringGraph.MST(), expectedMST);
+   	    assertEquals(expectedMST, stringGraph.MST());
     }
-    
-    @Test
-    public void mstDisconnectedGraphTest() {
-    	assertEquals(disconnectedGraph.MST(), "disconneted graph");
-    }
+
 }

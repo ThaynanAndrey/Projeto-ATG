@@ -7,17 +7,26 @@ import static com.ufcg.atg.util.Utils.LINE_SEPARATOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Tests the class {@link WeightedGraph} as an implementation of {@link IWeightedGraph}.
+ */
 public class WeightedGraphTest {
 
     private IWeightedGraph<Integer, WeightedEdge<Integer>> integerGraph;
     private IWeightedGraph<String, WeightedEdge<String>> stringGraph;
 
+    /**
+     * Tests' set up.
+     */
     @BeforeEach
     public void setUp() {
         setUpGraphOfIntegers();
         setUpGraphOfStrings();
     }
 
+    /**
+     * Constructs a weighted graph with vertices of integer value.
+     */
     private void setUpGraphOfIntegers() {
         Integer i1 = 1, i2 = 2, i3 = 3, i4 = 4, i5 = 5;
         integerGraph = new WeightedGraph<>();
@@ -29,6 +38,9 @@ public class WeightedGraphTest {
         integerGraph.addEdge(i1, i5,1f);
     }
 
+    /**
+     * Constructs a weighted graph with vertices of string value.
+     */
     private void setUpGraphOfStrings() {
         String s1 = "A", s2 = "B", s3 = "C", s4 = "D", s5 = "E";
         stringGraph = new WeightedGraph<>();
@@ -40,6 +52,9 @@ public class WeightedGraphTest {
         stringGraph.addEdge(s1, s5,1f);
     }
 
+    /**
+     * Tests the adjacency matrix representation of a integer's {@link WeightedGraph}.
+     */
     @Test
     public void graphOfIntegersMatrixRepresentationTest() {
         String expectedMatrix = new StringBuilder()
@@ -55,6 +70,9 @@ public class WeightedGraphTest {
         assertEquals(matrix, expectedMatrix);
     }
 
+    /**
+     * Tests the adjacency matrix representation of a string's {@link WeightedGraph}.
+     */
     @Test
     public void graphOfStringsMatrixRepresentationTest() {
         String expectedMatrix = new StringBuilder()
@@ -70,6 +88,9 @@ public class WeightedGraphTest {
         assertEquals(matrix, expectedMatrix);
     }
 
+    /**
+     * Tests the adjacency list representation of a integer's {@link WeightedGraph}.
+     */
     @Test
     public void graphOfIntegersListRepresentationTest() {
         String expectedList = new StringBuilder()
@@ -84,6 +105,9 @@ public class WeightedGraphTest {
         assertEquals(list, expectedList);
     }
 
+    /**
+     * Tests the adjacency list representation of a string's {@link WeightedGraph}.
+     */
     @Test
     public void graphOfStringsListRepresentationTest() {
         String expectedList = new StringBuilder()
@@ -98,6 +122,9 @@ public class WeightedGraphTest {
         assertEquals(list, expectedList);
     }
 
+    /**
+     * Tests the shortest path between two vertexes at {@link WeightedGraph}.
+     */
     @Test
     void graphOfIntegersShortestPathTest() {
         IWeightedGraph<Integer, WeightedEdge<Integer>> integerGraph
@@ -121,6 +148,10 @@ public class WeightedGraphTest {
         assertEquals(expectedPathBetween5And5, integerGraph.shortestPath(5, 5));
     }
 
+    /**
+     * Tests if throws exception when trying to find the shortest path
+     * in a graph with negative circle.
+     */
     @Test
     public void graphWithNegativeCircleShortestPathTest() {
         try {
@@ -134,25 +165,9 @@ public class WeightedGraphTest {
         }
     }
 
-    @Test
-    public void disconnectedGraphShortestPathTest() {
-        IWeightedGraph<Integer, WeightedEdge<Integer>> disconnectedGraph = new WeightedGraph<>();
-        Integer i1 = 1, i2 = 2, i3 = 3;
-        disconnectedGraph.addVertex(i1);
-        disconnectedGraph.addEdge(i2, i3, 5f);
-        String expectedPathBetween2And3 = "2 3";
-        assertEquals(expectedPathBetween2And3, disconnectedGraph.shortestPath(2, 3));
-
-        try {
-            disconnectedGraph.shortestPath(i1, i2);
-            fail("Should have thrown exception when trying to find the" +
-                    " shortest path between disconnected vertexes.");
-        } catch (Exception e) {
-            assertEquals("There isn't a path between 1 and 2",
-                    e.getMessage(), "A mensagem de erro está errada.");
-        }
-    }
-    
+    /**
+     * Tests MST in integer's {@link WeightedGraph}.
+     */
     @Test
     public void integerMstGraphTest() {
     	 String expectedMST = new StringBuilder()
@@ -163,7 +178,10 @@ public class WeightedGraphTest {
                  .toString();
     	assertEquals(integerGraph.MST(), expectedMST);
     }
-    
+
+    /**
+     * Tests MST in string's {@link WeightedGraph}.
+     */
     @Test
     public void stringMstGraphTest() {
     	 String expectedMST = new StringBuilder()

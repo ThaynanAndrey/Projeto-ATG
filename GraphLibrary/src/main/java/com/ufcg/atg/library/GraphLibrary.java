@@ -23,6 +23,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * Reads a graph from file.
      *
      * @param path File path.
+     * @throws RuntimeException If there is an error reading the file.
      * @return Read graph.
      */
     public IGraph<Integer, Edge<Integer>> readGraph(String path) {
@@ -35,6 +36,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * Reads a weighted graph from a file.
      *
      * @param path File path.
+     * @throws RuntimeException If there is an error reading the file.
      * @return Read graph.
      */
     public IWeightedGraph<Integer, WeightedEdge<Integer>> readWeightedGraph(String path) {
@@ -50,21 +52,23 @@ public class GraphLibrary<V extends Comparable<V>> {
      *
      * @param graph Graph to have a new edges added.
      * @param path Path from where the edges will be obtained.
+     * @throws RuntimeException If there is an error reading the file.
      */
     private void readFile(IGraph<Integer, ? extends Edge<Integer>> graph, String path) {
         boolean isWeightedGraph = graph instanceof IWeightedGraph;
         try {
             FileReader file = new FileReader(path);
             BufferedReader bfFile = new BufferedReader(file);
-
-            String currentLine = bfFile.readLine();
-            Integer edgesAmount = Integer.parseInt(currentLine);
-            for (int i=0; i < edgesAmount; i++) {
-                String edge = bfFile.readLine();
+            int vertexesQuantity = Integer.parseInt(bfFile.readLine());
+            for (int i = 1; i <= vertexesQuantity; i++) {
+                graph.addVertex(i);
+            }
+            String edgeStringRepr;
+            while((edgeStringRepr = bfFile.readLine()) != null) {
                 if(isWeightedGraph) {
-                    addWeightedEdge((IWeightedGraph<Integer, WeightedEdge<Integer>>) graph, edge);
+                    addWeightedEdge((IWeightedGraph<Integer, WeightedEdge<Integer>>) graph, edgeStringRepr);
                 } else {
-                    addEdge((IGraph<Integer, Edge<Integer>>) graph, edge);
+                    addEdge((IGraph<Integer, Edge<Integer>>) graph, edgeStringRepr);
                 }
             }
             file.close();
@@ -115,8 +119,8 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return The added edge between {@code v1} and {@code v2}.
      */
     public Edge<V> addEdge(IGraph<V, ? extends Edge<V>> graph, V v1, V v2) {
-        if (graph.containsEdge(new Edge<V>(v1, v2))) {
-            throw new RuntimeException("The graph already contains the specified edge");
+        if (graph.containsEdge(new Edge<>(v1, v2))) {
+            throw new RuntimeException("The graph already contains the specified edge.");
         }
         return graph.addEdge(v1, v2);
     }
@@ -135,9 +139,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      */
     public WeightedEdge<V> addEdge(IWeightedGraph<V, ? extends WeightedEdge<V>> graph,
                                    V v1, V v2) {
-        if (graph.containsEdge(new WeightedEdge<V>(v1, v2,
+        if (graph.containsEdge(new WeightedEdge<>(v1, v2,
                 WeightedGraph.EDGE_DEFAULT_WEIGHT))) {
-            throw new RuntimeException("The graph already contains the specified edge");
+            throw new RuntimeException("The graph already contains the specified edge.");
         }
         return graph.addEdge(v1, v2);
     }
@@ -157,7 +161,7 @@ public class GraphLibrary<V extends Comparable<V>> {
     public WeightedEdge<V> addEdge(IWeightedGraph<V, ? extends WeightedEdge<V>> graph,
                                    V v1, V v2, float weight){
         if (graph.containsEdge(new WeightedEdge<V>(v1, v2, weight))) {
-            throw new RuntimeException("The graph already contains the specified edge");
+            throw new RuntimeException("The graph already contains the specified edge.");
         }
         return graph.addEdge(v1, v2, weight);
     }
@@ -171,7 +175,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      */
     public void addVertex(IGraph<V, ? extends Edge<V>> graph, V v) {
         if (graph.containsVertex(v)) {
-            throw new RuntimeException("The graph already contains the specified vertex");
+            throw new RuntimeException("The graph already contains the specified vertex.");
         }
         graph.addVertex(v);
     }
@@ -204,6 +208,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Specified vertex's edges.
      */
     public Set<? extends Edge<V>> getEdgesOfVertex(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.getEdgesOfVertex(v);
     }
 
@@ -215,6 +222,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Specified vertex's adjacent vertexes.
      */
     public Set<V> getAdjacentVertexes(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.getAdjacentVertexes(v);
     }
 
@@ -245,7 +255,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Number of vertexes of the graph.
      */
     public int getVertexNumber(IGraph<V, ? extends Edge<V>> graph) {
-        return graph.getVertexesNumber();
+        return graph.getVertexNumber();
     }
 
     /**
@@ -255,7 +265,7 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Number of edges of the graph.
      */
     public int getEdgeNumber(IGraph<V, ? extends Edge<V>> graph) {
-        return graph.getEdgesNumber();
+        return graph.getEdgeNumber();
     }
 
     /**
@@ -288,6 +298,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return BFS of the graph.
      */
     public String BFS(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.BFS(v);
     }
 
@@ -300,6 +313,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return DFS of the graph.
      */
     public String DFS(IGraph<V, ? extends Edge<V>> graph, V v) {
+        if (!graph.containsVertex(v)) {
+            throw new RuntimeException("The graph doesn't contains the specified vertex.");
+        }
         return graph.DFS(v);
     }
 
@@ -323,6 +339,9 @@ public class GraphLibrary<V extends Comparable<V>> {
      * @return Shortest path between {@code v1} e {@code v2}.
      */
     public String shortestPath(IGraph<V, ? extends Edge<V>> graph, V v1, V v2) {
+        if (!graph.containsVertex(v1) || !graph.containsVertex(v2) ) {
+            throw new RuntimeException("The graph doesn't contains both specified vertexes.");
+        }
         return graph.shortestPath(v1, v2);
     }
 
@@ -336,4 +355,5 @@ public class GraphLibrary<V extends Comparable<V>> {
     String MST(IGraph<V, ? extends Edge<V>> graph) {
         return graph.MST();
     }
+
 }

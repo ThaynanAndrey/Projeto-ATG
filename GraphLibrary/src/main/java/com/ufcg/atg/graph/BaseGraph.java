@@ -1,6 +1,5 @@
 package com.ufcg.atg.graph;
 
-import com.ufcg.atg.util.Kruskal;
 import com.ufcg.atg.util.Utils;
 
 import java.util.*;
@@ -76,22 +75,23 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public boolean containsEdge(Edge<V> e) {
+        if (!containsVertex(e.getOriginVertex())) return false;
         return vertexes.get(e.getOriginVertex()).contains(e);
     }
 
     @Override
-    public int getVertexesNumber() {
+    public int getVertexNumber() {
         return vertexes.size();
     }
 
     @Override
-    public int getEdgesNumber() {
+    public int getEdgeNumber() {
         return getAllEdges().size();
     }
 
     @Override
     public float getMeanEdge() {
-        return getVertexesNumber() > 0 ? ((getEdgesNumber()) / getVertexesNumber()) : 0;
+        return getVertexNumber() > 0 ? ((getEdgeNumber()) / getVertexNumber()) : 0;
     }
 
     @Override
@@ -122,7 +122,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @return Adjacency matrix with all connections between specified vertexes.
      */
     private float[][] setUpAdjacencyMatrix(List<V> orderedVertexes) {
-        int vertexesNumber = getVertexesNumber();
+        int vertexesNumber = getVertexNumber();
         float adjacencyMatrix[][] = new float[vertexesNumber][vertexesNumber];
         for(int i = 0; i < vertexesNumber; i++) {
             V currentVertex = orderedVertexes.get(i);
@@ -144,7 +144,7 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
      * @return The string representation of specified adjacency matrix.
      */
     private String getAdjacencyMatrixString(List<V> orderedVertexes, float adjacencyMatrix[][]) {
-        int vertexesNumber = getVertexesNumber();
+        int vertexesNumber = getVertexNumber();
         StringBuilder matrixSB = new StringBuilder("  ");
 
         for (int i = 0; i < vertexesNumber; i++) {
@@ -210,136 +210,119 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
 
     @Override
     public String BFS(V v) {
-    	Queue<V> queue = new LinkedList<V>();
-    	Map<V, Boolean> visited = new HashMap<V, Boolean>();
-    	Map<V, V> predecessor = new HashMap<V, V>();
-    	Map<V, Integer> level = new HashMap<V, Integer>();
-    			
-    	setUpBFS(visited, predecessor, level, v);
-    	
-    	queue.add(v);  
-    	
-    	while(!queue.isEmpty()){
-    		V currentVertex = queue.poll();
-    		for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-    			if(!visited.get(adjacentVertex)){
-    				visited.put(adjacentVertex, true);
-    				predecessor.put(adjacentVertex, currentVertex);
-    				level.put(adjacentVertex, level.get(currentVertex) + 1);
-    				queue.add(adjacentVertex);
-    			}
-    		}
-    	}
-    	
-    	String resultString = BFSStringBuilder(visited, predecessor, level);
-    	
-    	return resultString;
+    	Queue<V> queue = new LinkedList<>();
+        Set<V> visited = new HashSet<>();
+        Map<V, V> predecessors = new HashMap<>();
+    	Map<V, Integer> level = new HashMap<>();
+    	setUpWalkByGraph(v, visited, predecessors, level);
+    	queue.add(v);
+        BFSWalkByGraph(queue, visited, predecessors, level);
+        return setUpWalkByGraphString(visited, predecessors, level);
     }
-    
+
     /**
-    * Sets up the configuration to run the BFS algorithm.
-    *
-    * Actions:
-    * - Sets the status of all vertexes as not visited;
-    * - Set the root as visited;
-    * - Set the root level as 0;
-    * - Set the predecessor of the root to "-";
-    * 
-    *
-    * @param visited {@link Map} that store the vertexes and their status.
-    * @param predecesor {@link Map} that store the vertexes and their predecessor.
-    * @param level {@link Map} that store the vertexes and their level.
-    * @param root Vertex root of the graph.
-    */
-    protected void setUpBFS(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level, V root) {
-    	for(V vertex : getAllVertexes()) {
-    		visited.put(vertex, false);
-    	}
-    	
-    	visited.put(root, true);
-    	predecessor.put(root, null);
-    	level.put(root, 0);
-    	
-    }
-    
-    /**
-     * Build the result string of the BFS algorithm.
+     * Walks by the graph in BFS.
      *
-     * Actions:
-     * - Build the result string.
-     *
-     * @param visited {@link Map} that store the vertexes and their status.
-     * @param predecesor {@link Map} that store the vertexes and their predecessor.
+     * @param queue {@link Queue} of vertexes to be visited.
+     * @param visited {@link Set} of visited vertexes.
+     * @param predecessors {@link Map} that store the vertexes and their predecessors.
      * @param level {@link Map} that store the vertexes and their level.
      */
-    protected String BFSStringBuilder(Map<V, Boolean> visited, Map<V,V> predecessor, Map<V,Integer> level) {
-    	StringBuilder stringBuilder = new StringBuilder();
-    	
-    	for(V vertex : visited.keySet()) {
-    		stringBuilder.append(vertex.toString() +
-    				" - " + 
-    				level.get(vertex).toString() +
-    				" ");
-    		if(predecessor.get(vertex) == null) {
-    			stringBuilder.append("-" +
-    					LINE_SEPARATOR);
-    		}else{
-    			stringBuilder.append(predecessor.get(vertex).toString() +
-    				LINE_SEPARATOR);
-    		}
-    				
-    	} 
-    	
-    	return stringBuilder.toString();
-    }
-
-    @Override
-    public String DFS(V v) {
-        List<V> visited = new ArrayList<V>();
-        List<String> stringRepresentation = new ArrayList<String>();
-        StringBuilder stringBuilder = new StringBuilder();
-        dfs(v, v,0, visited, stringRepresentation);
-        stringRepresentation.sort(String::compareToIgnoreCase);
-        for(String str : stringRepresentation ){
-            stringBuilder.append(str);
-        }
-        return stringBuilder.toString();
-    }
-
-    private void dfs(V currentVertex, V prevVertex, int vertexLevel, List<V> visited, List<String> stringRepresentation){
-        visited.add(currentVertex);
-        // Process vertex.
-        if(currentVertex.equals(prevVertex)){
-            stringRepresentation.add(currentVertex + " - " + vertexLevel + " -" + LINE_SEPARATOR);
-        } else {
-            stringRepresentation.add(currentVertex + " - " + vertexLevel + " " + prevVertex + LINE_SEPARATOR);
-        }
-        for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-            if(!visited.contains(adjacentVertex)){
-                dfs(adjacentVertex, currentVertex, vertexLevel + 1, visited, stringRepresentation);
+    private void BFSWalkByGraph(Queue<V> queue, Set<V> visited, Map<V, V> predecessors, Map<V, Integer> level) {
+        while(!queue.isEmpty()){
+            V currentVertex = queue.poll();
+            for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
+                if(!visited.contains(adjacentVertex)){
+                    visited.add(adjacentVertex);
+                    predecessors.put(adjacentVertex, currentVertex);
+                    level.put(adjacentVertex, level.get(currentVertex) + 1);
+                    queue.add(adjacentVertex);
+                }
             }
         }
     }
 
-    private void dfs(V currentVertex, Set<V> visited){
+    @Override
+    public String DFS(V v) {
+        Set<V> visited = new HashSet<>();
+        Map<V, V> predecessors = new HashMap<>();
+        Map<V, Integer> level = new HashMap<>();
+        setUpWalkByGraph(v, visited, predecessors, level);
+        DFSWalkByGraph(v, visited, predecessors, level);
+        return setUpWalkByGraphString(visited, predecessors, level);
+    }
+
+    /**
+     * Walks by the graph in DFS.
+     *
+     * @param currentVertex Current vertex to be process.
+     * @param visited List of visited vertexes.
+     * @param predecessors {@link Map} that store the vertexes and their predecessor.
+     * @param level {@link Map} that store the vertexes and their level.
+     */
+    private void DFSWalkByGraph(V currentVertex, Set<V> visited, Map<V, V> predecessors, Map<V, Integer> level){
         visited.add(currentVertex);
         for(V adjacentVertex : getAdjacentVertexes(currentVertex)){
-            if(!visited.contains(adjacentVertex))
-                dfs(adjacentVertex, visited);
+            if(!visited.contains(adjacentVertex)){
+                predecessors.put(adjacentVertex, currentVertex);
+                level.put(adjacentVertex, level.get(currentVertex) + 1);
+                DFSWalkByGraph(adjacentVertex, visited, predecessors, level);
+            }
         }
+    }
+
+    /**
+     * Sets up the result string of a 'walk by graph' algorithm.
+     *
+     * @param visited {@link Set} that store the vertexes and their status.
+     * @param predecessors {@link Map} that store the vertexes and their predecessors.
+     * @param level {@link Map} that store the vertexes and their level.
+     */
+    protected String setUpWalkByGraphString(Set<V> visited, Map<V,V> predecessors, Map<V,Integer> level) {
+        StringBuilder walkByGraphString = new StringBuilder();
+        List<V> visitedVertexes = new ArrayList<>(visited);
+
+        for(V vertex : visitedVertexes) {
+            V predecessor = predecessors.get(vertex);
+            walkByGraphString.append(vertex.toString()).append(" - ")
+                    .append(level.get(vertex).toString()).append(" ")
+                    .append(predecessor != null ? predecessor.toString() : "-")
+                    .append(LINE_SEPARATOR);
+        }
+
+        Collections.sort(visitedVertexes);
+        return walkByGraphString.toString();
+    }
+
+    /**
+     * Sets up the configurations to walk by the graph.
+     *
+     * Actions:
+     * - Sets the root as a visited vertex;
+     * - Sets the predecessor of the root to null;
+     * - Sets the root level as 0.
+     *
+     * @param root Vertex root of the graph.
+     * @param visited {@link Set} that store the visited vertexes.
+     * @param predecessors {@link Map} that store the vertexes and their predecessor.
+     * @param level {@link Map} that store the vertexes and their level.
+     */
+    protected void setUpWalkByGraph(V root, Set<V> visited, Map<V, V> predecessors, Map<V, Integer> level) {
+        visited.add(root);
+        predecessors.put(root, null);
+        level.put(root, 0);
     }
 
     @Override
     public boolean connected() {
-        Set<V> visited = new HashSet<V>();
-        V currentVertex = null;
-        try{
-            currentVertex = this.vertexes.keySet().iterator().next();
-            dfs(currentVertex, visited);
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-        return visited.equals(this.vertexes.keySet());
+        if (getAllVertexes().isEmpty()) return true;
+        Set<V> visited = new HashSet<>();
+        Map<V, V> predecessors = new HashMap<>();
+        Map<V, Integer> level = new HashMap<>();
+        V v = vertexes.keySet().iterator().next();
+        setUpWalkByGraph(v, visited, predecessors, level);
+        DFSWalkByGraph(v, visited, predecessors, level);
+        return visited.equals(vertexes.keySet());
     }
 
     @Override
@@ -447,21 +430,88 @@ public abstract class BaseGraph<V extends Comparable<V>, E extends Edge<V>> impl
             distances.replace(targetVertex, distances.get(originVertex) + edgeWeight);
         }
     }
-    
+
     /**
-     * Identifies the minimal spanning tree (MST) of the graph after delegation 
-     * to the kruskal algorithm
-     * @return minimal spanning tree(MST) in string representation
+     * Determines whether the vertex is already grouped to a subset, using recursion,
+     * and if so verifies in the sub set of this vertex until finding
+     * a vertex of the non-associated subset.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @param vertex vertex to be checked in the subset
+     * @return associated vertex
+     */
+    private V find(Map<V,V> subEdges, V vertex) {
+        if(subEdges.get(vertex) == null) {
+            return vertex;
+        }
+        return this.find(subEdges, subEdges.get(vertex));
+    }
+
+    /**
+     * Combines two vertexes, creating a subset, which is the relationship between those vertices.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @param originVertex The origin vertex of the edge.
+     * @param targetVertex The target vertex of the edge.
+     */
+    private void union(Map<V,V> subEdges, V originVertex, V targetVertex) {
+        V originVertexPut = this.find(subEdges, originVertex);
+        V targetVertexPut = this.find(subEdges, targetVertex);
+        subEdges.put(originVertexPut, targetVertexPut);
+    }
+
+    /**
+     * Gets list of MST's edges.
+     *
+     * @param subEdges subset of the vertexes of the graph with its associations.
+     * @return List of MST's edges.
+     */
+    public List<E> getEdgesMST(Map<V,V> subEdges) {
+        List<E> edgesMst = new ArrayList<>();
+        List<E> listEdges = new ArrayList<>(this.getAllEdges());
+        Collections.sort(listEdges);
+        for(int i=0; i < listEdges.size(); i++) {
+            E egdeOperation = listEdges.get(i);
+            V originVertex = this.find(subEdges, egdeOperation.getOriginVertex());
+            V targetVertex = this.find(subEdges, egdeOperation.getTargetVertex());
+            if(!originVertex.equals(targetVertex)) {
+                edgesMst.add(egdeOperation);
+                this.union(subEdges, originVertex, targetVertex);
+            }
+        }
+        return edgesMst;
+    }
+
+    /**
+     * Generates the string representing minimal spanning tree.
+     *
+     * @param edgesMst List of MST's edges.
+     * @return minimal spanning tree(MST) in string representation.
+     */
+    private String MSTRepresentation(List<E> edgesMst) {
+        StringBuilder representation = new StringBuilder();
+        for(int i=0; i < edgesMst.size(); i++) {
+            representation.append(edgesMst.get(i).toString()).append(LINE_SEPARATOR);
+        }
+        return representation.toString();
+    }
+
+    /**
+     * Identifies the minimal spanning tree (MST) of the graph.
+     *
+     * @return Minimal spanning tree (MST) in string representation
      */
     @Override
     public String MST() {
-    	if(!this.connected()) {
-    		return "disconneted graph";
-    	}
-    	Kruskal<V,E> mst = new Kruskal<>(this.getAllVertexes(),this.getAllEdges());
-    	return mst.kruskal();
+        Iterator<V> vertexIterator = this.getAllVertexes().iterator();
+        Map<V,V> subEdges = new HashMap<>();
+        while(vertexIterator.hasNext()) {
+            subEdges.put(vertexIterator.next(), null);
+        }
+        List<E> edgesMst =  getEdgesMST(subEdges);
+
+        return this.MSTRepresentation(edgesMst);
     }
-    
 
     @Override
     public boolean equals(Object o) {
